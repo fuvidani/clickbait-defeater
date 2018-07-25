@@ -10,7 +10,7 @@ Thanks goes to these wonderful people:
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars3.githubusercontent.com/u/16260193?s=400&v=4" width="100px;"/><br /><sub><b>David Molnar</b></sub>](https://github.com/dmolnar99)<br />[�](#ideas "Ideas and Planning") [�](https://github.com/fuvidani/clickbait-defeater/commits?author=dmolnar99 "Code") [⚠️](https://github.com/fuvidani/clickbait-defeater/commits?author=dmolnar99 "Tests") [�](#design-dmolnar99 "Design") [�](#documentation "Documentation") |
+| [<img src="https://avatars3.githubusercontent.com/u/16260193?s=400&v=4" width="100px;"/><br /><sub><b>David Molnar</b></sub>](https://github.com/dmolnar99)<br />[🤔](#ideas "Ideas and Planning") [💻](https://github.com/fuvidani/clickbait-defeater/commits?author=dmolnar99 "Code") [⚠️](https://github.com/fuvidani/clickbait-defeater/commits?author=dmolnar99 "Tests") [🎨](#design-dmolnar99 "Design") [📖](#documentation "Documentation") |
 | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
