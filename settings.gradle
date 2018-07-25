@@ -1,0 +1,3 @@
+rootProject.name = 'clickbait-defeater'
+include 'gateway'
+
