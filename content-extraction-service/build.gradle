@@ -4,6 +4,8 @@ plugins {
 
 dependencies {
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.1.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+    compile 'org.springframework.data:spring-data-redis:2.1.0.M3'
     testCompile 'org.springframework.restdocs:spring-restdocs-webtestclient:2.0.1.RELEASE'
 }
 

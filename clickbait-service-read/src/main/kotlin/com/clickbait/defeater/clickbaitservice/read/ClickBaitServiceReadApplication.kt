@@ -1,4 +1,4 @@
-package com.clickbait.defeater.clickbaitservice
+package com.clickbait.defeater.clickbaitservice.read
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -13,12 +13,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
  * @since 1.0.0
  */
 @SpringBootApplication
-class ClickBaitServiceApplication {
+class ClickBaitServiceReadApplication {
 
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            SpringApplication.run(ClickBaitServiceApplication::class.java, *args)
+            SpringApplication.run(ClickBaitServiceReadApplication::class.java, *args)
         }
     }
 }
