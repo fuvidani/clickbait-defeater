@@ -2,4 +2,4 @@ rootProject.name = 'clickbait-defeater'
 include 'gateway'
 include 'clickbait-service-read'
 include 'content-extraction-service'
-
+include 'clickbait-service-update'
