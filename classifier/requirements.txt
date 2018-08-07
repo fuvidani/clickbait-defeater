@@ -1,0 +1,12 @@
+tensorflow
+sklearn
+hyperopt
+HTMLParser
+numpy
+nltk
+gensim
+Pillow
+scipy
+hickle
+flask
+flask_cors
