@@ -1,6 +1,7 @@
 package com.clickbait.defeater.clickbaitservice.read
 
 import com.clickbait.defeater.clickbaitservice.read.service.score.client.IScoreServiceClient
+import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -57,6 +58,7 @@ class ClickBaitServiceReadApplication {
         val retrofit = Retrofit.Builder()
             .baseUrl("http://$host:$port/api/")
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(ReactorCallAdapterFactory.create())
             .build()
         return retrofit.create(IScoreServiceClient::class.java)
     }

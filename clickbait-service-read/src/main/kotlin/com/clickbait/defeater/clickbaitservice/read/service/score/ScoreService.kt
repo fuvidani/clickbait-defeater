@@ -19,13 +19,6 @@ import reactor.core.publisher.Mono
 class ScoreService(private val scoreServiceClient: IScoreServiceClient) : IScoreService {
 
     override fun scorePostInstance(instance: PostInstance): Mono<ClickBaitScore> {
-        return Mono.create {
-            try {
-                val score = scoreServiceClient.scorePostInstance(instance).execute().body()
-                it.success(score)
-            } catch (e: Exception) {
-                it.error(e)
-            }
-        }
+        return scoreServiceClient.scorePostInstance(instance)
     }
 }

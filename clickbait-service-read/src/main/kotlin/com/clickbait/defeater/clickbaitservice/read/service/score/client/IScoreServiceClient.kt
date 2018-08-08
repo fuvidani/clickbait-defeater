@@ -3,7 +3,7 @@ package com.clickbait.defeater.clickbaitservice.read.service.score.client
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
 import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
 import org.springframework.http.MediaType
-import retrofit2.Call
+import reactor.core.publisher.Mono
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -24,5 +24,5 @@ interface IScoreServiceClient {
         "Content-Type: ${MediaType.APPLICATION_JSON_UTF8_VALUE}"
     )
     @POST("predict")
-    fun scorePostInstance(@Body instance: PostInstance): Call<ClickBaitScore>
+    fun scorePostInstance(@Body instance: PostInstance): Mono<ClickBaitScore>
 }
