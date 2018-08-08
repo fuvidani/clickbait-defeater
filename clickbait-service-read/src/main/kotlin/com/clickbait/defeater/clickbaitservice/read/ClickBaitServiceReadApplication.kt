@@ -1,5 +1,6 @@
 package com.clickbait.defeater.clickbaitservice.read
 
+import com.clickbait.defeater.clickbaitservice.read.service.score.client.IScoreServiceClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -10,6 +11,8 @@ import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory
 import org.springframework.data.redis.connection.RedisSentinelConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * <h4>About this class</h4>
@@ -44,5 +47,17 @@ class ClickBaitServiceReadApplication {
     @Bean
     fun reactiveRedisTemplate(factory: ReactiveRedisConnectionFactory): ReactiveStringRedisTemplate {
         return ReactiveStringRedisTemplate(factory)
+    }
+
+    @Bean
+    fun scoreServiceClient(
+        @Value("\${score.service.host}") host: String,
+        @Value("\${score.service.port}") port: String
+    ): IScoreServiceClient {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://$host:$port/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        return retrofit.create(IScoreServiceClient::class.java)
     }
 }
