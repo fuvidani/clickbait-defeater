@@ -1,6 +1,9 @@
 package com.clickbait.defeater.clickbaitservice.read
 
+import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
 import com.clickbait.defeater.clickbaitservice.read.service.score.client.IScoreServiceClient
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
 import com.optimaize.langdetect.LanguageDetector
 import com.optimaize.langdetect.LanguageDetectorBuilder
@@ -15,9 +18,13 @@ import org.springframework.context.annotation.Primary
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory
 import org.springframework.data.redis.connection.RedisSentinelConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
+import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
+import org.springframework.data.redis.serializer.RedisSerializationContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import org.springframework.data.redis.serializer.StringRedisSerializer
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
 
 /**
  * <h4>About this class</h4>
@@ -52,6 +59,15 @@ class ClickBaitServiceReadApplication {
     @Bean
     fun reactiveRedisTemplate(factory: ReactiveRedisConnectionFactory): ReactiveStringRedisTemplate {
         return ReactiveStringRedisTemplate(factory)
+    }
+
+    @Bean
+    fun reactiveJsonClickBaitScoreRedisTemplate(factory: ReactiveRedisConnectionFactory): ReactiveRedisTemplate<String, ClickBaitScore> {
+        val serializer = Jackson2JsonRedisSerializer(ClickBaitScore::class.java)
+        serializer.setObjectMapper(ObjectMapper().registerModule(KotlinModule()))
+        val builder = RedisSerializationContext.newSerializationContext<String, ClickBaitScore>(StringRedisSerializer())
+        val serializationContext = builder.value(serializer).build()
+        return ReactiveRedisTemplate<String, ClickBaitScore>(factory, serializationContext)
     }
 
     @Bean
