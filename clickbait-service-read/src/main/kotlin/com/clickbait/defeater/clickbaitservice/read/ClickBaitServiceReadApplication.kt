@@ -20,6 +20,7 @@ import org.springframework.data.redis.connection.RedisSentinelConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
+import org.springframework.data.redis.core.ReactiveValueOperations
 import org.springframework.data.redis.serializer.RedisSerializationContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -68,6 +69,11 @@ class ClickBaitServiceReadApplication {
         val builder = RedisSerializationContext.newSerializationContext<String, ClickBaitScore>(StringRedisSerializer())
         val serializationContext = builder.value(serializer).build()
         return ReactiveRedisTemplate<String, ClickBaitScore>(factory, serializationContext)
+    }
+
+    @Bean
+    fun reactiveClickBaitScoreRedisValueOperations(redisTemplate: ReactiveRedisTemplate<String, ClickBaitScore>): ReactiveValueOperations<String, ClickBaitScore> {
+        return redisTemplate.opsForValue()
     }
 
     @Bean

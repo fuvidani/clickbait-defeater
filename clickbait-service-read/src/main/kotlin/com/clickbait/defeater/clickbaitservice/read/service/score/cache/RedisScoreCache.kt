@@ -2,7 +2,7 @@ package com.clickbait.defeater.clickbaitservice.read.service.score.cache
 
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
 import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
-import org.springframework.data.redis.core.ReactiveRedisTemplate
+import org.springframework.data.redis.core.ReactiveValueOperations
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
@@ -16,17 +16,13 @@ import reactor.core.publisher.Mono
  * @since 1.0.0
  */
 @Component
-class RedisScoreCache(private val redisTemplate: ReactiveRedisTemplate<String, ClickBaitScore>) : IScoreCache {
+class RedisScoreCache(private val valueOperations: ReactiveValueOperations<String, ClickBaitScore>) : IScoreCache {
 
     override fun tryAndGet(instance: PostInstance): Mono<ClickBaitScore> {
-        return redisTemplate
-            .opsForValue()
-            .get(instance.id)
+        return valueOperations.get(instance.id)
     }
 
     override fun put(score: ClickBaitScore): Mono<Boolean> {
-        return redisTemplate
-            .opsForValue()
-            .set(score.id, score)
+        return valueOperations.set(score.id, score)
     }
 }

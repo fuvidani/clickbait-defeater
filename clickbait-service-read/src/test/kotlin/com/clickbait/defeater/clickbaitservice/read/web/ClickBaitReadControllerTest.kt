@@ -12,7 +12,6 @@ import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.core.ReactiveValueOperations
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
@@ -38,8 +37,6 @@ class ClickBaitReadControllerTest {
     @MockBean
     private lateinit var scoreServiceClient: IScoreServiceClient
     @MockBean
-    private lateinit var redisTemplate: ReactiveRedisTemplate<String, ClickBaitScore>
-    @MockBean
     private lateinit var redisValueOperations: ReactiveValueOperations<String, ClickBaitScore>
     private lateinit var client: WebTestClient
     private val examplePost =
@@ -56,7 +53,6 @@ class ClickBaitReadControllerTest {
 
     @Test
     fun `test scoreMediaPost with un-cached result, should return clickBait score`() {
-        Mockito.`when`(redisTemplate.opsForValue()).thenReturn(redisValueOperations)
         Mockito.`when`(redisValueOperations.get(examplePost.id)).thenReturn(Mono.empty())
         Mockito.`when`(redisValueOperations.set(examplePost.id, expectedClickBaitScore)).thenReturn(Mono.just(true))
         Mockito.`when`(scoreServiceClient.scorePostInstance(examplePost.withLanguage("en")))
@@ -80,7 +76,6 @@ class ClickBaitReadControllerTest {
 
     @Test
     fun `test scoreMediaPost with cached result, should return cached score immediately`() {
-        Mockito.`when`(redisTemplate.opsForValue()).thenReturn(redisValueOperations)
         Mockito.`when`(redisValueOperations.get(examplePost.id)).thenReturn(Mono.just(expectedClickBaitScore))
 
         val publisher = client.post().uri("/score")
