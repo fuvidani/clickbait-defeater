@@ -11,6 +11,7 @@ package com.clickbait.defeater.clickbaitservice.read.model
  */
 data class PostInstance(
     val id: String,
+    val language: String = "unknown",
     val postText: List<String>,
     val postTimestamp: String = "",
     val postMedia: List<String> = emptyList(),
@@ -22,5 +23,21 @@ data class PostInstance(
 
 data class ClickBaitScore(
     val id: String,
-    val clickbaitScore: Double
+    val clickbaitScore: Double,
+    val language: String = "en",
+    val message: String = ""
 )
+
+fun PostInstance.withLanguage(language: String): PostInstance {
+    return PostInstance(
+        this.id,
+        language,
+        this.postText,
+        this.postTimestamp,
+        this.postMedia,
+        this.targetTitle,
+        this.targetDescription,
+        this.targetKeywords,
+        this.targetParagraphs
+    )
+}

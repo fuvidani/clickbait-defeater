@@ -11,3 +11,5 @@ logging:
 score.service:
   host: 37.252.185.77
   port: 5000
+
+languages: en, de, es, fr, hu

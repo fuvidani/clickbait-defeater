@@ -20,5 +20,6 @@ class ScoreService(private val scoreServiceClient: IScoreServiceClient) : IScore
 
     override fun scorePostInstance(instance: PostInstance): Mono<ClickBaitScore> {
         return scoreServiceClient.scorePostInstance(instance)
+            .map { ClickBaitScore(it.id, it.clickbaitScore, instance.language) }
     }
 }

@@ -9,6 +9,7 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.4.0'
     compile 'com.squareup.retrofit2:converter-gson:2.4.0'
     compile 'com.jakewharton.retrofit:retrofit2-reactor-adapter:2.1.0'
+    compile group: 'com.optimaize.languagedetector', name: 'language-detector', version: '0.6'
     testCompile 'org.springframework.restdocs:spring-restdocs-webtestclient:2.0.1.RELEASE'
 }
 

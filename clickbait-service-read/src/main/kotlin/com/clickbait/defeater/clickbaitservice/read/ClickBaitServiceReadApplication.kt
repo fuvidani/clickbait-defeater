@@ -2,6 +2,10 @@ package com.clickbait.defeater.clickbaitservice.read
 
 import com.clickbait.defeater.clickbaitservice.read.service.score.client.IScoreServiceClient
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
+import com.optimaize.langdetect.LanguageDetector
+import com.optimaize.langdetect.LanguageDetectorBuilder
+import com.optimaize.langdetect.ngram.NgramExtractors
+import com.optimaize.langdetect.profiles.LanguageProfileReader
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -61,5 +65,13 @@ class ClickBaitServiceReadApplication {
             .addCallAdapterFactory(ReactorCallAdapterFactory.create())
             .build()
         return retrofit.create(IScoreServiceClient::class.java)
+    }
+
+    @Bean
+    fun languageDetector(@Value("\${languages}") languages: Array<String>): LanguageDetector {
+        val languageProfiles = LanguageProfileReader().read(languages.asList())
+        return LanguageDetectorBuilder.create(NgramExtractors.standard())
+            .withProfiles(languageProfiles)
+            .build()
     }
 }

@@ -20,7 +20,7 @@ services:
       - MASTER_NAME=ClickbaitRedisMaster
       - QUORUM=1
       - AUTH_PASS=a2vjPx2CJ4HcE3f323oxmG4anv
-      - MASTER=100.83.134.98:6379
+      - MASTER=10.123.117.84:6379
       #- MASTER=redis_master <-- use in a complete containerized setup
     ports:
       - 26379:26379
