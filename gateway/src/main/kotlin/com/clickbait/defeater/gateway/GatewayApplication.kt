@@ -1,7 +1,6 @@
 package com.clickbait.defeater.gateway
 
 import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker
 import org.springframework.http.CacheControl
@@ -22,7 +21,6 @@ import reactor.core.publisher.Mono
  * @since 1.0.0
  */
 @SpringBootApplication
-@EnableAutoConfiguration
 @EnableCircuitBreaker
 @RestController
 class GatewayApplication : WebFluxConfigurer {
@@ -34,9 +32,14 @@ class GatewayApplication : WebFluxConfigurer {
         }
     }
 
-    @RequestMapping("/clickBaitFallback", produces = [MediaType.TEXT_PLAIN_VALUE])
-    fun clickBaitServiceFallback(): Mono<String> {
-        return Mono.just("Fallback for ClickBait-Service")
+    @RequestMapping("/clickBaitReadFallback", produces = [MediaType.TEXT_PLAIN_VALUE])
+    fun clickBaitReadServiceFallback(): Mono<String> {
+        return Mono.just("Fallback for ClickBait-Read-Service")
+    }
+
+    @RequestMapping("/clickBaitUpdateFallback", produces = [MediaType.TEXT_PLAIN_VALUE])
+    fun clickBaitUpdateServiceFallback(): Mono<String> {
+        return Mono.just("Fallback for ClickBait-Update-Service")
     }
 
     /**
