@@ -20,9 +20,12 @@ class PostLanguageDetector(private val languageDetector: LanguageDetector) : ILa
 
     override fun detect(instance: PostInstance): Mono<PostInstance> {
         return Mono.create {
-            val lang = languageDetector.detect(instance.postText.joinToString(separator = ". "))
-            val locale = lang.get()
-            it.success(instance.withLanguage(locale.language))
+            val probabilities = languageDetector.getProbabilities(instance.postText.joinToString(separator = ". "))
+            if (probabilities.isEmpty()) {
+                it.success(instance.withLanguage("unknown"))
+            } else {
+                it.success(instance.withLanguage(probabilities[0].locale.language))
+            }
         }
     }
 }
