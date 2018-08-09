@@ -3,14 +3,12 @@ server:
   servlet:
     context-path: ""
 
-host: localhost
-
 spring:
   cloud:
     gateway:
       routes:
       - id: clickbait_read_score_route
-        uri: http://${host}:8080
+        uri: http://clickbait-read-service:8080
         predicates:
         - Path=/clickbait/score
         - Method=POST
@@ -20,7 +18,7 @@ spring:
             name: fallback
             fallbackUri: forward:/clickBaitReadFallback
       - id: clickbait_update_score_route
-        uri: http://${host}:8081
+        uri: http://clickbait-update-service:8081
         predicates:
         - Path=/clickbait/score
         - Method=PUT

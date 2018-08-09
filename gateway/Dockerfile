@@ -1,7 +1,7 @@
-FROM java:8-jre
+FROM openjdk:8-jdk-alpine
 
 ARG VERSION
 ADD ./build/libs/gateway-${VERSION}.jar app.jar
-CMD ["java", "-Dspring.profiles.active=prod", "-Djava.security.egd=file:/dev/./urandom", "-Xmx2048m", "-jar", "/app.jar"]
+CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar"]
 
 EXPOSE 4000

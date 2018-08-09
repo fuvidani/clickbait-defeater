@@ -1,7 +1,7 @@
-FROM java:8-jre
+FROM openjdk:8-jdk-alpine
 
 ARG VERSION
 ADD ./build/libs/clickbait-service-read-${VERSION}.jar app.jar
-CMD ["java", "-Dspring.profiles.active=prod", "-Djava.security.egd=file:/dev/./urandom", "-Xmx2048m", "-jar", "/app.jar"]
+CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar"]
 
-EXPOSE 5000
+EXPOSE 8080

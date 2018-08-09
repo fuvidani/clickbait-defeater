@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  redis_master:
+    image: redis:4.0.10-alpine
+    command: redis-server --requirepass a2vjPx2CJ4HcE3f323oxmG4anv --masterauth a2vjPx2CJ4HcE3f323oxmG4anv
+    ports:
+    - 6379:6379
+    networks:
+    - clickbait
+
+  redis_slave:
+    image: redis:4.0.10-alpine
+    command: redis-server --requirepass a2vjPx2CJ4HcE3f323oxmG4anv --slaveof redis_master 6379 --masterauth a2vjPx2CJ4HcE3f323oxmG4anv
+    depends_on:
+    - redis_master
+    networks:
+    - clickbait
+
+  sentinel:
+    build: ./cache
+    image: redis-sentinel
+    container_name: sentinel
+    environment:
+    - MASTER_NAME=ClickbaitRedisMaster
+    - QUORUM=1
+    - AUTH_PASS=a2vjPx2CJ4HcE3f323oxmG4anv
+    - MASTER=redis_master
+    ports:
+    - 26379:26379
+    depends_on:
+    - redis_master
+    networks:
+    - clickbait
+
+  gateway:
+    build:
+      context: ./gateway
+      args:
+        VERSION: 0.0.1-SNAPSHOT
+    image: clickbait-gateway
+    container_name: clickbait-gateway
+    ports:
+    - 4000:4000
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    networks:
+    - clickbait
+
+  clickbait_read_service:
+    build:
+      context: ./clickbait-service-read
+      args:
+        VERSION: 0.0.1-SNAPSHOT
+    image: clickbait-read-service
+    container_name: clickbait-read-service
+    ports:
+    - 8080:8080
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    networks:
+    - clickbait
+
+networks:
+  clickbait:
+    driver: bridge
