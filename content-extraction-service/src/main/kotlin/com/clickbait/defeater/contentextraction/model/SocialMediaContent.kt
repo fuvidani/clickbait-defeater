@@ -9,29 +9,11 @@ package com.clickbait.defeater.contentextraction.model
  * @version 1.0.0
  * @since 1.0.0
  */
-data class WebPage(
-    val url: String,
-    val title: String = ""
-)
-
-interface Content
-
-data class TextContent(val text: String) : Content
-
-data class MediaContent(
-    val type: MediaType,
-    val src: String
-) : Content
-
 data class SocialMediaContent(
     val type: SocialMediaEmbeddingType,
     val src: String
-) : Content
-
-enum class MediaType {
-    IMAGE,
-    AUDIO,
-    VIDEO
+) : Content {
+    override val contentType = ContentType.SOCIAL_MEDIA
 }
 
 enum class SocialMediaEmbeddingType {
@@ -45,9 +27,3 @@ enum class SocialMediaEmbeddingType {
      * ....
      */
 }
-
-data class WebPageSource(
-    val url: String,
-    val title: String,
-    val html: String
-)
