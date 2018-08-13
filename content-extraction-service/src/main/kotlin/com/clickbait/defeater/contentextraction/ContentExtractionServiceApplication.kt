@@ -3,7 +3,8 @@ package com.clickbait.defeater.contentextraction
 import com.clickbait.defeater.contentextraction.service.extractor.DefaultExtractorChain
 import com.clickbait.defeater.contentextraction.service.extractor.Extractor
 import com.clickbait.defeater.contentextraction.service.extractor.ExtractorChain
-import com.clickbait.defeater.contentextraction.service.extractor.extractors.BoilerPipeExtractor
+import com.clickbait.defeater.contentextraction.service.extractor.extractors.BoilerPipeImageExtractor
+import com.clickbait.defeater.contentextraction.service.extractor.extractors.BoilerPipeTextExtractor
 import com.clickbait.defeater.contentextraction.service.extractor.extractors.HtmlExtractor
 import com.clickbait.defeater.contentextraction.service.extractor.extractors.JsoupVideoExtractor
 import org.springframework.beans.factory.annotation.Value
@@ -51,7 +52,8 @@ class ContentExtractionServiceApplication {
     fun extractorOrder(): List<Extractor> {
         return listOf(
             HtmlExtractor(),
-            BoilerPipeExtractor(),
+            BoilerPipeTextExtractor(),
+            BoilerPipeImageExtractor(),
             JsoupVideoExtractor()
         )
     }

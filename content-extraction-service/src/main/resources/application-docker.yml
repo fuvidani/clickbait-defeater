@@ -1,4 +1,4 @@
 spring:
   redis:
-    host: redis
-    port: 6379
+    host: content-redis
+    port: 6380

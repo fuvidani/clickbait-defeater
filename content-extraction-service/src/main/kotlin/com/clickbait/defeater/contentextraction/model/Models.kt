@@ -51,10 +51,3 @@ data class WebPageSource(
     val title: String,
     val html: String
 )
-
-/*
-data class OldContent(val url: String,
-                      val textContents: List<TextContent> = emptyList(),
-                      val mediaContents: List<MediaContent> = emptyList(),
-                      val socialMediaContents: List<SocialMediaContent> = emptyList())
- */
