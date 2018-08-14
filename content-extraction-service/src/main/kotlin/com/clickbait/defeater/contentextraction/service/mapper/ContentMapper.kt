@@ -1,9 +1,9 @@
 package com.clickbait.defeater.contentextraction.service.mapper
 
-import com.clickbait.defeater.contentextraction.model.Content
-import com.clickbait.defeater.contentextraction.model.PostInstance
-import com.clickbait.defeater.contentextraction.model.MetaDataType
+import com.clickbait.defeater.contentextraction.model.ContentWrapper
 import com.clickbait.defeater.contentextraction.model.MetaDataContent
+import com.clickbait.defeater.contentextraction.model.MetaDataType
+import com.clickbait.defeater.contentextraction.model.PostInstance
 import com.clickbait.defeater.contentextraction.model.TextContent
 
 /**
@@ -18,14 +18,14 @@ import com.clickbait.defeater.contentextraction.model.TextContent
 class ContentMapper {
 
     companion object {
-        fun toCompletePostInstance(incompleteInstance: PostInstance, contents: List<Content>): PostInstance {
+        fun toCompletePostInstance(incompleteInstance: PostInstance, contents: ContentWrapper): PostInstance {
             var timeStamp = ""
             var targetTitle = ""
             var targetDescription = ""
             var targetKeyWords = ""
             var language: String? = null
             val targetParagraphs: MutableList<String> = mutableListOf()
-            contents
+            contents.contents
                 .stream()
                 .forEach {
                     if (it is TextContent) {

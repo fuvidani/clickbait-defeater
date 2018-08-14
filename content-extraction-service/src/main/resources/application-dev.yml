@@ -2,3 +2,10 @@ spring:
   redis:
     host: localhost
     port: 6380
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      password: contentExtractionServicePassword
+      database: contentExtractionServiceDatabase
+      username: contentExtractionService

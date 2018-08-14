@@ -1,7 +1,7 @@
 package com.clickbait.defeater.contentextraction
 
 /* ktlint-disable no-wildcard-imports */
-import com.clickbait.defeater.contentextraction.model.Contents
+import com.clickbait.defeater.contentextraction.model.ContentWrapper
 import com.clickbait.defeater.contentextraction.service.extractor.DefaultExtractorChain
 import com.clickbait.defeater.contentextraction.service.extractor.Extractor
 import com.clickbait.defeater.contentextraction.service.extractor.ExtractorChain
@@ -56,16 +56,16 @@ class ContentExtractionServiceApplication {
     }
 
     @Bean
-    fun reactiveJsonContentRedisTemplate(factory: ReactiveRedisConnectionFactory): ReactiveRedisTemplate<String, Contents> {
-        val serializer = Jackson2JsonRedisSerializer(Contents::class.java)
+    fun reactiveJsonContentRedisTemplate(factory: ReactiveRedisConnectionFactory): ReactiveRedisTemplate<String, ContentWrapper> {
+        val serializer = Jackson2JsonRedisSerializer(ContentWrapper::class.java)
         serializer.setObjectMapper(ObjectMapper().registerModule(KotlinModule()))
-        val builder = RedisSerializationContext.newSerializationContext<String, Contents>(StringRedisSerializer())
+        val builder = RedisSerializationContext.newSerializationContext<String, ContentWrapper>(StringRedisSerializer())
         val serializationContext = builder.value(serializer).build()
-        return ReactiveRedisTemplate<String, Contents>(factory, serializationContext)
+        return ReactiveRedisTemplate<String, ContentWrapper>(factory, serializationContext)
     }
 
     @Bean
-    fun reactiveContentsRedisValueOperations(redisTemplate: ReactiveRedisTemplate<String, Contents>): ReactiveValueOperations<String, Contents> {
+    fun reactiveContentsRedisValueOperations(redisTemplate: ReactiveRedisTemplate<String, ContentWrapper>): ReactiveValueOperations<String, ContentWrapper> {
         return redisTemplate.opsForValue()
     }
 

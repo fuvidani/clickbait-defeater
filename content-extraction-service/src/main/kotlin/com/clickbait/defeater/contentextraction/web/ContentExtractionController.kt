@@ -1,13 +1,15 @@
 package com.clickbait.defeater.contentextraction.web
 
 import com.clickbait.defeater.contentextraction.model.Content
+import com.clickbait.defeater.contentextraction.model.ContentWrapper
 import com.clickbait.defeater.contentextraction.model.PostInstance
 import com.clickbait.defeater.contentextraction.model.WebPage
 import com.clickbait.defeater.contentextraction.service.ContentExtractionService
+import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -24,8 +26,15 @@ import reactor.core.publisher.Mono
 @RequestMapping("/content")
 class ContentExtractionController(private val contentExtractionService: ContentExtractionService) {
 
-    @PostMapping("/extract")
-    fun extractRelevantContent(@RequestBody webPage: WebPage): Flux<Content> {
+    @PostMapping("/extract",
+        produces = [MediaType.TEXT_EVENT_STREAM_VALUE, MediaType.APPLICATION_STREAM_JSON_VALUE])
+    fun extractRelevantContentAsStream(@RequestBody webPage: WebPage): Flux<Content> {
+        return contentExtractionService.extractContent(webPage)
+            .flatMapMany { Flux.fromIterable(it.contents) }
+    }
+
+    @PostMapping("/extract", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun extractRelevantContent(@RequestBody webPage: WebPage): Mono<ContentWrapper> {
         return contentExtractionService.extractContent(webPage)
     }
 

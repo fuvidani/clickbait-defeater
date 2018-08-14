@@ -1,9 +1,8 @@
 package com.clickbait.defeater.contentextraction.service
 
-import com.clickbait.defeater.contentextraction.model.Content
+import com.clickbait.defeater.contentextraction.model.ContentWrapper
 import com.clickbait.defeater.contentextraction.model.PostInstance
 import com.clickbait.defeater.contentextraction.model.WebPage
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 /**
@@ -17,7 +16,7 @@ import reactor.core.publisher.Mono
  */
 interface ContentExtractionService {
 
-    fun extractContent(webPage: WebPage): Flux<Content>
+    fun extractContent(webPage: WebPage): Mono<ContentWrapper>
 
     fun getCompletePostInstanceOf(instance: PostInstance): Mono<PostInstance>
 }

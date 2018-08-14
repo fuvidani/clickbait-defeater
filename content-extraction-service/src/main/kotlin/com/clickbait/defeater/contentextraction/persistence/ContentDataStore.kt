@@ -1,4 +1,4 @@
-package com.clickbait.defeater.contentextraction.persistence.cache
+package com.clickbait.defeater.contentextraction.persistence
 
 import com.clickbait.defeater.contentextraction.model.ContentWrapper
 import reactor.core.publisher.Mono
@@ -12,9 +12,9 @@ import reactor.core.publisher.Mono
  * @version 1.0.0
  * @since 1.0.0
  */
-interface ContentCache {
+interface ContentDataStore {
 
-    fun tryAndGet(url: String): Mono<ContentWrapper>
+    fun findById(url: String): Mono<ContentWrapper>
 
-    fun put(contentWrapper: ContentWrapper): Mono<Boolean>
+    fun save(contentWrapper: ContentWrapper): Mono<ContentWrapper>
 }

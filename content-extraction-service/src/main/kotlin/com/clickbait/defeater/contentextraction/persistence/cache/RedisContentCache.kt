@@ -1,11 +1,9 @@
 package com.clickbait.defeater.contentextraction.persistence.cache
 
-import com.clickbait.defeater.contentextraction.model.Content
-import com.clickbait.defeater.contentextraction.model.Contents
-import com.clickbait.defeater.contentextraction.model.WebPage
+import com.clickbait.defeater.contentextraction.model.ContentWrapper
 import org.springframework.data.redis.core.ReactiveValueOperations
 import org.springframework.stereotype.Component
-import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 /**
  * <h4>About this class</h4>
@@ -17,18 +15,15 @@ import reactor.core.publisher.Flux
  * @since 1.0.0
  */
 @Component
-class RedisContentCache(private val valueOperations: ReactiveValueOperations<String, Contents>) : ContentCache {
+class RedisContentCache(private val valueOperations: ReactiveValueOperations<String, ContentWrapper>) : ContentCache {
 
-    override fun tryAndGet(webPage: WebPage): Flux<Content> {
+    override fun tryAndGet(url: String): Mono<ContentWrapper> {
         return valueOperations
-            .get(webPage.url)
-            .map { it.contents }
-            .flatMapMany { Flux.fromIterable(it) }
+            .get(url)
     }
 
-    override fun put(webPage: WebPage, contents: List<Content>): Flux<Content> {
+    override fun put(contentWrapper: ContentWrapper): Mono<Boolean> {
         return valueOperations
-            .set(webPage.url, Contents(contents))
-            .flatMapMany { Flux.fromIterable(contents) }
+            .set(contentWrapper.url, contentWrapper)
     }
 }

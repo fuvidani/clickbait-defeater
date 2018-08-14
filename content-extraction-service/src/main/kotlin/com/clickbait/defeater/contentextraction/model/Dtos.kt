@@ -31,5 +31,3 @@ data class WebPageSource(
     val title: String,
     val html: String = ""
 )
-
-data class Contents(val contents: List<Content>)
