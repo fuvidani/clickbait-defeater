@@ -1,7 +1,7 @@
 spring:
   redis:
     host: content-redis
-    port: 6380
+    port: 6379
   data:
     mongodb:
       host: mongo

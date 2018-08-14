@@ -16,7 +16,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory
-import org.springframework.data.redis.connection.RedisSentinelConfiguration
+import org.springframework.data.redis.connection.RedisPassword
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
@@ -50,11 +51,13 @@ class ClickBaitServiceReadApplication {
     @Bean
     @Primary
     fun redisConnectionFactory(
-        @Value("\${spring.redis.sentinel.master}") master: String,
-        @Value("\${spring.redis.sentinel.nodes}") nodes: Set<String>,
+        @Value("\${spring.redis.host}") host: String,
+        @Value("\${spring.redis.port}") port: Int,
         @Value("\${spring.redis.password}") password: String
     ): ReactiveRedisConnectionFactory {
-        return LettuceConnectionFactory(RedisSentinelConfiguration(master, nodes))
+        val configuration = RedisStandaloneConfiguration(host, port)
+        configuration.password = RedisPassword.of(password)
+        return LettuceConnectionFactory(configuration)
     }
 
     @Bean

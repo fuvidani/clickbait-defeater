@@ -17,7 +17,7 @@ spring:
             name: fallback
             fallbackUri: forward:/clickBaitReadFallback
       - id: clickbait_update_score_route
-        uri: http://clickbait-update-service:8081
+        uri: http://clickbait-update-service:8080
         predicates:
         - Path=/clickbait/score
         - Method=PUT
@@ -27,7 +27,7 @@ spring:
             name: fallback
             fallbackUri: forward:/clickBaitUpdateFallback
       - id: content_extraction_route
-        uri: http://content-extraction-service:8082
+        uri: http://content-extraction-service:8080
         predicates:
         - Path=/content/**
         filters:
