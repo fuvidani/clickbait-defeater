@@ -42,6 +42,11 @@ class GatewayApplication : WebFluxConfigurer {
         return Mono.just("Fallback for ClickBait-Update-Service")
     }
 
+    @RequestMapping("/contentExtractionFallback", produces = [MediaType.TEXT_PLAIN_VALUE])
+    fun contentExtractionServiceFallback(): Mono<String> {
+        return Mono.just("Fallback for Content-Extraction-Service")
+    }
+
     /**
      * Add resource handlers for serving static resources.
      * @see ResourceHandlerRegistry

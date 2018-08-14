@@ -1,7 +1,10 @@
 FROM openjdk:8-jdk-alpine
 
 ARG VERSION
+RUN apk add --no-cache bash
 ADD ./build/libs/gateway-${VERSION}.jar app.jar
-CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar"]
+ADD entrypoint.sh /entrypoint.sh
 
-EXPOSE 4000
+EXPOSE 8080
+
+ENTRYPOINT ["sh", "/entrypoint.sh"]

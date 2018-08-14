@@ -1,5 +1,4 @@
 server:
-  port: 4000
   servlet:
     context-path: ""
 
@@ -27,3 +26,12 @@ spring:
           args:
             name: fallback
             fallbackUri: forward:/clickBaitUpdateFallback
+      - id: content_extraction_route
+        uri: http://content-extraction-service:8082
+        predicates:
+        - Path=/content/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/contentExtractionFallback
