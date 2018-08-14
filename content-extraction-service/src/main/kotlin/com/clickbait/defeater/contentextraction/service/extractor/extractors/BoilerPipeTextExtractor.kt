@@ -24,7 +24,7 @@ class BoilerPipeTextExtractor : Extractor {
     override fun extract(source: WebPageSource, chain: ExtractorChain): Flux<Content> {
         val textBlocks: List<Content> = articleExtractor.getText(source.html)
             .split("\n")
-            .filter { it.trim().isNotEmpty() }
+            .filter { it.isNotBlank() }
             .filter { it.split(" ").size > 5 }
             .map { TextContent(it) }
         return Flux.concat(Flux.fromIterable(textBlocks), chain.extract(source))

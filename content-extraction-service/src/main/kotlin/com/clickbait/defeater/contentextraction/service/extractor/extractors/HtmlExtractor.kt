@@ -19,8 +19,14 @@ import reactor.core.publisher.Flux
 class HtmlExtractor : Extractor {
 
     override fun extract(source: WebPageSource, chain: ExtractorChain): Flux<Content> {
-        @Suppress("DEPRECATION")
-        val html = Jsoup.connect(source.url).validateTLSCertificates(false).get().html()
+        @Suppress("DEPRECATION") // not validating TLS certificates may be problematic on Android, ignoring here
+        val html = Jsoup.connect(source.url)
+            .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:61.0) Gecko/20100101 Firefox/61.0")
+            .referrer("http://www.google.com")
+            .followRedirects(true)
+            .validateTLSCertificates(false)
+            .get()
+            .html()
         return chain.extract(WebPageSource(source.url, source.title, html))
     }
 }
