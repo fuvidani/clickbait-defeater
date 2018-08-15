@@ -23,7 +23,7 @@ class VideoExtractorTest : AbstractExtractorTest(JsoupVideoExtractor()) {
         val publisher = extractor.extract(source, chain)
         StepVerifier.create(publisher)
             .expectSubscription()
-            .expectNext(MediaContent(MediaType.VIDEO,"http://some-stream.com"))
+            .expectNext(MediaContent(MediaType.VIDEO, "http://some-stream.com"))
             .verifyComplete()
     }
 }

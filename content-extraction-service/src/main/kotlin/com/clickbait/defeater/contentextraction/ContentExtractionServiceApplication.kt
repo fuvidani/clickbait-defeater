@@ -81,6 +81,6 @@ class ContentExtractionServiceApplication {
 
     @Bean
     fun extractorChain(extractorOrder: List<Extractor>): ExtractorChain {
-        return DefaultExtractorChain(extractorOrder, 0)
+        return DefaultExtractorChain(extractorOrder)
     }
 }
