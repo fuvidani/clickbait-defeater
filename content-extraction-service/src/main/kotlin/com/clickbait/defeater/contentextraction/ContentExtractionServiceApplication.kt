@@ -4,6 +4,7 @@ package com.clickbait.defeater.contentextraction
 import com.clickbait.defeater.contentextraction.model.ContentWrapper
 import com.clickbait.defeater.contentextraction.service.html.extractor.DefaultExtractorChain
 import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorBean
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.*
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.metadata.JsoupMetaDataExtractor
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory
@@ -80,7 +82,12 @@ class ContentExtractionServiceApplication {
     }
 
     @Bean
-    fun extractorChain(extractorOrder: List<Extractor>): ExtractorChain {
-        return DefaultExtractorChain(extractorOrder)
+    fun extractors(context: ApplicationContext): ExtractorChain {
+        val beans = context.getBeansWithAnnotation(ExtractorBean::class.java)
+        val extractors = beans.values
+            .filter { it is Extractor }
+            .map { it as Extractor }
+            .sortedBy { it.javaClass.getAnnotation(ExtractorBean::class.java).order }
+        return DefaultExtractorChain(extractors)
     }
 }

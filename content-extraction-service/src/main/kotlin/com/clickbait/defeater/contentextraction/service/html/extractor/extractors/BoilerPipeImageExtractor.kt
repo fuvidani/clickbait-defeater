@@ -5,12 +5,14 @@ import com.clickbait.defeater.contentextraction.model.MediaContent
 import com.clickbait.defeater.contentextraction.model.MediaType
 import com.clickbait.defeater.contentextraction.model.WebPageSource
 import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorBean
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
 import com.kohlschutter.boilerpipe.BoilerpipeExtractor
 import com.kohlschutter.boilerpipe.extractors.CommonExtractors
 import com.kohlschutter.boilerpipe.sax.BoilerpipeSAXInput
 import com.kohlschutter.boilerpipe.sax.HTMLDocument
 import com.kohlschutter.boilerpipe.sax.ImageExtractor
+import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import java.util.logging.Logger
 
@@ -23,6 +25,8 @@ import java.util.logging.Logger
  * @version 1.0.0
  * @since 1.0.0
  */
+@ExtractorBean(order = 2)
+@Component
 class BoilerPipeImageExtractor : Extractor {
 
     private val log: Logger = Logger.getLogger(this.javaClass.name)

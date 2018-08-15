@@ -5,8 +5,10 @@ import com.clickbait.defeater.contentextraction.model.MediaContent
 import com.clickbait.defeater.contentextraction.model.MediaType
 import com.clickbait.defeater.contentextraction.model.WebPageSource
 import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorBean
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
 import org.jsoup.Jsoup
+import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 /**
@@ -18,6 +20,8 @@ import reactor.core.publisher.Flux
  * @version 1.0.0
  * @since 1.0.0
  */
+@ExtractorBean(order = 4)
+@Component
 class JsoupVideoExtractor : Extractor {
 
     override fun extract(source: WebPageSource, chain: ExtractorChain): Flux<Content> {
