@@ -29,3 +29,12 @@ spring:
           args:
             name: fallback
             fallbackUri: forward:/clickBaitUpdateFallback
+      - id: content_extraction_route
+        uri: http://${host}:8082
+        predicates:
+        - Path=/content/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/contentExtractionFallback

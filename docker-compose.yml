@@ -1,37 +1,29 @@
-version: '3'
+version: '2.4'
 
 services:
-  redis_master:
+  clickbait_redis:
     image: redis:4.0.10-alpine
-    command: redis-server --requirepass a2vjPx2CJ4HcE3f323oxmG4anv --masterauth a2vjPx2CJ4HcE3f323oxmG4anv
+    container_name: clickbait-redis
+    command: redis-server --requirepass a2vjPx2CJ4HcE3f323oxmG4anv
     ports:
     - 6379:6379
-    networks:
-    - clickbait
 
-  redis_slave:
+  content_redis:
     image: redis:4.0.10-alpine
-    command: redis-server --requirepass a2vjPx2CJ4HcE3f323oxmG4anv --slaveof redis_master 6379 --masterauth a2vjPx2CJ4HcE3f323oxmG4anv
-    depends_on:
-    - redis_master
-    networks:
-    - clickbait
-
-  sentinel:
-    build: ./cache
-    image: redis-sentinel
-    container_name: sentinel
-    environment:
-    - MASTER_NAME=ClickbaitRedisMaster
-    - QUORUM=1
-    - AUTH_PASS=a2vjPx2CJ4HcE3f323oxmG4anv
-    - MASTER=redis_master
+    container_name: content-redis
+    command: redis-server --requirepass a2vjPx2CJ4HcE3f323oxmG4anv
     ports:
-    - 26379:26379
-    depends_on:
-    - redis_master
-    networks:
-    - clickbait
+    - 6380:6379
+    expose:
+    - 6379
+
+  mongo_db:
+    build:
+      context: ./database
+    image: clickbait-mongo
+    container_name: mongo
+    ports:
+    - 27017:27017
 
   gateway:
     build:
@@ -41,11 +33,11 @@ services:
     image: clickbait-gateway
     container_name: clickbait-gateway
     ports:
-    - 4000:4000
+    - 4000:8080
     environment:
     - SPRING_PROFILES_ACTIVE=docker
-    networks:
-    - clickbait
+    - JAVA_OPTS=-Xmx300m
+    mem_limit: 367001600
 
   clickbait_read_service:
     build:
@@ -58,9 +50,19 @@ services:
     - 8080:8080
     environment:
     - SPRING_PROFILES_ACTIVE=docker
-    networks:
-    - clickbait
+    - JAVA_OPTS=-Xmx300m
+    mem_limit: 367001600
 
-networks:
-  clickbait:
-    driver: bridge
+  content_extraction_service:
+    build:
+      context: ./content-extraction-service
+      args:
+        VERSION: 0.0.1-SNAPSHOT
+    image: content-extraction-service
+    container_name: content-extraction-service
+    ports:
+    - 8082:8080
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    - JAVA_OPTS=-Xmx300m
+    mem_limit: 367001600
