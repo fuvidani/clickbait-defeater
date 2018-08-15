@@ -56,6 +56,8 @@ class ExtractorChainTest {
             .expectNext(MetaDataContent(MetaDataType.IMAGE, "https://www.pexels.com/photo/laptop-calendar-and-books-908298/"))
             .expectNext(MetaDataContent(MetaDataType.VIDEO, "https://some-video.com/"))
             .expectNext(MediaContent(MediaType.VIDEO, "http://some-stream.com"))
+            .expectNext(MediaContent(MediaType.VIDEO, "http://some-stream.com/2"))
+            .expectNext(MediaContent(MediaType.VIDEO, "http://some-stream.com/3"))
             .verifyComplete()
     }
 

@@ -24,6 +24,8 @@ class VideoExtractorTest : AbstractExtractorTest(JsoupVideoExtractor()) {
         StepVerifier.create(publisher)
             .expectSubscription()
             .expectNext(MediaContent(MediaType.VIDEO, "http://some-stream.com"))
+            .expectNext(MediaContent(MediaType.VIDEO, "http://some-stream.com/2"))
+            .expectNext(MediaContent(MediaType.VIDEO, "http://some-stream.com/3"))
             .verifyComplete()
     }
 }

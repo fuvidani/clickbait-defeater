@@ -15,7 +15,7 @@ import com.clickbait.defeater.contentextraction.model.TextContent
  * @version 1.0.0
  * @since 1.0.0
  */
-class ContentMapper {
+class ContentMapper private constructor() {
 
     companion object {
         fun toCompletePostInstance(incompleteInstance: PostInstance, contents: ContentWrapper): PostInstance {
