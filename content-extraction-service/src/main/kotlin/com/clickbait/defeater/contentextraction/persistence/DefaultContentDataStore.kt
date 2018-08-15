@@ -23,7 +23,7 @@ class DefaultContentDataStore(
 
     override fun findById(url: String): Mono<ContentWrapper> {
         return cache.tryAndGet(url)
-            .switchIfEmpty(repository.findById(url))
+            .switchIfEmpty(Mono.defer { repository.findById(url) })
     }
 
     override fun save(contentWrapper: ContentWrapper): Mono<ContentWrapper> {
