@@ -27,6 +27,7 @@ abstract class AbstractExtractorTest(protected val extractor: Extractor) {
     @MockBean
     protected lateinit var chain: ExtractorChain
     protected val testHtml: String = loadHtmlFromResources("test_html.html")
+    protected val realHtml: String = loadHtmlFromResources("real_article.html")
 
     @Before
     open fun setUp() {
