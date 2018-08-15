@@ -1,10 +1,10 @@
-package com.clickbait.defeater.contentextraction.service.extractor.extractors
+package com.clickbait.defeater.contentextraction.service.html.extractor.extractors
 
 import com.clickbait.defeater.contentextraction.model.Content
 import com.clickbait.defeater.contentextraction.model.TextContent
 import com.clickbait.defeater.contentextraction.model.WebPageSource
-import com.clickbait.defeater.contentextraction.service.extractor.Extractor
-import com.clickbait.defeater.contentextraction.service.extractor.ExtractorChain
+import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
 import com.kohlschutter.boilerpipe.extractors.CommonExtractors
 import reactor.core.publisher.Flux
 

@@ -1,11 +1,11 @@
-package com.clickbait.defeater.contentextraction.service.extractor.extractors
+package com.clickbait.defeater.contentextraction.service.html.extractor.extractors
 
 import com.clickbait.defeater.contentextraction.model.Content
 import com.clickbait.defeater.contentextraction.model.MediaContent
 import com.clickbait.defeater.contentextraction.model.MediaType
 import com.clickbait.defeater.contentextraction.model.WebPageSource
-import com.clickbait.defeater.contentextraction.service.extractor.Extractor
-import com.clickbait.defeater.contentextraction.service.extractor.ExtractorChain
+import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
 import org.jsoup.Jsoup
 import reactor.core.publisher.Flux
 

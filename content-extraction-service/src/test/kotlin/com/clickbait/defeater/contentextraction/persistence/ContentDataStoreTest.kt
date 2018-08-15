@@ -93,5 +93,4 @@ class ContentDataStoreTest {
 
     // Kotlin<->Java Mockito type inference workaround
     private fun <T> any(type: Class<T>): T = Mockito.any<T>(type)
-
 }

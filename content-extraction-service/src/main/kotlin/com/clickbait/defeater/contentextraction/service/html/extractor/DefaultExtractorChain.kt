@@ -1,4 +1,4 @@
-package com.clickbait.defeater.contentextraction.service.extractor
+package com.clickbait.defeater.contentextraction.service.html.extractor
 
 import com.clickbait.defeater.contentextraction.model.Content
 import com.clickbait.defeater.contentextraction.model.WebPageSource

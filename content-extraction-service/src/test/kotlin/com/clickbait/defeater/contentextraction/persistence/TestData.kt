@@ -1,5 +1,6 @@
 package com.clickbait.defeater.contentextraction.persistence
 
+/* ktlint-disable no-wildcard-imports */
 import com.clickbait.defeater.contentextraction.model.*
 
 /**

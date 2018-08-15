@@ -1,4 +1,4 @@
-package com.clickbait.defeater.contentextraction.service.extractor.extractors.metadata
+package com.clickbait.defeater.contentextraction.service.html.extractor.extractors.metadata
 
 import com.clickbait.defeater.contentextraction.model.Content
 import com.clickbait.defeater.contentextraction.model.MetaDataContent

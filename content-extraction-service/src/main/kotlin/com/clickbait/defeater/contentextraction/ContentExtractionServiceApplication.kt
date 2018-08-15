@@ -2,11 +2,11 @@ package com.clickbait.defeater.contentextraction
 
 /* ktlint-disable no-wildcard-imports */
 import com.clickbait.defeater.contentextraction.model.ContentWrapper
-import com.clickbait.defeater.contentextraction.service.extractor.DefaultExtractorChain
-import com.clickbait.defeater.contentextraction.service.extractor.Extractor
-import com.clickbait.defeater.contentextraction.service.extractor.ExtractorChain
-import com.clickbait.defeater.contentextraction.service.extractor.extractors.*
-import com.clickbait.defeater.contentextraction.service.extractor.extractors.metadata.JsoupMetaDataExtractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.DefaultExtractorChain
+import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.*
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.metadata.JsoupMetaDataExtractor
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.beans.factory.annotation.Value
@@ -72,7 +72,6 @@ class ContentExtractionServiceApplication {
     @Bean
     fun extractorOrder(): List<Extractor> {
         return listOf(
-            HtmlExtractor(),
             BoilerPipeTextExtractor(),
             BoilerPipeImageExtractor(),
             JsoupMetaDataExtractor(),

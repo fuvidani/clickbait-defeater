@@ -1,4 +1,4 @@
-package com.clickbait.defeater.contentextraction.service.extractor
+package com.clickbait.defeater.contentextraction.service.html.extractor
 
 import com.clickbait.defeater.contentextraction.model.Content
 import com.clickbait.defeater.contentextraction.model.WebPageSource
@@ -13,7 +13,7 @@ import reactor.core.publisher.Flux
  * @version 1.0.0
  * @since 1.0.0
  */
-interface Extractor {
+interface ExtractorChain {
 
-    fun extract(source: WebPageSource, chain: ExtractorChain): Flux<Content>
+    fun extract(source: WebPageSource): Flux<Content>
 }

@@ -3,9 +3,8 @@ package com.clickbait.defeater.contentextraction.service
 import com.clickbait.defeater.contentextraction.model.ContentWrapper
 import com.clickbait.defeater.contentextraction.model.PostInstance
 import com.clickbait.defeater.contentextraction.model.WebPage
-import com.clickbait.defeater.contentextraction.model.WebPageSource
 import com.clickbait.defeater.contentextraction.persistence.ContentDataStore
-import com.clickbait.defeater.contentextraction.service.extractor.ExtractorChain
+import com.clickbait.defeater.contentextraction.service.handler.ContentExtractionHandler
 import com.clickbait.defeater.contentextraction.service.mapper.ContentMapper
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
@@ -21,7 +20,7 @@ import reactor.core.publisher.Mono
  */
 @Component
 class DefaultContentExtractionService(
-    private val chain: ExtractorChain,
+    private val handler: ContentExtractionHandler,
     private val store: ContentDataStore
 ) : ContentExtractionService {
 
@@ -29,7 +28,7 @@ class DefaultContentExtractionService(
         return store.findById(webPage.url)
             .switchIfEmpty(
                 Mono.defer {
-                    chain.extract(WebPageSource(webPage.url, webPage.title))
+                    handler.extract(webPage)
                         .collectList()
                         .flatMap { store.save(ContentWrapper(webPage.url, it)) }
                 }
