@@ -179,6 +179,7 @@ def retrain():
                     truth_lines[truth_id]['truthJudgments'] = each_line['truthJudgments'] + truth_lines[truth_id][
                         'truthJudgments']
                     truth_lines[truth_id]['truthMean'] = np.mean(truth_lines[truth_id]['truthJudgments'])
+                    truth_lines[truth_id]['truthMedian'] = np.median(truth_lines[truth_id]['truthJudgments'])
                     truth_lines[truth_id]['truthMode'] = max(set(truth_lines[truth_id]['truthJudgments']),
                                                              key=truth_lines[truth_id]['truthJudgments'].count)
 
