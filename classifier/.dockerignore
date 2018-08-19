@@ -1,5 +1,1 @@
 venv/*
-data/clickbait17-train-170331/*
-data/clickbait17-unlabeled-170429/*
-data/clickbait17-validation-170630/*
-data/glove.6B.100d.txt
