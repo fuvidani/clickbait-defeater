@@ -10,3 +10,4 @@ scipy
 hickle
 flask
 flask_cors
+pyopenssl
