@@ -1,13 +1,6 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 'use strict';
 
 chrome.runtime.onInstalled.addListener(function() {
-  chrome.storage.sync.set({color: '#3aa757'}, function() {
-    console.log('The color is green.');
-  });
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
     chrome.declarativeContent.onPageChanged.addRules([{
       conditions: [new chrome.declarativeContent.PageStateMatcher({
@@ -17,3 +10,24 @@ chrome.runtime.onInstalled.addListener(function() {
     }]);
   });
 });
+
+chrome.runtime.onMessage.addListener(
+    (request, sender, senderResponse) => {
+        console.log("predict_postText called");
+        switch (request.message) {
+            case 'predict_postText': {
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (XMLHttpRequest.DONE && xhr.status===200) {
+                        senderResponse(JSON.parse(xhr.response));
+                    }
+                };
+                xhr.open("POST", "http://37.252.185.77:5000/predict", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(request.data);
+                return true;
+            }
+            default:
+        }
+    }
+);
