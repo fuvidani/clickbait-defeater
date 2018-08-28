@@ -10,6 +10,7 @@ import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorBean
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.mercury.web.parser.client.MercuryWebParserApiClient
+import mu.KLogging
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.springframework.beans.factory.annotation.Value
@@ -33,22 +34,24 @@ class MercuryContentExtractor(
     private val apiKey: String
 ) : Extractor {
 
-    private val blackListCssQuery = "[class*=social], figure, [class*=image], [class*=img]"
+    private val blackListCssQuery = "[class*=social], figure, [class*=image], [class*=img], iframe[src~=.{10,}]"
 
     override fun extract(source: WebPageSource, chain: ExtractorChain): Flux<Content> {
         val content = apiClient.getArticleContent(apiKey, source.url)
-            .flatMapMany {
-                mapResponse(it)
+            .flatMapMany { mapResponse(it) }
+            .onErrorResume {
+                logger.warn("MercuryWebParser API returned error for url ${source.url}. Error: $it")
+                Flux.empty()
             }
         return Flux.concat(content, chain.extract(source))
     }
 
     private fun mapResponse(response: MercuryApiResponse): Flux<Content> {
         val contents: MutableList<Content> = mutableListOf()
-        if (response.lead_image_url.isNotBlank()) {
+        if (response.lead_image_url != null && response.lead_image_url.isNotBlank()) {
             contents.add(MediaContent(MediaType.IMAGE, response.lead_image_url))
         }
-        if (response.content.isNotBlank()) {
+        if (response.content != null && response.content.isNotBlank()) {
             val html = response.content
             val document = Jsoup.parse(html)
             removeElementsMatching(blackListCssQuery, document)
@@ -61,4 +64,6 @@ class MercuryContentExtractor(
     private fun removeElementsMatching(cssQuery: String, document: Document) {
         document.select(cssQuery).forEach { it.remove() }
     }
+
+    companion object : KLogging()
 }

@@ -3,6 +3,7 @@ package com.clickbait.defeater.contentextraction.service.html.extractor.extracto
 import com.clickbait.defeater.contentextraction.model.MediaContent
 import com.clickbait.defeater.contentextraction.model.MediaType
 import com.clickbait.defeater.contentextraction.model.WebPageSource
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.JsoupVideoExtractor
 import org.junit.Test
 import reactor.test.StepVerifier
 

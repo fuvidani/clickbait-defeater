@@ -20,12 +20,19 @@ class JsoupHtmlProvider : HtmlProvider {
     override fun get(webPage: WebPage): Mono<String> {
         return Mono.just(
             @Suppress("DEPRECATION") // not validating TLS certificates may be problematic on Android, ignoring here
-            Jsoup.connect(webPage.url)
+            Jsoup.connect(appendProtocolIfNeeded(webPage.url))
                 .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:61.0) Gecko/20100101 Firefox/61.0")
                 .referrer("http://www.google.com")
                 .followRedirects(true)
                 .validateTLSCertificates(false)
                 .get()
                 .html())
+    }
+
+    private fun appendProtocolIfNeeded(url: String): String {
+        if (url.contains("http://") || url.contains("https://")) {
+            return url
+        }
+        return "http://$url"
     }
 }

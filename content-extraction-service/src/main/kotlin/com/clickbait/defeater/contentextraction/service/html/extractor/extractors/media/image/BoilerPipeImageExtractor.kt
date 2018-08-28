@@ -1,4 +1,4 @@
-package com.clickbait.defeater.contentextraction.service.html.extractor.extractors
+package com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.image
 
 import com.clickbait.defeater.contentextraction.model.Content
 import com.clickbait.defeater.contentextraction.model.MediaContent
@@ -12,9 +12,9 @@ import com.kohlschutter.boilerpipe.extractors.CommonExtractors
 import com.kohlschutter.boilerpipe.sax.BoilerpipeSAXInput
 import com.kohlschutter.boilerpipe.sax.HTMLDocument
 import com.kohlschutter.boilerpipe.sax.ImageExtractor
+import mu.KLogging
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
-import java.util.logging.Logger
 
 /**
  * <h4>About this class</h4>
@@ -29,12 +29,11 @@ import java.util.logging.Logger
 @Component
 class BoilerPipeImageExtractor : Extractor {
 
-    private val log: Logger = Logger.getLogger(this.javaClass.name)
     private val imageExtractor = ImageExtractor.INSTANCE
 
     override fun extract(source: WebPageSource, chain: ExtractorChain): Flux<Content> {
         val articleExtractorImages = extractImagesWitExtractor(source, CommonExtractors.ARTICLE_EXTRACTOR)
-        log.info("${javaClass.simpleName} found ${articleExtractorImages.size} images")
+        logger.info("${javaClass.simpleName} found ${articleExtractorImages.size} images")
         return Flux.concat(Flux.fromIterable(articleExtractorImages), chain.extract(source))
     }
 
@@ -45,4 +44,6 @@ class BoilerPipeImageExtractor : Extractor {
             .filter { it.width != null && it.height != null }
             .map { MediaContent(MediaType.IMAGE, it.src) }
     }
+
+    companion object : KLogging()
 }

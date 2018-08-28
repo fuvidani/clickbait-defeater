@@ -8,7 +8,6 @@ import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.*
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.mercury.web.parser.client.MercuryWebParserApiClient
-import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.metadata.JsoupMetaDataExtractor
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
@@ -77,16 +76,6 @@ class ContentExtractionServiceApplication {
     @Bean
     fun reactiveContentsRedisValueOperations(redisTemplate: ReactiveRedisTemplate<String, ContentWrapper>): ReactiveValueOperations<String, ContentWrapper> {
         return redisTemplate.opsForValue()
-    }
-
-    @Bean
-    fun extractorOrder(): List<Extractor> {
-        return listOf(
-            BoilerPipeTextExtractor(),
-            BoilerPipeImageExtractor(),
-            JsoupMetaDataExtractor(),
-            JsoupVideoExtractor()
-        )
     }
 
     @Bean

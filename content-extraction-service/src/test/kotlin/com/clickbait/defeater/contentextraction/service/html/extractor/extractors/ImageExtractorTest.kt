@@ -1,6 +1,7 @@
 package com.clickbait.defeater.contentextraction.service.html.extractor.extractors
 
 import com.clickbait.defeater.contentextraction.model.WebPageSource
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.image.BoilerPipeImageExtractor
 import org.junit.Test
 import reactor.test.StepVerifier
 

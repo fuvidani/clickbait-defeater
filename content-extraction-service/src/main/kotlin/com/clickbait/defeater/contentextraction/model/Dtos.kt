@@ -33,17 +33,17 @@ data class WebPageSource(
 )
 
 data class MercuryApiResponse(
-    val title: String,
-    val content: String,
-    val date_published: String,
-    val lead_image_url: String,
-    val dek: String,
-    val url: String,
-    val domain: String,
-    val excerpt: String,
-    val word_count: Int,
-    val direction: String,
-    val total_pages: Int,
-    val rendered_pages: Int,
+    val title: String?,
+    val content: String?,
+    val date_published: String?,
+    val lead_image_url: String?,
+    val dek: String?,
+    val url: String?,
+    val domain: String?,
+    val excerpt: String?,
+    val word_count: Int?,
+    val direction: String?,
+    val total_pages: Int?,
+    val rendered_pages: Int?,
     val next_page_url: String?
 )

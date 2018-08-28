@@ -2,9 +2,9 @@ package com.clickbait.defeater.contentextraction.service.html.extractor
 
 /* ktlint-disable no-wildcard-imports */
 import com.clickbait.defeater.contentextraction.model.*
-import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.BoilerPipeImageExtractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.image.BoilerPipeImageExtractor
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.BoilerPipeTextExtractor
-import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.JsoupVideoExtractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.JsoupVideoExtractor
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.metadata.JsoupMetaDataExtractor
 import org.jsoup.Jsoup
 import org.junit.Before
