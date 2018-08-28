@@ -1,3 +1,6 @@
 spring:
   profiles:
     active: test
+
+mercury.web.parser.api.key: md2aEwbPiSoeKVmNzAMUOY8rjPPvJAJWf3wNTUsE
+

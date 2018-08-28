@@ -63,7 +63,7 @@ class ContentExtractionControllerTest {
         Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(loadHtmlFromResources("test_html.html")))
         Mockito.`when`(redisOperations.get(webPage.url)).thenReturn(Mono.empty())
         Mockito.`when`(repository.findById(webPage.url)).thenReturn(Mono.empty())
-        Mockito.`when`(repository.save(expectedContentWrapper)).thenReturn(Mono.just(expectedContentWrapper))
+        Mockito.`when`(repository.save(any(ContentWrapper::class.java))).thenReturn(Mono.just(expectedContentWrapper))
 
         val publisher = client.post().uri("/extract")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -87,7 +87,7 @@ class ContentExtractionControllerTest {
         Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(loadHtmlFromResources("test_html.html")))
         Mockito.`when`(redisOperations.get(webPage.url)).thenReturn(Mono.empty())
         Mockito.`when`(repository.findById(webPage.url)).thenReturn(Mono.empty())
-        Mockito.`when`(repository.save(expectedContentWrapper)).thenReturn(Mono.just(expectedContentWrapper))
+        Mockito.`when`(repository.save(any(ContentWrapper::class.java))).thenReturn(Mono.just(expectedContentWrapper))
 
         val publisher = client.post().uri("/extract")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -136,7 +136,7 @@ class ContentExtractionControllerTest {
         Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(loadHtmlFromResources("test_html.html")))
         Mockito.`when`(redisOperations.get(webPage.url)).thenReturn(Mono.empty())
         Mockito.`when`(repository.findById(webPage.url)).thenReturn(Mono.empty())
-        Mockito.`when`(repository.save(expectedContentWrapper)).thenReturn(Mono.just(expectedContentWrapper))
+        Mockito.`when`(repository.save(any(ContentWrapper::class.java))).thenReturn(Mono.just(expectedContentWrapper))
 
         val publisher = client.post().uri("/completePost")
             .contentType(MediaType.APPLICATION_JSON_UTF8)

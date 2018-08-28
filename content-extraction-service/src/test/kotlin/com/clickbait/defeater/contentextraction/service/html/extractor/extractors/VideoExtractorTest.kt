@@ -3,7 +3,10 @@ package com.clickbait.defeater.contentextraction.service.html.extractor.extracto
 import com.clickbait.defeater.contentextraction.model.MediaContent
 import com.clickbait.defeater.contentextraction.model.MediaType
 import com.clickbait.defeater.contentextraction.model.WebPageSource
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.JsoupBrightCoveVideoExtractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.JsoupNaiveIFrameVideoExtractor
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.JsoupVideoExtractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.JsoupYouTubeVideoExtractor
 import org.junit.Test
 import reactor.test.StepVerifier
 
@@ -16,7 +19,9 @@ import reactor.test.StepVerifier
  * @version 1.0.0
  * @since 1.0.0
  */
-class VideoExtractorTest : AbstractExtractorTest(JsoupVideoExtractor()) {
+class VideoExtractorTest : AbstractExtractorTest(JsoupVideoExtractor(
+    JsoupNaiveIFrameVideoExtractor(), JsoupBrightCoveVideoExtractor(),
+    JsoupYouTubeVideoExtractor())) {
 
     @Test
     fun `Given an html source with an important video with it, THEN extractor returns it`() {
