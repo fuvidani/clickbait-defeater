@@ -48,6 +48,11 @@ chrome.runtime.onMessage.addListener(
                 });
                 return true;
             }
+            case 'get_previous_score': {
+                console.log("get_previous_score called");
+                senderResponse(request.data);
+                return true;
+            }
             default:
         }
     }

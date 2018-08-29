@@ -77,6 +77,10 @@ const callback = function(mutationsList) {
                                 });
                             }
 
+                            chrome.runtime.sendMessage({ message: "get_previous_score", data: {url: extractedUrl} }, function (response) {
+                                console.log("Got previous score for: " + response.url);
+                            });
+
                             document.getElementById(mutation.target.id + "_score_1").onclick = function () {
                                 chrome.runtime.sendMessage({ message: "score_article", data: {url: extractedUrl, score: 0.0} }, function (response) {
                                     console.log("scored article with id: " + response);
