@@ -24,7 +24,8 @@ import reactor.core.publisher.Flux
 class JsoupVideoExtractor(
     private val naiveIFrameVideoExtractor: JsoupNaiveIFrameVideoExtractor,
     private val brightCoveVideoExtractor: JsoupBrightCoveVideoExtractor,
-    private val youTubeVideoExtractor: JsoupYouTubeVideoExtractor
+    private val youTubeVideoExtractor: JsoupYouTubeVideoExtractor,
+    private val cnetVideoExtractor: JsoupCnetVideoExtractor
 ) : Extractor {
 
     override fun extract(source: WebPageSource, chain: ExtractorChain): Flux<Content> {
@@ -33,6 +34,7 @@ class JsoupVideoExtractor(
             naiveIFrameVideoExtractor.extract(document),
             brightCoveVideoExtractor.extract(document),
             youTubeVideoExtractor.extract(document),
+            cnetVideoExtractor.extract(document),
             chain.extract(source))
     }
 
