@@ -24,7 +24,8 @@ class DefaultContentExtractionHandler(
 ) : ContentExtractionHandler {
 
     override fun extract(webPage: WebPage): Flux<Content> {
-        return htmlProvider.get(webPage)
+        return htmlProvider
+            .get(webPage)
             .map { WebPageSource(webPage.url, webPage.title, it) }
             .flatMapMany { extractorChain.extract(it) }
     }

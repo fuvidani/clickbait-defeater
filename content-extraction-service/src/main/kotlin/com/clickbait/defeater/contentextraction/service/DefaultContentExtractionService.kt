@@ -25,7 +25,8 @@ class DefaultContentExtractionService(
 ) : ContentExtractionService {
 
     override fun extractContent(webPage: WebPage): Mono<ContentWrapper> {
-        return store.findById(webPage.url)
+        return store
+            .findById(webPage.url)
             .switchIfEmpty(
                 Mono.defer {
                     handler.extract(webPage)

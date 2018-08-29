@@ -53,24 +53,6 @@ class MercuryContentExtractor(
     }
 
     private fun mapResponse(response: MercuryApiResponse): Flux<Content> {
-        /*val contents: MutableList<Content> = mutableListOf()
-        if (response.lead_image_url != null && response.lead_image_url.isNotBlank()) {
-            contents.add(MediaContent(MediaType.IMAGE, response.lead_image_url))
-        }
-        if (response.content != null && response.content.isNotBlank()) {
-            val html = response.content
-            val document = Jsoup.parse(html)
-            val images = extractArticleImages(document)
-            contents.addAll(images)
-            removeElementsMatching(blackListCssQuery, document)
-            document.outputSettings(htmlOutputSettings)
-            val result = document.body().html()
-                .replace("'","&apos;")
-                .replace("\n","")
-                //.replace("\"","\\\"")
-            contents.add(HtmlContent(result))
-        }
-        return Flux.fromIterable(contents)*/
         return Flux.concat(extractLeadImage(response), extractHtmlContent(response))
     }
 
@@ -85,7 +67,7 @@ class MercuryContentExtractor(
     private fun extractHtmlContent(response: MercuryApiResponse): Flux<Content> {
         return if (response.content != null && response.content.isNotBlank()) {
             val document = Jsoup.parse(response.content)
-            removeElementsMatching(blackListCssQuery, document)
+            document.select(blackListCssQuery).forEach { it.remove() }
             document.outputSettings(htmlOutputSettings)
             val html = document.body().html()
                 .replace("'", "&apos;")
@@ -96,13 +78,7 @@ class MercuryContentExtractor(
         }
     }
 
-    private fun removeElementsMatching(cssQuery: String, document: Document) {
-        document.select(cssQuery).forEach { it.remove() }
-    }
-
     private fun extractArticleImages(document: Document): Flux<Content> {
-        // ^(?:(?!http).)*http(?!.*http).*$
-        // return document.select("img[src~=^[^,]*[^ ,][^,]*\$]")
         return Flux
             .fromIterable(document.select("img[src~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$]"))
             .map { MediaContent(MediaType.IMAGE, it.attr("src")) }
