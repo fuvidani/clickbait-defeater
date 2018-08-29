@@ -4,10 +4,7 @@ package com.clickbait.defeater.contentextraction.service.html.extractor
 import com.clickbait.defeater.contentextraction.model.*
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.image.BoilerPipeImageExtractor
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.BoilerPipeTextExtractor
-import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.JsoupBrightCoveVideoExtractor
-import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.JsoupNaiveIFrameVideoExtractor
-import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.JsoupVideoExtractor
-import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.JsoupYouTubeVideoExtractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.*
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.metadata.JsoupMetaDataExtractor
 import org.jsoup.Jsoup
 import org.junit.Before
@@ -39,7 +36,7 @@ class ExtractorChainTest {
             BoilerPipeImageExtractor(),
             JsoupMetaDataExtractor(),
             JsoupVideoExtractor(JsoupNaiveIFrameVideoExtractor(), JsoupBrightCoveVideoExtractor(),
-                JsoupYouTubeVideoExtractor()
+                JsoupYouTubeVideoExtractor(), JsoupCnetVideoExtractor()
             )
         ))
     }
