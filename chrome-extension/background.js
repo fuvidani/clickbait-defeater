@@ -13,12 +13,12 @@ chrome.runtime.onInstalled.addListener(function() {
 
 chrome.runtime.onMessage.addListener(
     (request, sender, senderResponse) => {
-        console.log("predict_postText called");
         switch (request.message) {
             case 'predict_postText': {
+                console.log("predict_postText called");
                 const xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
-                    if (XMLHttpRequest.DONE && xhr.status===200) {
+                    if (xhr.readyState === 4 && xhr.status===200) {
                         senderResponse(JSON.parse(xhr.response));
                     }
                 };
@@ -27,7 +27,38 @@ chrome.runtime.onMessage.addListener(
                 xhr.send(request.data);
                 return true;
             }
+            case 'score_article': {
+                console.log("score_article called");
+                chrome.storage.sync.get('userid', function(items) {
+                    let userid = items.userid;
+                    if (userid) {
+                        useToken(userid);
+                    } else {
+                        userid = getRandomToken();
+                        chrome.storage.sync.set({userid: userid}, function() {
+                            useToken(userid);
+                        });
+                    }
+                    function useToken(userid) {
+                        // call backend with data and userid
+                        console.log(request.data);
+                        senderResponse(userid);
+                    }
+                });
+                return true;
+            }
             default:
         }
     }
 );
+
+function getRandomToken() {
+    const randomPool = new Uint8Array(32);
+    crypto.getRandomValues(randomPool);
+    let hex = '';
+    for (let i = 0; i < randomPool.length; ++i) {
+        hex += randomPool[i].toString(16);
+    }
+
+    return hex;
+}

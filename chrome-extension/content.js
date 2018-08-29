@@ -1,16 +1,17 @@
 const targetNode = document.getElementById('stream_pagelet');
 const config = { attributes: true, childList: true, subtree: true };
 const post_ids = [];
+const removed_ids = [];
 
 const callback = function(mutationsList) {
     for(let mutation of mutationsList) {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
             if (mutation.target.id !== undefined && mutation.target.id.indexOf("hyperfeed_story_id") === 0) {
-                if (post_ids.indexOf(mutation.target.id) === -1) {
+                if (post_ids.indexOf(mutation.target.id) === -1 && removed_ids.indexOf(mutation.target.id) === -1) {
                     const a_list = mutation.target.getElementsByTagName('a');
 
                     for (let i = 0; i < a_list.length; i++) {
-                        if (a_list[i].href.indexOf("https://l.facebook.com/l.php?u=http") === 0 && a_list[i].hasAttribute("tabindex")) {
+                        if (a_list[i].href.indexOf("https://l.facebook.com/l.php?u=http") === 0 && a_list[i].hasAttribute("tabindex") && a_list[i].closest(".commentable_item") === null) {
                             const widget = createWidget(mutation.target.id);
 
                             post_ids.push(mutation.target.id);
@@ -41,18 +42,45 @@ const callback = function(mutationsList) {
                                 });
                             }
 
+                            document.getElementById(mutation.target.id + "_score_1").onclick = function () {
+                                chrome.runtime.sendMessage({ message: "score_article", data: {url: extractedUrl, score: 0.0} }, function (response) {
+                                    console.log("scored article with id: " + response);
+                                });
+                            };
+
+                            document.getElementById(mutation.target.id + "_score_2").onclick = function () {
+                                chrome.runtime.sendMessage({ message: "score_article", data: {url: extractedUrl, score: 0.33333334} }, function (response) {
+                                    console.log("scored article with id: " + response);
+                                });
+                            };
+
+                            document.getElementById(mutation.target.id + "_score_3").onclick = function () {
+                                chrome.runtime.sendMessage({ message: "score_article", data: {url: extractedUrl, score: 0.6666667} }, function (response) {
+                                    console.log("scored article with id: " + response);
+                                });
+                            };
+
+                            document.getElementById(mutation.target.id + "_score_4").onclick = function () {
+                                chrome.runtime.sendMessage({ message: "score_article", data: {url: extractedUrl, score: 1.0} }, function (response) {
+                                    console.log("scored article with id: " + response);
+                                });
+                            };
+
                             break;
                         }
                     }
                 }
             }
         } else if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
-            if (mutation.removedNodes[0].id !== undefined && mutation.removedNodes[0].id.indexOf("hyperfeed_story_id") === 0) {
-                const clickbaitWidget = document.getElementById(mutation.removedNodes[0].id + "_widget");
-                if (clickbaitWidget) {
-                    clickbaitWidget.remove();
+            for (let node of mutation.removedNodes) {
+                if (node.id !== undefined && node.id.indexOf("hyperfeed_story_id") === 0) {
+                    const clickbaitWidget = document.getElementById(node + "_widget");
+                    if (clickbaitWidget) {
+                        clickbaitWidget.remove();
+                    }
+                    removed_ids.push(node.id);
+                    console.log("clickbait-widget removed with id: " + node.id + "_widget");
                 }
-                console.log("clickbait-widget removed with id: " + mutation.removedNodes[0].id + "_widget");
             }
         }
     }
@@ -83,9 +111,9 @@ const createWidget = function (post_id) {
     const firstOptionDiv = document.createElement('div');
     const label1 = document.createElement('label');
     label1.innerText = "not click baiting";
-    label1.htmlFor = post_id + "score_1";
+    label1.htmlFor = post_id + "_score_1";
     const radio1 = document.createElement('input');
-    radio1.id = post_id + "score_1";
+    radio1.id = post_id + "_score_1";
     radio1.type = "radio";
     radio1.value = "radio1";
     radio1.name = "score";
@@ -95,9 +123,9 @@ const createWidget = function (post_id) {
     const secondOptionDiv = document.createElement('div');
     const label2 = document.createElement('label');
     label2.innerText = "slightly click baiting";
-    label2.htmlFor = post_id + "score_2";
+    label2.htmlFor = post_id + "_score_2";
     const radio2 = document.createElement('input');
-    radio2.id = post_id + "score_2";
+    radio2.id = post_id + "_score_2";
     radio2.type = "radio";
     radio2.value = "radio2";
     radio2.name = "score";
@@ -107,9 +135,9 @@ const createWidget = function (post_id) {
     const thirdOptionDiv = document.createElement('div');
     const label3 = document.createElement('label');
     label3.innerText = "considerably click baiting";
-    label3.htmlFor = post_id + "score_3";
+    label3.htmlFor = post_id + "_score_3";
     const radio3 = document.createElement('input');
-    radio3.id = post_id + "score_3";
+    radio3.id = post_id + "_score_3";
     radio3.type = "radio";
     radio3.value = "radio3";
     radio3.name = "score";
@@ -119,9 +147,9 @@ const createWidget = function (post_id) {
     const fourthOptionDiv = document.createElement('div');
     const label4 = document.createElement('label');
     label4.innerText = "heavily click baiting";
-    label4.htmlFor = post_id + "score_4";
+    label4.htmlFor = post_id + "_score_4";
     const radio4 = document.createElement('input');
-    radio4.id = post_id + "score_4";
+    radio4.id = post_id + "_score_4";
     radio4.type = "radio";
     radio4.value = "radio4";
     radio4.name = "score";
