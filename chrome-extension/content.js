@@ -8,6 +8,36 @@ const callback = function(mutationsList) {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
             if (mutation.target.id !== undefined && mutation.target.id.indexOf("hyperfeed_story_id") === 0) {
                 if (post_ids.indexOf(mutation.target.id) === -1 && removed_ids.indexOf(mutation.target.id) === -1) {
+                    // filter out sponsored posts
+                    let sp, on, so, red = false;
+
+                    const div_list = mutation.target.getElementsByTagName('div');
+                    for (let div of div_list) {
+                        switch (div.innerText) {
+                            case "Sp": {
+                               sp = true;
+                                break;
+                            }
+                            case "on": {
+                                on = true;
+                                break;
+                            }
+                            case "so": {
+                                so = true;
+                                break;
+                            }
+                            case "red": {
+                                red = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (sp && on && so && red){
+                        console.log("Sponsored post");
+                        break;
+                    }
+
                     const a_list = mutation.target.getElementsByTagName('a');
 
                     for (let i = 0; i < a_list.length; i++) {
