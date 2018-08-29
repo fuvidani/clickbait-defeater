@@ -26,15 +26,20 @@ const callback = function(mutationsList) {
                             };
 
                             const p_list = mutation.target.getElementsByTagName("p");
-                            let postText = null;
-                            if (p_list.length > 0 && p_list[0].innerText) {
-                                postText = p_list[0].innerText;
+                            let postTexts = [];
+                            for (let p of p_list) {
+                                if (p.innerText) {
+                                    postTexts.push(p.innerText);
+                                }
                             }
-                            console.log("postText: " + postText);
 
-                            if (postText) {
-                                const postTexts = [];
-                                postTexts.push(postText);
+                            const list = mutation.target.getElementsByClassName("_3n1k");
+                            if (list.length > 0) {
+                                postTexts.push(list[0].firstChild.firstChild.textContent);
+                            }
+                            console.log("postText: " + postTexts);
+
+                            if (postTexts.length > 0) {
                                 chrome.runtime.sendMessage({ message: "predict_postText", data: JSON.stringify({postText: postTexts, id: extractedUrl}) }, function (response) {
                                     if (response.clickbaitScore) {
                                         document.getElementById(mutation.target.id + "_predict").innerText = (response.clickbaitScore * 100).toFixed(2) + "%";

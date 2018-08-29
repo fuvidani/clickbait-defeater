@@ -16,6 +16,7 @@ chrome.runtime.onMessage.addListener(
         switch (request.message) {
             case 'predict_postText': {
                 console.log("predict_postText called");
+                console.log(request.data);
                 const xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4 && xhr.status===200) {
