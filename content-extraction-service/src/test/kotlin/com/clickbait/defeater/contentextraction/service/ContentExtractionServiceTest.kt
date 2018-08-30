@@ -10,7 +10,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit4.SpringRunner
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
@@ -57,7 +56,7 @@ class ContentExtractionServiceTest {
         val expectedContent = TestData.getSampleContentWrapper("redirectUrl")
         Mockito.`when`(dataStore.findById("redirectUrl")).thenReturn(Mono.empty())
         Mockito.`when`(dataStore.save(expectedContent)).thenReturn(Mono.just(expectedContent))
-        Mockito.`when`(handler.extract(webPage)).thenReturn(Flux.fromIterable(expectedContent.contents))
+        Mockito.`when`(handler.extract(webPage)).thenReturn(Mono.just(expectedContent))
 
         val publisher = service.extractContent(webPage)
         StepVerifier.create(publisher)

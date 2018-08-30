@@ -28,8 +28,10 @@ class DefaultContentExtractionService(
         return store
             .findById(webPage.url)
             .switchIfEmpty(
-                handler.extract(webPage)
-                    .flatMap { store.save(it) }
+                Mono.defer {
+                    handler.extract(webPage)
+                        .flatMap { store.save(it) }
+                }
             )
     }
 

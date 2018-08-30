@@ -24,7 +24,7 @@ class VideoExtractorTest : AbstractExtractorTest(JsoupVideoExtractor(
 
     @Test
     fun `Given an html source with an important video with it, THEN extractor returns it`() {
-        val source = WebPageSource("redirectUrl", "title", testHtml)
+        val source = WebPageSource("redirectUrl", "redirectUrl", "title", testHtml)
         val publisher = extractor.extract(source, chain)
         StepVerifier.create(publisher)
             .expectSubscription()
