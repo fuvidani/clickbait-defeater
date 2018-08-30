@@ -43,7 +43,7 @@ class ExtractorChainTest {
 
     @Test
     fun `Given a valid input AND an extractor chain, THEN chain gets traversed in order`() {
-        val source = WebPageSource("url", "title", testHtml)
+        val source = WebPageSource("redirectUrl", "title", testHtml)
         val publisher = chain.extract(source)
         StepVerifier.create(publisher)
             .expectSubscription()

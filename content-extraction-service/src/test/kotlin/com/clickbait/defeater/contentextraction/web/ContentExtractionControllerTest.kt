@@ -57,7 +57,7 @@ class ContentExtractionControllerTest {
 
     @Test
     fun `Given a valid AND un-scraped URL, controller returns scraped content AND persists it in data store`() {
-        val webPage = WebPage("url", "title")
+        val webPage = WebPage("redirectUrl", "title")
         val expectedContentWrapper = ContentWrapper(webPage.url, expectedListOfContentsOfTestHtml())
 
         Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(loadHtmlFromResources("test_html.html")))
@@ -81,7 +81,7 @@ class ContentExtractionControllerTest {
 
     @Test
     fun `Given a valid AND un-scraped URL, controller streams scraped content AND persists it in data store`() {
-        val webPage = WebPage("url", "title")
+        val webPage = WebPage("redirectUrl", "title")
         val expectedContentWrapper = ContentWrapper(webPage.url, expectedListOfContentsOfTestHtml())
 
         Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(loadHtmlFromResources("test_html.html")))
@@ -105,7 +105,7 @@ class ContentExtractionControllerTest {
 
     @Test
     fun `Given a valid AND already scraped URL, controller returns stored content`() {
-        val webPage = WebPage("url", "title")
+        val webPage = WebPage("redirectUrl", "title")
         val expectedContentWrapper = ContentWrapper(webPage.url, expectedListOfContentsOfTestHtml())
 
         Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(loadHtmlFromResources("test_html.html")))
@@ -128,7 +128,7 @@ class ContentExtractionControllerTest {
 
     @Test
     fun `Given an incomplete PostInstance, THEN controller scrapes missing content AND returns complete PostInstance`() {
-        val post = PostInstance("url", postText = listOf("This is the text that this instance was posted with"))
+        val post = PostInstance("redirectUrl", postText = listOf("This is the text that this instance was posted with"))
         val webPage = WebPage(post.id, "")
         val expectedContentWrapper = ContentWrapper(webPage.url, expectedListOfContentsOfTestHtml())
         val expectedPostInstance = expectedCompletePostInstanceOfTestHtml(post.id, post.postText)

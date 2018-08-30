@@ -24,6 +24,6 @@ class RedisContentCache(private val valueOperations: ReactiveValueOperations<Str
 
     override fun put(contentWrapper: ContentWrapper): Mono<Boolean> {
         return valueOperations
-            .set(contentWrapper.url, contentWrapper)
+            .set(contentWrapper.redirectUrl, contentWrapper)
     }
 }

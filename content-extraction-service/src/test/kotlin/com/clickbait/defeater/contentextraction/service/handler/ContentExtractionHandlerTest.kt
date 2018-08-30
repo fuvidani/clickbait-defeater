@@ -41,8 +41,8 @@ class ContentExtractionHandlerTest {
 
     @Test
     fun `Given a valid URL and content behind it, THEN handler returns extracted content`() {
-        val page = WebPage("url", "title")
-        val expectedContent = TestData.getSampleContentWrapper("url").contents
+        val page = WebPage("redirectUrl", "title")
+        val expectedContent = TestData.getSampleContentWrapper("redirectUrl").contents
         Mockito.`when`(extractorChain.extract(any(WebPageSource::class.java))).thenReturn(Flux.fromIterable(expectedContent))
         val publisher = handler.extract(page)
         StepVerifier.create(publisher)
@@ -53,7 +53,7 @@ class ContentExtractionHandlerTest {
 
     @Test
     fun `Given a valid URL with no usable content, THEN handler returns empty result`() {
-        val page = WebPage("url", "title")
+        val page = WebPage("redirectUrl", "title")
         Mockito.`when`(extractorChain.extract(any(WebPageSource::class.java))).thenReturn(Flux.empty())
         val publisher = handler.extract(page)
         StepVerifier.create(publisher)

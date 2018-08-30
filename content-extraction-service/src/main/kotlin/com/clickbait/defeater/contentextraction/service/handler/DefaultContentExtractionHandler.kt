@@ -1,12 +1,11 @@
 package com.clickbait.defeater.contentextraction.service.handler
 
-import com.clickbait.defeater.contentextraction.model.Content
+import com.clickbait.defeater.contentextraction.model.ContentWrapper
 import com.clickbait.defeater.contentextraction.model.WebPage
-import com.clickbait.defeater.contentextraction.model.WebPageSource
 import com.clickbait.defeater.contentextraction.service.html.HtmlProvider
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
 import org.springframework.stereotype.Component
-import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 /**
  * <h4>About this class</h4>
@@ -23,10 +22,14 @@ class DefaultContentExtractionHandler(
     private val extractorChain: ExtractorChain
 ) : ContentExtractionHandler {
 
-    override fun extract(webPage: WebPage): Flux<Content> {
+    override fun extract(webPage: WebPage): Mono<ContentWrapper> {
         return htmlProvider
             .get(webPage)
-            .map { WebPageSource(webPage.url, webPage.title, it) }
-            .flatMapMany { extractorChain.extract(it) }
+            .zipWhen { extractorChain.extract(it).collectList() }
+            .map {
+                val webPageSource = it.t1
+                val contents = it.t2
+                ContentWrapper(webPageSource.redirectUrl, webPageSource.sourceUrl, contents)
+            }
     }
 }

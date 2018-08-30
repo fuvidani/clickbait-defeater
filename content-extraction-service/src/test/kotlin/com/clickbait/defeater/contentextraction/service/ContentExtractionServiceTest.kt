@@ -39,9 +39,9 @@ class ContentExtractionServiceTest {
 
     @Test
     fun `Given a valid WebPage AND already extracted content, THEN service returns content AND handler is not invoked`() {
-        val webPage = WebPage("url", "title")
-        val expectedContent = TestData.getSampleContentWrapper("url")
-        Mockito.`when`(dataStore.findById("url")).thenReturn(Mono.just(expectedContent))
+        val webPage = WebPage("redirectUrl", "title")
+        val expectedContent = TestData.getSampleContentWrapper("redirectUrl")
+        Mockito.`when`(dataStore.findById("redirectUrl")).thenReturn(Mono.just(expectedContent))
 
         val publisher = service.extractContent(webPage)
         StepVerifier.create(publisher)
@@ -53,9 +53,9 @@ class ContentExtractionServiceTest {
 
     @Test
     fun `Given a valid WebPage not cached or persisted, THEN service returns extracted content`() {
-        val webPage = WebPage("url", "title")
-        val expectedContent = TestData.getSampleContentWrapper("url")
-        Mockito.`when`(dataStore.findById("url")).thenReturn(Mono.empty())
+        val webPage = WebPage("redirectUrl", "title")
+        val expectedContent = TestData.getSampleContentWrapper("redirectUrl")
+        Mockito.`when`(dataStore.findById("redirectUrl")).thenReturn(Mono.empty())
         Mockito.`when`(dataStore.save(expectedContent)).thenReturn(Mono.just(expectedContent))
         Mockito.`when`(handler.extract(webPage)).thenReturn(Flux.fromIterable(expectedContent.contents))
 

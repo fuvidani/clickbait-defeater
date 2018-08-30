@@ -27,7 +27,8 @@ data class WebPage(
 )
 
 data class WebPageSource(
-    val url: String,
+    val redirectUrl: String,
+    val sourceUrl: String,
     val title: String,
     val html: String = ""
 )

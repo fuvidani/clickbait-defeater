@@ -43,10 +43,10 @@ class MercuryContentExtractor(
 
     override fun extract(source: WebPageSource, chain: ExtractorChain): Flux<Content> {
         val content = apiClient
-            .getArticleContent(apiKey, source.url)
+            .getArticleContent(apiKey, source.sourceUrl)
             .flatMapMany { mapResponse(it) }
             .onErrorResume {
-                logger.warn("MercuryWebParser API returned error for url ${source.url}. Error: $it")
+                logger.warn("MercuryWebParser API returned error for url ${source.sourceUrl}. Error: $it")
                 Flux.empty()
             }
         return Flux.concat(content, chain.extract(source))
