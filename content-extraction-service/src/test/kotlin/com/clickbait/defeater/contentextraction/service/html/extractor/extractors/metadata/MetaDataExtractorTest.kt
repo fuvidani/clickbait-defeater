@@ -19,7 +19,7 @@ class MetaDataExtractorTest : AbstractExtractorTest(JsoupMetaDataExtractor()) {
 
     @Test
     fun `Given an html source with metadata in it, THEN extractor returns it`() {
-        val source = WebPageSource("url", "title", testHtml)
+        val source = WebPageSource("redirectUrl", "redirectUrl", "title", testHtml)
         val publisher = extractor.extract(source, chain)
         StepVerifier.create(publisher)
             .expectSubscription()
@@ -35,7 +35,7 @@ class MetaDataExtractorTest : AbstractExtractorTest(JsoupMetaDataExtractor()) {
 
     @Test
     fun `Given an html source with no metadata, THEN extractor returns empty`() {
-        val page = WebPageSource("someUrl", "someTitle", "")
+        val page = WebPageSource("someUrl", "someUrl", "someTitle", "")
         val publisher = extractor.extract(page, chain)
         StepVerifier.create(publisher)
             .expectSubscription()

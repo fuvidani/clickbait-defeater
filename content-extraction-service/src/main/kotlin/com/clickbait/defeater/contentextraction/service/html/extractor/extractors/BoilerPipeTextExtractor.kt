@@ -4,7 +4,6 @@ import com.clickbait.defeater.contentextraction.model.Content
 import com.clickbait.defeater.contentextraction.model.TextContent
 import com.clickbait.defeater.contentextraction.model.WebPageSource
 import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
-import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorBean
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
 import com.kohlschutter.boilerpipe.extractors.CommonExtractors
 import org.springframework.stereotype.Component
@@ -19,7 +18,7 @@ import reactor.core.publisher.Flux
  * @version 1.0.0
  * @since 1.0.0
  */
-@ExtractorBean(order = 1)
+// @ExtractorBean(order = 1)
 @Component
 class BoilerPipeTextExtractor : Extractor {
 

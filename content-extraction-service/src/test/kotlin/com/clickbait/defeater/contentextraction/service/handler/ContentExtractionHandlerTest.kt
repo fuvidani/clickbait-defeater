@@ -1,5 +1,6 @@
 package com.clickbait.defeater.contentextraction.service.handler
 
+import com.clickbait.defeater.contentextraction.model.ContentWrapper
 import com.clickbait.defeater.contentextraction.model.WebPage
 import com.clickbait.defeater.contentextraction.model.WebPageSource
 import com.clickbait.defeater.contentextraction.persistence.TestData
@@ -35,29 +36,32 @@ class ContentExtractionHandlerTest {
 
     @Before
     fun setUp() {
-        Mockito.`when`(htmlProvider.get(any(WebPage::class.java))).thenReturn(Mono.just("some html data"))
         handler = DefaultContentExtractionHandler(htmlProvider, extractorChain)
     }
 
     @Test
     fun `Given a valid URL and content behind it, THEN handler returns extracted content`() {
-        val page = WebPage("url", "title")
-        val expectedContent = TestData.getSampleContentWrapper("url").contents
-        Mockito.`when`(extractorChain.extract(any(WebPageSource::class.java))).thenReturn(Flux.fromIterable(expectedContent))
+        val page = WebPage("redirectUrl", "title")
+        val expectedContent = TestData.getSampleContentWrapper("redirectUrl")
+        Mockito.`when`(htmlProvider.get(any(WebPage::class.java))).thenReturn(Mono.just(WebPageSource("redirectUrl", "redirectUrl", "some html data")))
+        Mockito.`when`(extractorChain.extract(any(WebPageSource::class.java))).thenReturn(Flux.fromIterable(expectedContent.contents))
         val publisher = handler.extract(page)
         StepVerifier.create(publisher)
             .expectSubscription()
-            .expectNextSequence(expectedContent)
+            .expectNext(expectedContent)
             .verifyComplete()
     }
 
     @Test
     fun `Given a valid URL with no usable content, THEN handler returns empty result`() {
-        val page = WebPage("url", "title")
+        val page = WebPage("redirectUrl", "title")
+        Mockito.`when`(htmlProvider.get(any(WebPage::class.java))).thenReturn(Mono.just(WebPageSource("redirectUrl", "redirectUrl", "some html data")))
         Mockito.`when`(extractorChain.extract(any(WebPageSource::class.java))).thenReturn(Flux.empty())
+        val expectedEmptyResult = ContentWrapper(page.url, page.url, emptyList())
         val publisher = handler.extract(page)
         StepVerifier.create(publisher)
             .expectSubscription()
+            .expectNext(expectedEmptyResult)
             .verifyComplete()
     }
 

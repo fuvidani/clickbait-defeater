@@ -1,6 +1,7 @@
 package com.clickbait.defeater.contentextraction.service.html.extractor.extractors
 
 import com.clickbait.defeater.contentextraction.model.WebPageSource
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.image.BoilerPipeImageExtractor
 import org.junit.Test
 import reactor.test.StepVerifier
 
@@ -17,7 +18,7 @@ class ImageExtractorTest : AbstractExtractorTest(BoilerPipeImageExtractor()) {
 
     @Test
     fun `Given an html source, THEN extractor finds likely relevant images`() {
-        val source = WebPageSource("url", "title", realHtml)
+        val source = WebPageSource("redirectUrl", "title", realHtml)
         val publisher = extractor.extract(source, chain)
         // TODO image extractor must be enhanced, cannot test efficiently at the moment
         StepVerifier.create(publisher)

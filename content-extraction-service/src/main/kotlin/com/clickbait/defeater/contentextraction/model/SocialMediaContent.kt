@@ -18,10 +18,10 @@ data class SocialMediaContent(
 
 enum class SocialMediaEmbeddingType {
     TWITTER,
-    INSTAGRAM
+    INSTAGRAM,
+    PINTEREST
     /**
      * Other possible types:
-     * - PINTEREST
      * - TUMBLR
      * - FLICKR
      * ....

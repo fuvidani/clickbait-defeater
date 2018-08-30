@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "contents")
 data class ContentWrapper(
     @Id
-    val url: String,
+    val redirectUrl: String,
+    val sourceUrl: String,
     val contents: List<Content>
 )

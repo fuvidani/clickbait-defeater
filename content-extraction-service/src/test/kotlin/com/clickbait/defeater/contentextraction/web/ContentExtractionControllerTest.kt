@@ -57,13 +57,13 @@ class ContentExtractionControllerTest {
 
     @Test
     fun `Given a valid AND un-scraped URL, controller returns scraped content AND persists it in data store`() {
-        val webPage = WebPage("url", "title")
-        val expectedContentWrapper = ContentWrapper(webPage.url, expectedListOfContentsOfTestHtml())
+        val webPage = WebPage("redirectUrl", "title")
+        val expectedContentWrapper = ContentWrapper(webPage.url, webPage.url, expectedListOfContentsOfTestHtml())
 
-        Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(loadHtmlFromResources("test_html.html")))
+        Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(WebPageSource(webPage.url, webPage.url, loadHtmlFromResources("test_html.html"))))
         Mockito.`when`(redisOperations.get(webPage.url)).thenReturn(Mono.empty())
         Mockito.`when`(repository.findById(webPage.url)).thenReturn(Mono.empty())
-        Mockito.`when`(repository.save(expectedContentWrapper)).thenReturn(Mono.just(expectedContentWrapper))
+        Mockito.`when`(repository.save(any(ContentWrapper::class.java))).thenReturn(Mono.just(expectedContentWrapper))
 
         val publisher = client.post().uri("/extract")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -81,13 +81,13 @@ class ContentExtractionControllerTest {
 
     @Test
     fun `Given a valid AND un-scraped URL, controller streams scraped content AND persists it in data store`() {
-        val webPage = WebPage("url", "title")
-        val expectedContentWrapper = ContentWrapper(webPage.url, expectedListOfContentsOfTestHtml())
+        val webPage = WebPage("redirectUrl", "title")
+        val expectedContentWrapper = ContentWrapper(webPage.url, webPage.url, expectedListOfContentsOfTestHtml())
 
-        Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(loadHtmlFromResources("test_html.html")))
+        Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(WebPageSource(webPage.url, webPage.url, loadHtmlFromResources("test_html.html"))))
         Mockito.`when`(redisOperations.get(webPage.url)).thenReturn(Mono.empty())
         Mockito.`when`(repository.findById(webPage.url)).thenReturn(Mono.empty())
-        Mockito.`when`(repository.save(expectedContentWrapper)).thenReturn(Mono.just(expectedContentWrapper))
+        Mockito.`when`(repository.save(any(ContentWrapper::class.java))).thenReturn(Mono.just(expectedContentWrapper))
 
         val publisher = client.post().uri("/extract")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -105,10 +105,10 @@ class ContentExtractionControllerTest {
 
     @Test
     fun `Given a valid AND already scraped URL, controller returns stored content`() {
-        val webPage = WebPage("url", "title")
-        val expectedContentWrapper = ContentWrapper(webPage.url, expectedListOfContentsOfTestHtml())
+        val webPage = WebPage("redirectUrl", "title")
+        val expectedContentWrapper = ContentWrapper(webPage.url, webPage.url, expectedListOfContentsOfTestHtml())
 
-        Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(loadHtmlFromResources("test_html.html")))
+        Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(WebPageSource(webPage.url, webPage.url, loadHtmlFromResources("test_html.html"))))
         Mockito.`when`(redisOperations.get(webPage.url)).thenReturn(Mono.empty())
         Mockito.`when`(repository.findById(webPage.url)).thenReturn(Mono.just(expectedContentWrapper))
 
@@ -128,15 +128,15 @@ class ContentExtractionControllerTest {
 
     @Test
     fun `Given an incomplete PostInstance, THEN controller scrapes missing content AND returns complete PostInstance`() {
-        val post = PostInstance("url", postText = listOf("This is the text that this instance was posted with"))
+        val post = PostInstance("redirectUrl", postText = listOf("This is the text that this instance was posted with"))
         val webPage = WebPage(post.id, "")
-        val expectedContentWrapper = ContentWrapper(webPage.url, expectedListOfContentsOfTestHtml())
+        val expectedContentWrapper = ContentWrapper(webPage.url, webPage.url, expectedListOfContentsOfTestHtml())
         val expectedPostInstance = expectedCompletePostInstanceOfTestHtml(post.id, post.postText)
 
-        Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(loadHtmlFromResources("test_html.html")))
+        Mockito.`when`(htmlProvider.get(webPage)).thenReturn(Mono.just(WebPageSource(webPage.url, webPage.url, loadHtmlFromResources("test_html.html"))))
         Mockito.`when`(redisOperations.get(webPage.url)).thenReturn(Mono.empty())
         Mockito.`when`(repository.findById(webPage.url)).thenReturn(Mono.empty())
-        Mockito.`when`(repository.save(expectedContentWrapper)).thenReturn(Mono.just(expectedContentWrapper))
+        Mockito.`when`(repository.save(any(ContentWrapper::class.java))).thenReturn(Mono.just(expectedContentWrapper))
 
         val publisher = client.post().uri("/completePost")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
