@@ -33,6 +33,7 @@ def process_tweet(text):
     def allcaps(text):
         text = text.group()
         return text.lower() + " <allcaps>"
+
     eyes = r"[8:=;]"
     nose = r"['`\-]?"
 
@@ -41,13 +42,13 @@ def process_tweet(text):
         return re.sub(pattern, repl, text, flags=FLAGS)
 
     text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "<url>")
-    text = re_sub(r"/"," / ")
+    text = re_sub(r"/", " / ")
     text = re_sub(r"@\w+", "<user>")
     text = re_sub(r"{}{}[)dD]+|[)dD]+{}{}".format(eyes, nose, nose, eyes), "<smile>")
     text = re_sub(r"{}{}p+".format(eyes, nose), "<lolface>")
     text = re_sub(r"{}{}\(+|\)+{}{}".format(eyes, nose, nose, eyes), "<sadface>")
     text = re_sub(r"{}{}[\/|l*]".format(eyes, nose), "<neutralface>")
-    text = re_sub(r"<3","<heart>")
+    text = re_sub(r"<3", "<heart>")
     text = re_sub(r"[-+]?[.\d]*[\d]+[:,.\d]*", "<number>")
     text = re_sub(r"#\S+", hashtag)
     text = re_sub(r"([!?.]){2,}", r"\1 <repeat>")
@@ -81,11 +82,11 @@ def load_embeddings(fp, embedding_size):
             if len(row[1:]) != embedding_size:
                 print row[0]
                 print len(row[1:])
-            try: 
+            try:
                 embedding.append(np.asarray(row[1:], dtype='float32'))
             except ValueError:
                 error_counter = error_counter + 1
-        print "Number of value errors while loading embedings: " +  str(error_counter)
+        print "Number of value errors while loading embedings: " + str(error_counter)
     word2id = dict(zip(vocab, range(2, len(vocab))))
     word2id[PAD] = 0
     word2id[UNK] = 1
@@ -116,17 +117,18 @@ def read_data(fps, word2id=None, y_len=1, use_target_description=False, use_imag
                 for each_line in fin:
                     each_item = json.loads(each_line.decode('utf-8'))
                     if delete_irregularities:
-                        if each_item["truthClass"] == "clickbait" and float(each_item["truthMean"]) < 0.5 or each_item["truthClass"] != "clickbait" and float(each_item["truthMean"]) > 0.5:
+                        if each_item["truthClass"] == "clickbait" and float(each_item["truthMean"]) < 0.5 or each_item[
+                            "truthClass"] != "clickbait" and float(each_item["truthMean"]) > 0.5:
                             continue
                     if y_len == 4:
                         each_label = [0, 0, 0, 0]
                         for each_key, each_value in Counter(each_item["truthJudgments"]).iteritems():
-                            each_label[int(each_key//0.3)] = float(each_value)/5
+                            each_label[int(each_key // 0.3)] = float(each_value) / 5
                         id2truth_class[each_item["id"]] = each_label
                         if each_item["truthClass"] != "clickbait":
-                            assert each_label[0]+each_label[1] > each_label[2]+each_label[3]
+                            assert each_label[0] + each_label[1] > each_label[2] + each_label[3]
                         else:
-                            assert each_label[0]+each_label[1] < each_label[2]+each_label[3]
+                            assert each_label[0] + each_label[1] < each_label[2] + each_label[3]
                     if y_len == 2:
                         if each_item["truthClass"] == "clickbait":
                             id2truth_class[each_item["id"]] = [1, 0]
@@ -151,7 +153,7 @@ def read_data(fps, word2id=None, y_len=1, use_target_description=False, use_imag
                     truth_means.append(id2truth_mean[each_item["id"]])
                     truth_classes.append(id2truth_class[each_item["id"]])
                 if word2id:
-                    if (each_post_text+" ").isspace():
+                    if (each_post_text + " ").isspace():
                         post_texts.append([0])
                         post_text_lens.append(1)
                     else:
@@ -162,12 +164,13 @@ def read_data(fps, word2id=None, y_len=1, use_target_description=False, use_imag
                     post_texts.append([each_post_text])
                 if use_target_description:
                     if word2id:
-                        if (each_target_description+" ").isspace():
+                        if (each_target_description + " ").isspace():
                             target_descriptions.append([0])
                             target_description_lens.append(1)
                         else:
                             each_target_description_tokens = tokenise(each_target_description)
-                            target_descriptions.append([word2id.get(each_token, 1) for each_token in each_target_description_tokens])
+                            target_descriptions.append(
+                                [word2id.get(each_token, 1) for each_token in each_target_description_tokens])
                             target_description_lens.append(len(each_target_description_tokens))
                     else:
                         target_descriptions.append([each_target_description])
@@ -180,6 +183,7 @@ def read_data(fps, word2id=None, y_len=1, use_target_description=False, use_imag
                     image_features.append([])
     print "Deleted number of items: " + str(num)
     return ids, post_texts, truth_classes, post_text_lens, truth_means, target_descriptions, target_description_lens, image_features
+
 
 def pad_sequences(sequences, maxlen):
     if maxlen <= 0:
@@ -197,7 +201,7 @@ def pad_sequences(sequences, maxlen):
 def get_batch(data, batch_size, shuffle=True):
     data = np.array(data)
     data_size = len(data)
-    batch_num_per_epoch = int((data_size-1)/batch_size)+1
+    batch_num_per_epoch = int((data_size - 1) / batch_size) + 1
     if shuffle:
         shuffle_indices = np.random.permutation(np.arange(data_size))
         shuffled_data = data[shuffle_indices]
@@ -205,13 +209,13 @@ def get_batch(data, batch_size, shuffle=True):
         shuffled_data = data
     for i in range(batch_num_per_epoch):
         start_ix = i * batch_size
-        end_ix = min((i+1)*batch_size, data_size)
+        end_ix = min((i + 1) * batch_size, data_size)
         yield shuffled_data[start_ix:end_ix]
 
 
 def generate_embeddings(fp):
     sentences = []
-    files = ["/home/lukas/Downloads/clickbait/data/clickbait17-train-170331", "/home/lukas/Downloads/clickbait/data/clickbait17-validation-170630", "/home/lukas/Downloads/clickbait/data/clickbait17-unlabeled-170429"]
+    files = ["data/clickbait17-train-170331", "data/clickbait17-validation-170630", "data/clickbait17-unlabeled-170429"]
     for each_fp in files:
         with open(os.path.join(each_fp, 'instances.jsonl'), 'rb') as f:
             for each_line in f:
@@ -233,7 +237,7 @@ def generate_embeddings(fp):
 def extract_vgg_info(vgg_path):
     vgg_data = scipy.io.loadmat(vgg_path)
     normalization_matrix = vgg_data['normalization'][0][0][0]
-    mat_mean = np.mean(normalization_matrix, axis=(0,1))
+    mat_mean = np.mean(normalization_matrix, axis=(0, 1))
     network_weights = vgg_data["layers"][0]
     return mat_mean, network_weights
 
@@ -274,7 +278,8 @@ class VGG19(object):
                     bias = bias.reshape(-1)
                     if layer == "conv1_1":
                         h = self.images
-                    h = tf.nn.bias_add(tf.nn.conv2d(h, tf.constant(weights), strides=[1, 1, 1, 1], padding="SAME"), bias)
+                    h = tf.nn.bias_add(tf.nn.conv2d(h, tf.constant(weights), strides=[1, 1, 1, 1], padding="SAME"),
+                                       bias)
                 elif layer_type == "relu":
                     h = tf.nn.relu(h)
                 elif layer_type == "pool":
@@ -293,24 +298,27 @@ def extract_image_features(fp="/data/clickbait17-train-170331"):
         for each_line in f:
             each_item = json.loads(each_line.decode('utf-8'))
             if each_item["postMedia"]:
-                id2imageidx[each_item["id"]] = image_names.index(each_item["postMedia"][0].split("/")[1])+1  # index 0 reserved for no image
+                id2imageidx[each_item["id"]] = image_names.index(
+                    each_item["postMedia"][0].split("/")[1]) + 1  # index 0 reserved for no image
             else:
                 id2imageidx[each_item["id"]] = 0
     with open(os.path.join(fp, 'id2imageidx.json'), 'w') as fout:
         json.dump(id2imageidx, fp=fout)
     batch_size = 100
     n_examples = len(image_names)
-    all_image_features = np.ndarray([n_examples+1, 196, 512], dtype=np.float32)
+    all_image_features = np.ndarray([n_examples + 1, 196, 512], dtype=np.float32)
     all_image_features[0, :] = np.random.uniform(-0.1, 0.1, [196, 512])
     mat_mean, network_weights = extract_vgg_info("/data/imagenet-vgg-verydeep-19.mat")
     vggnet = VGG19(network_weights)
     with tf.Session() as sess:
         tf.global_variables_initializer().run()
-        for start, end in zip(range(0, n_examples, batch_size), range(batch_size, n_examples+batch_size, batch_size)):
+        for start, end in zip(range(0, n_examples, batch_size), range(batch_size, n_examples + batch_size, batch_size)):
             image_name_batch = image_names[start:end]
-            image_batch = np.array(map(lambda f: process_image(os.path.join(fp, "media", f), mat_mean), image_name_batch)).astype(np.float32)
+            image_batch = np.array(
+                map(lambda f: process_image(os.path.join(fp, "media", f), mat_mean), image_name_batch)).astype(
+                np.float32)
             image_features_batch = sess.run(vggnet.features, feed_dict={vggnet.images: image_batch})
-            all_image_features[start+1:end+1, :] = image_features_batch
+            all_image_features[start + 1:end + 1, :] = image_features_batch
     hickle.dump(all_image_features, os.path.join(fp, "image_features.hkl"))
 
 
@@ -318,5 +326,6 @@ if __name__ == '__main__':
     # text = "I TEST alllll kinds of #hashtags and #HASHTAGS, @mentions and 3000 (http://t.co/dkfjkdf). w/ <3 :) haha!!!!!"
     # print(tokenise(text, True))
     # read_data(fp="/data/clickbait17-validation-170630", y_len=4)
-    #extract_image_features("/home/lukas/Downloads/clickbait/data/clickbait17-validation-170630")
-    generate_embeddings("/home/lukas/Downloads/clickbait")
+    # extract_image_features("/home/lukas/Downloads/clickbait/data/clickbait17-validation-170630")
+    # generate_embeddings("/home/lukas/Downloads/clickbait")
+    pass

@@ -1,8 +1,12 @@
 spring:
   profiles:
     active: dev
+  redis:
+    password: a2vjPx2CJ4HcE3f323oxmG4anv
 
 logging:
   level:
     org.springframework.security: INFO
 
+
+mercury.web.parser.api.key: md2aEwbPiSoeKVmNzAMUOY8rjPPvJAJWf3wNTUsE

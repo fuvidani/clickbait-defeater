@@ -2,10 +2,9 @@ import tensorflow as tf
 from utils import *
 from sklearn.model_selection import KFold
 from models import *
-import time
 import datetime
 
-tf.app.flags.DEFINE_string("dir", "/home/lukas/Downloads/clickbait/data", "folder directory")
+tf.app.flags.DEFINE_string("dir", "data", "folder directory")
 tf.app.flags.DEFINE_string("training_file", "clickbait17-validation-170630", "Training data file")
 tf.app.flags.DEFINE_string("validation_file", "clickbait17-train-170331", "Validation data file")
 tf.app.flags.DEFINE_integer("epochs", 20, "epochs")
@@ -29,11 +28,11 @@ tf.app.flags.DEFINE_float("gradient_clipping_value", 2, "gradient clipping value
 FLAGS = tf.app.flags.FLAGS
 
 
-def main(argv=None):
-    np.random.seed(81)
-    word2id, embedding = load_embeddings(fp=os.path.join(FLAGS.dir, "glove.6B." + str(FLAGS.embedding_size) + "d.txt"),
+def main(fp):
+    # np.random.seed(81)
+    word2id, embedding = load_embeddings(fp + '/s_clickbait.100.txt',
                                          embedding_size=FLAGS.embedding_size)
-    with open(os.path.join(FLAGS.dir, 'word2id.json'), 'w') as fout:
+    with open(os.path.join(fp, 'word2id.json'), 'w') as fout:
         json.dump(word2id, fp=fout)
     # vocab_size = embedding.shape[0]
     # embedding_size = embedding.shape[1]
@@ -75,7 +74,7 @@ def main(argv=None):
         train_data, validation_data = data[train], data[validation]
         g = tf.Graph()
         with g.as_default() as g:
-            tf.set_random_seed(81)
+            # tf.set_random_seed(81)
             with tf.Session(graph=g) as sess:
                 if FLAGS.model == "DAN":
                     model = DAN(x1_maxlen=max_post_text_len, y_len=len(truth_classes[0]),
@@ -111,12 +110,12 @@ def main(argv=None):
                         grad, var in grads_and_vars]
                 train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
-                out_dir = os.path.join(FLAGS.dir, "runs", FLAGS.timestamp)
-                loss_summary = tf.summary.scalar("loss", model.loss)
-                acc_summary = tf.summary.scalar("accuracy", model.accuracy)
-                train_summary_op = tf.summary.merge([loss_summary, acc_summary])
-                train_summary_dir = os.path.join(out_dir, "summaries", "train")
-                train_summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
+                out_dir = os.path.join(fp, "runs")
+                # loss_summary = tf.summary.scalar("loss", model.loss)
+                # acc_summary = tf.summary.scalar("accuracy", model.accuracy)
+                # train_summary_op = tf.summary.merge([loss_summary, acc_summary])
+                # train_summary_dir = os.path.join(out_dir, "summaries", "train")
+                # train_summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
                 # val_summary_op = tf.summary.merge([loss_summary, acc_summary])
                 # val_summary_dir = os.path.join(out_dir, "summaries", "validation")
                 # val_summary_writer = tf.summary.FileWriter(val_summary_dir, sess.graph)
@@ -192,12 +191,6 @@ def main(argv=None):
                         min_mse_val = mse_val
                         acc = acc_val
                         saver.save(sess, checkpoint_prefix)
-
-                        builder = tf.saved_model.builder.SavedModelBuilder(
-                            "/home/lukas/Downloads/clickbait/data/models/epoch_" + str(round) + "_" + str(i))
-                        builder.add_meta_graph_and_variables(
-                            sess, [tf.saved_model.tag_constants.SERVING])
-                        builder.save()
 
         round += 1
         val_scores.append(min_mse_val)
