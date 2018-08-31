@@ -65,10 +65,12 @@ class ContentExtractionControllerTest {
         Mockito.`when`(repository.findById(webPage.url)).thenReturn(Mono.empty())
         Mockito.`when`(repository.save(any(ContentWrapper::class.java))).thenReturn(Mono.just(expectedContentWrapper))
 
-        val publisher = client.post().uri("/extract")
-            .contentType(MediaType.APPLICATION_JSON_UTF8)
+        val publisher = client.get()
+            .uri { it.queryParam("url", webPage.url)
+                    .queryParam("title", webPage.title)
+                    .build()
+            }
             .accept(MediaType.APPLICATION_JSON_UTF8)
-            .body(Mono.just(webPage), WebPage::class.java)
             .exchange()
             .expectStatus().isOk
             .returnResult(ContentWrapper::class.java)
@@ -89,10 +91,12 @@ class ContentExtractionControllerTest {
         Mockito.`when`(repository.findById(webPage.url)).thenReturn(Mono.empty())
         Mockito.`when`(repository.save(any(ContentWrapper::class.java))).thenReturn(Mono.just(expectedContentWrapper))
 
-        val publisher = client.post().uri("/extract")
-            .contentType(MediaType.APPLICATION_JSON_UTF8)
+        val publisher = client.get()
+            .uri { it.queryParam("url", webPage.url)
+                .queryParam("title", webPage.title)
+                .build()
+            }
             .accept(MediaType.APPLICATION_STREAM_JSON)
-            .body(Mono.just(webPage), WebPage::class.java)
             .exchange()
             .expectStatus().isOk
             .returnResult(Content::class.java)
@@ -112,10 +116,12 @@ class ContentExtractionControllerTest {
         Mockito.`when`(redisOperations.get(webPage.url)).thenReturn(Mono.empty())
         Mockito.`when`(repository.findById(webPage.url)).thenReturn(Mono.just(expectedContentWrapper))
 
-        val publisher = client.post().uri("/extract")
-            .contentType(MediaType.APPLICATION_JSON_UTF8)
+        val publisher = client.get()
+            .uri { it.queryParam("url", webPage.url)
+                .queryParam("title", webPage.title)
+                .build()
+            }
             .accept(MediaType.APPLICATION_JSON_UTF8)
-            .body(Mono.just(webPage), WebPage::class.java)
             .exchange()
             .expectStatus().isOk
             .returnResult(ContentWrapper::class.java)

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -26,16 +28,22 @@ import reactor.core.publisher.Mono
 @RequestMapping("/content")
 class ContentExtractionController(private val contentExtractionService: ContentExtractionService) {
 
-    @PostMapping("/extract",
-        produces = [MediaType.TEXT_EVENT_STREAM_VALUE, MediaType.APPLICATION_STREAM_JSON_VALUE])
-    fun extractRelevantContentAsStream(@RequestBody webPage: WebPage): Flux<Content> {
-        return contentExtractionService.extractContent(webPage)
+    @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE, MediaType.APPLICATION_STREAM_JSON_VALUE])
+    fun extractRelevantContentAsStream(
+        @RequestParam url: String,
+        @RequestParam(defaultValue = "") title: String
+    ): Flux<Content> {
+        return contentExtractionService
+            .extractContent(WebPage(url, title))
             .flatMapMany { Flux.fromIterable(it.contents) }
     }
 
-    @PostMapping("/extract", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun extractRelevantContent(@RequestBody webPage: WebPage): Mono<ContentWrapper> {
-        return contentExtractionService.extractContent(webPage)
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun extractRelevantContent(
+        @RequestParam url: String,
+        @RequestParam(defaultValue = "") title: String
+    ): Mono<ContentWrapper> {
+        return contentExtractionService.extractContent(WebPage(url, title))
     }
 
     @PostMapping("/completePost")
