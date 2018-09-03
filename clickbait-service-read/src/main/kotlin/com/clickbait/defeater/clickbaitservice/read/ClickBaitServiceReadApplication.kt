@@ -1,7 +1,7 @@
 package com.clickbait.defeater.clickbaitservice.read
 
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
-import com.clickbait.defeater.clickbaitservice.read.service.score.client.IScoreServiceClient
+import com.clickbait.defeater.clickbaitservice.read.service.score.client.ScoreServiceClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
@@ -84,13 +84,13 @@ class ClickBaitServiceReadApplication {
         @Value("\${score.service.protocol}") protocol: String,
         @Value("\${score.service.host}") host: String,
         @Value("\${score.service.port}") port: String
-    ): IScoreServiceClient {
+    ): ScoreServiceClient {
         val retrofit = Retrofit.Builder()
             .baseUrl("$protocol://$host:$port/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(ReactorCallAdapterFactory.create())
             .build()
-        return retrofit.create(IScoreServiceClient::class.java)
+        return retrofit.create(ScoreServiceClient::class.java)
     }
 
     @Bean

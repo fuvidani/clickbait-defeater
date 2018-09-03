@@ -3,7 +3,7 @@ package com.clickbait.defeater.clickbaitservice.read.service.language.checker
 import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
 import com.clickbait.defeater.clickbaitservice.read.model.withLanguage
 import com.clickbait.defeater.clickbaitservice.read.service.exception.ClickBaitReadServiceException
-import com.clickbait.defeater.clickbaitservice.read.service.language.detector.ILanguageDetector
+import com.clickbait.defeater.clickbaitservice.read.service.language.detector.LanguageDetector
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,7 +27,7 @@ class LanguageCheckerTest {
 
     private lateinit var languageChecker: LanguageChecker
     @MockBean
-    private lateinit var languageDetector: ILanguageDetector
+    private lateinit var languageDetector: LanguageDetector
 
     @Before
     fun setUp() {

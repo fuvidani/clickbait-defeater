@@ -4,7 +4,7 @@ import com.clickbait.defeater.clickbaitservice.read.ClickBaitServiceReadApplicat
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
 import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
 import com.clickbait.defeater.clickbaitservice.read.model.withLanguage
-import com.clickbait.defeater.clickbaitservice.read.service.score.client.IScoreServiceClient
+import com.clickbait.defeater.clickbaitservice.read.service.score.client.ScoreServiceClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,7 +36,7 @@ class ClickBaitReadControllerTest {
     @Autowired
     private lateinit var clickBaitReadController: ClickBaitReadController
     @MockBean
-    private lateinit var scoreServiceClient: IScoreServiceClient
+    private lateinit var scoreServiceClient: ScoreServiceClient
     @MockBean
     private lateinit var redisValueOperations: ReactiveValueOperations<String, ClickBaitScore>
     private lateinit var client: WebTestClient

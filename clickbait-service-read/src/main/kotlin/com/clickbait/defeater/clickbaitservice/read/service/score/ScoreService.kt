@@ -2,11 +2,6 @@ package com.clickbait.defeater.clickbaitservice.read.service.score
 
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
 import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
-import com.clickbait.defeater.clickbaitservice.read.service.exception.ClickBaitReadServiceException
-import com.clickbait.defeater.clickbaitservice.read.service.score.client.IScoreServiceClient
-import mu.KLogging
-import org.springframework.http.HttpStatus
-import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 /**
@@ -18,17 +13,7 @@ import reactor.core.publisher.Mono
  * @version 1.0.0
  * @since 1.0.0
  */
-@Component
-class ScoreService(private val scoreServiceClient: IScoreServiceClient) : IScoreService {
+interface ScoreService {
 
-    override fun scorePostInstance(instance: PostInstance): Mono<ClickBaitScore> {
-        return scoreServiceClient.scorePostInstance(instance)
-            .onErrorMap {
-                logger.error("Remote score service cannot be reached", it)
-                ClickBaitReadServiceException("The post could not be scored.", HttpStatus.INTERNAL_SERVER_ERROR)
-            }
-            .map { ClickBaitScore(it.id, it.clickbaitScore, instance.language) }
-    }
-
-    companion object : KLogging()
+    fun scorePostInstance(instance: PostInstance): Mono<ClickBaitScore>
 }

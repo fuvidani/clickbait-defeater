@@ -5,8 +5,8 @@ import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
 import com.clickbait.defeater.clickbaitservice.read.model.withLanguage
 import com.clickbait.defeater.clickbaitservice.read.service.exception.ClickBaitReadServiceException
 import com.clickbait.defeater.clickbaitservice.read.service.language.checker.LanguageChecker
-import com.clickbait.defeater.clickbaitservice.read.service.score.IScoreService
-import com.clickbait.defeater.clickbaitservice.read.service.score.cache.IScoreCache
+import com.clickbait.defeater.clickbaitservice.read.service.score.ScoreService
+import com.clickbait.defeater.clickbaitservice.read.service.score.cache.ScoreCache
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,11 +31,11 @@ import java.io.IOException
 @RunWith(SpringRunner::class)
 class ClickBaitReadServiceTest {
 
-    private lateinit var clickBaitReadService: IClickBaitReadService
+    private lateinit var clickBaitReadService: ClickBaitReadService
     @MockBean
-    private lateinit var scoreService: IScoreService
+    private lateinit var scoreService: ScoreService
     @MockBean
-    private lateinit var scoreCache: IScoreCache
+    private lateinit var scoreCache: ScoreCache
     @MockBean
     private lateinit var languageChecker: LanguageChecker
     private val examplePost =
@@ -43,7 +43,7 @@ class ClickBaitReadServiceTest {
 
     @Before
     fun setUp() {
-        clickBaitReadService = ClickBaitReadService(scoreService, scoreCache, languageChecker)
+        clickBaitReadService = DefaultClickBaitReadService(scoreService, scoreCache, languageChecker)
         Mockito.`when`(scoreCache.put(any(ClickBaitScore::class.java))).thenReturn(Mono.just(true))
     }
 

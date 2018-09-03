@@ -3,7 +3,7 @@ package com.clickbait.defeater.clickbaitservice.read.service.score
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
 import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
 import com.clickbait.defeater.clickbaitservice.read.service.exception.ClickBaitReadServiceException
-import com.clickbait.defeater.clickbaitservice.read.service.score.client.IScoreServiceClient
+import com.clickbait.defeater.clickbaitservice.read.service.score.client.ScoreServiceClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,13 +26,13 @@ import java.io.IOException
 @RunWith(SpringRunner::class)
 class ScoreServiceTest {
 
-    private lateinit var scoreService: IScoreService
+    private lateinit var scoreService: ScoreService
     @MockBean
-    private lateinit var scoreServiceClient: IScoreServiceClient
+    private lateinit var scoreServiceClient: ScoreServiceClient
 
     @Before
     fun setUp() {
-        scoreService = ScoreService(scoreServiceClient)
+        scoreService = DefaultScoreService(scoreServiceClient)
     }
 
     @Test

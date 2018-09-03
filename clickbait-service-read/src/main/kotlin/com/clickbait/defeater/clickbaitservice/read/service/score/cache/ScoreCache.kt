@@ -1,4 +1,4 @@
-package com.clickbait.defeater.clickbaitservice.read.service.score
+package com.clickbait.defeater.clickbaitservice.read.service.score.cache
 
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
 import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
@@ -13,7 +13,9 @@ import reactor.core.publisher.Mono
  * @version 1.0.0
  * @since 1.0.0
  */
-interface IScoreService {
+interface ScoreCache {
 
-    fun scorePostInstance(instance: PostInstance): Mono<ClickBaitScore>
+    fun tryAndGet(instance: PostInstance): Mono<ClickBaitScore>
+
+    fun put(score: ClickBaitScore): Mono<Boolean>
 }

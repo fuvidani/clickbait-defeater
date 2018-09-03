@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono
  * @version 1.0.0
  * @since 1.0.0
  */
-interface ILanguageDetector {
+interface LanguageDetector {
 
     fun detect(instance: PostInstance): Mono<PostInstance>
 }

@@ -2,7 +2,7 @@ package com.clickbait.defeater.clickbaitservice.read.web
 
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
 import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
-import com.clickbait.defeater.clickbaitservice.read.service.IClickBaitReadService
+import com.clickbait.defeater.clickbaitservice.read.service.ClickBaitReadService
 import com.clickbait.defeater.clickbaitservice.read.service.exception.ClickBaitReadServiceException
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono
  */
 @RestController
 @RequestMapping("/clickbait")
-class ClickBaitReadController(private val clickBaitReadService: IClickBaitReadService) {
+class ClickBaitReadController(private val clickBaitReadService: ClickBaitReadService) {
 
     @PostMapping("/score")
     fun scoreMediaPost(@RequestBody instance: PostInstance): Mono<ClickBaitScore> {
