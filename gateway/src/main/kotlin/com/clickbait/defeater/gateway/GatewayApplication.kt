@@ -7,6 +7,7 @@ import org.springframework.http.CacheControl
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.reactive.config.EnableWebFlux
 import org.springframework.web.reactive.config.ResourceHandlerRegistry
 import org.springframework.web.reactive.config.WebFluxConfigurer
 import reactor.core.publisher.Mono
@@ -21,6 +22,7 @@ import reactor.core.publisher.Mono
  * @since 1.0.0
  */
 @SpringBootApplication
+@EnableWebFlux
 @EnableCircuitBreaker
 @RestController
 class GatewayApplication : WebFluxConfigurer {
