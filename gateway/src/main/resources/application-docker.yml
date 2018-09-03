@@ -19,8 +19,8 @@ spring:
       - id: clickbait_update_score_route
         uri: http://clickbait-update-service:8080
         predicates:
-        - Path=/clickbait/score
-        - Method=PUT
+        - Path=/clickbait/vote
+        - Method=POST
         filters:
         - name: Hystrix
           args:
