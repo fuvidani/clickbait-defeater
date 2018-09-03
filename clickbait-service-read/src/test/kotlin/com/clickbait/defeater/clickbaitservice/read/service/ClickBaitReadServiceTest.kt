@@ -3,7 +3,8 @@ package com.clickbait.defeater.clickbaitservice.read.service
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
 import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
 import com.clickbait.defeater.clickbaitservice.read.model.withLanguage
-import com.clickbait.defeater.clickbaitservice.read.service.language.detector.ILanguageDetector
+import com.clickbait.defeater.clickbaitservice.read.service.exception.ClickBaitReadServiceException
+import com.clickbait.defeater.clickbaitservice.read.service.language.checker.LanguageChecker
 import com.clickbait.defeater.clickbaitservice.read.service.score.IScoreService
 import com.clickbait.defeater.clickbaitservice.read.service.score.cache.IScoreCache
 import org.junit.Before
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.never
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit4.SpringRunner
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
@@ -35,13 +37,13 @@ class ClickBaitReadServiceTest {
     @MockBean
     private lateinit var scoreCache: IScoreCache
     @MockBean
-    private lateinit var languageDetector: ILanguageDetector
+    private lateinit var languageChecker: LanguageChecker
     private val examplePost =
         PostInstance("url", postText = listOf("You won't believe what Ronaldo did during his press conference"))
 
     @Before
     fun setUp() {
-        clickBaitReadService = ClickBaitReadService(scoreService, scoreCache, languageDetector)
+        clickBaitReadService = ClickBaitReadService(scoreService, scoreCache, languageChecker)
         Mockito.`when`(scoreCache.put(any(ClickBaitScore::class.java))).thenReturn(Mono.just(true))
     }
 
@@ -50,7 +52,7 @@ class ClickBaitReadServiceTest {
         val expectedScore = ClickBaitScore(examplePost.id, 0.87, "en")
 
         Mockito.`when`(scoreCache.tryAndGet(examplePost)).thenReturn(Mono.empty())
-        Mockito.`when`(languageDetector.detect(examplePost)).thenReturn(Mono.just(examplePost.withLanguage("en")))
+        Mockito.`when`(languageChecker.check(examplePost)).thenReturn(Mono.just(examplePost.withLanguage("en")))
         Mockito.`when`(scoreService.scorePostInstance(examplePost.withLanguage("en")))
             .thenReturn(Mono.just(expectedScore))
 
@@ -64,7 +66,7 @@ class ClickBaitReadServiceTest {
 
         Mockito.verify(scoreCache).tryAndGet(examplePost)
         Mockito.verify(scoreCache).put(expectedScore)
-        Mockito.verify(languageDetector).detect(examplePost)
+        Mockito.verify(languageChecker).check(examplePost)
         Mockito.verify(scoreService).scorePostInstance(examplePost.withLanguage("en"))
     }
 
@@ -84,14 +86,14 @@ class ClickBaitReadServiceTest {
 
         Mockito.verify(scoreCache).tryAndGet(examplePost)
         Mockito.verify(scoreCache, never()).put(any(ClickBaitScore::class.java))
-        Mockito.verify(languageDetector, never()).detect(any(PostInstance::class.java))
+        Mockito.verify(languageChecker, never()).check(any(PostInstance::class.java))
         Mockito.verify(scoreService, never()).scorePostInstance(any(PostInstance::class.java))
     }
 
     @Test
     fun `test scorePostInstance with mocked error in scoreService, should propagate it upstream`() {
         Mockito.`when`(scoreCache.tryAndGet(examplePost)).thenReturn(Mono.empty())
-        Mockito.`when`(languageDetector.detect(examplePost)).thenReturn(Mono.just(examplePost.withLanguage("en")))
+        Mockito.`when`(languageChecker.check(examplePost)).thenReturn(Mono.just(examplePost.withLanguage("en")))
         Mockito.`when`(scoreService.scorePostInstance(examplePost.withLanguage("en")))
             .thenReturn(Mono.error(IOException("Something happened")))
 
@@ -104,8 +106,26 @@ class ClickBaitReadServiceTest {
 
         Mockito.verify(scoreCache).tryAndGet(examplePost)
         Mockito.verify(scoreCache, never()).put(any(ClickBaitScore::class.java))
-        Mockito.verify(languageDetector).detect(examplePost)
+        Mockito.verify(languageChecker).check(examplePost)
         Mockito.verify(scoreService).scorePostInstance(examplePost.withLanguage("en"))
+    }
+
+    @Test
+    fun `GIVEN an unsupported language THEN correct exception event is propagated`() {
+        Mockito.`when`(scoreCache.tryAndGet(examplePost)).thenReturn(Mono.empty())
+        Mockito.`when`(languageChecker.check(examplePost)).thenReturn(
+            Mono.error(ClickBaitReadServiceException("Not supported language", HttpStatus.BAD_REQUEST)))
+
+        val publisher = clickBaitReadService.scorePostInstance(examplePost)
+        StepVerifier.create(publisher)
+            .expectSubscription()
+            .expectError(ClickBaitReadServiceException::class.java)
+            .log()
+            .verify()
+        Mockito.verify(scoreCache).tryAndGet(examplePost)
+        Mockito.verify(scoreCache, never()).put(any(ClickBaitScore::class.java))
+        Mockito.verify(languageChecker).check(examplePost)
+        Mockito.verify(scoreService, never()).scorePostInstance(any(PostInstance::class.java))
     }
 
     // Kotlin<->Java Mockito type inference workaround

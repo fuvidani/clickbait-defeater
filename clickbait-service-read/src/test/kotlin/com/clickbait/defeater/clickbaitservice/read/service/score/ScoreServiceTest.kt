@@ -2,6 +2,7 @@ package com.clickbait.defeater.clickbaitservice.read.service.score
 
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
 import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
+import com.clickbait.defeater.clickbaitservice.read.service.exception.ClickBaitReadServiceException
 import com.clickbait.defeater.clickbaitservice.read.service.score.client.IScoreServiceClient
 import org.junit.Before
 import org.junit.Test
@@ -50,14 +51,14 @@ class ScoreServiceTest {
     }
 
     @Test
-    fun `test scorePostInstance, mocking network error, should propagate correct downstream event`() {
+    fun `test scorePostInstance, mocking network error, should map to correct Exception event`() {
         Mockito.`when`(scoreServiceClient.scorePostInstance(any(PostInstance::class.java)))
             .thenReturn(Mono.error(IOException("Could not reach service")))
 
         val publisher = scoreService.scorePostInstance(PostInstance("url", "es", listOf("Hola!")))
         StepVerifier.create(publisher)
             .expectSubscription()
-            .expectError(IOException::class.java)
+            .expectError(ClickBaitReadServiceException::class.java)
             .log()
             .verify()
     }

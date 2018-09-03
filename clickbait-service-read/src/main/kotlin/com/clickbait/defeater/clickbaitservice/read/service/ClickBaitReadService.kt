@@ -2,7 +2,7 @@ package com.clickbait.defeater.clickbaitservice.read.service
 
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
 import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
-import com.clickbait.defeater.clickbaitservice.read.service.language.detector.ILanguageDetector
+import com.clickbait.defeater.clickbaitservice.read.service.language.checker.LanguageChecker
 import com.clickbait.defeater.clickbaitservice.read.service.score.IScoreService
 import com.clickbait.defeater.clickbaitservice.read.service.score.cache.IScoreCache
 import org.springframework.stereotype.Component
@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono
 class ClickBaitReadService(
     private val scoreService: IScoreService,
     private val scoreCache: IScoreCache,
-    private val languageDetector: ILanguageDetector
+    private val languageChecker: LanguageChecker
 ) : IClickBaitReadService {
 
     override fun scorePostInstance(instance: PostInstance): Mono<ClickBaitScore> {
@@ -29,9 +29,11 @@ class ClickBaitReadService(
             .tryAndGet(instance)
             .switchIfEmpty(
                 Mono.defer {
-                    languageDetector.detect(instance)
-                        .flatMap {
-                            scoreService.scorePostInstance(it)
+                    languageChecker
+                        .check(instance)
+                        .flatMap { postInstance ->
+                            scoreService
+                                .scorePostInstance(postInstance)
                                 .doOnNext { scoreCache.put(it).subscribe() }
                         }
                 }

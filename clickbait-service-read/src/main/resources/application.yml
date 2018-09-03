@@ -9,7 +9,12 @@ logging:
     org.springframework.security: INFO
 
 score.service:
+  protocol: http
   host: 37.252.185.77
   port: 5000
 
+# If you want the detector to use every built-in language, you may replace the following property with just "all"
+# Mind the possible performance impact.
 languages: en, de, es, fr, hu
+
+supported.languages: en
