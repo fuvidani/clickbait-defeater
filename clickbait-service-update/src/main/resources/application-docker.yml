@@ -1,0 +1,13 @@
+spring:
+  data:
+    mongodb:
+      host: mongo
+      port: 27017
+      password: clickBaitServicePassword
+      database: clickBaitServiceDatabase
+      username: clickBaitService
+
+content.service:
+  protocol: http
+  host: clickbait-gateway
+  port: 4000
