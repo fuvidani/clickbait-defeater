@@ -30,17 +30,6 @@ data class PostInstance(
     val targetParagraphs: List<String> = emptyList()
 )
 
-/*@Document(collection = "judgments")
-data class PostInstanceJudgments(
-    @Id
-    val id: String,
-    val truthJudgments: List<Double>
-)
-
-fun PostInstanceJudgments.toStats() : PostInstanceJudgmentStats {
-    return PostInstanceJudgmentStats(this.id, this.truthJudgments,0.0,0.0,0.0, CLASS_NO_CLICKBAIT)
-}*/
-
 data class PostInstanceJudgmentStats(
     val id: String,
     val truthJudgments: List<Double>,

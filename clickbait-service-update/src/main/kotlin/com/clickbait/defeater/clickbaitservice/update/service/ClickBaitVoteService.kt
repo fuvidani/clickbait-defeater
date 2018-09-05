@@ -21,6 +21,4 @@ interface ClickBaitVoteService {
     fun findVote(vote: ClickBaitVote): Mono<ClickBaitVote>
 
     fun findAllUserVotes(userId: String, pageable: Pageable): Flux<ClickBaitVote>
-
-    fun relayGatheredVotes()
 }
