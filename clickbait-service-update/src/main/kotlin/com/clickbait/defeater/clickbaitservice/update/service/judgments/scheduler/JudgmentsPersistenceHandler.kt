@@ -24,7 +24,7 @@ internal class JudgmentsPersistenceHandler(private val judgmentsRepository: Judg
             judgmentsRepository
                 .saveAll(judgmentsWrapper)
                 .doOnError { error -> DefaultClickBaitVoteService.logger.error(error) { "Judgments could not be stored" } }
-                .subscribeOn(Schedulers.parallel())
+                .subscribeOn(Schedulers.elastic())
                 .subscribe()
         }
     }

@@ -8,6 +8,7 @@ import com.clickbait.defeater.clickbaitservice.update.service.post.client.Conten
 import mu.KLogging
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 
 /**
  * <h4>About this class</h4>
@@ -28,14 +29,22 @@ class DefaultPostInstanceService(
         return postInstanceRepository.findById(id)
     }
 
-    override fun ensurePersistedPostInstance(vote: ClickBaitVote): Mono<PostInstance> {
+    override fun ensurePersistedPostInstance(vote: ClickBaitVote): Mono<Boolean> {
         return findById(vote.url)
+            .map { true }
             .switchIfEmpty(
                 Mono.defer {
                     contentExtractionServiceClient
                         .extractContent(vote.url)
+                        .publishOn(Schedulers.elastic())
+                        .subscribeOn(Schedulers.elastic())
                         .map { it.toPostInstance(vote.postText) }
-                        .flatMap { postInstanceRepository.save(it) }
+                        .flatMap {
+                            logger.info("Post Instance arrived, persisting...")
+                            postInstanceRepository.save(it)
+                        }
+                        .subscribe()
+                    Mono.just(true)
                 }
             )
     }

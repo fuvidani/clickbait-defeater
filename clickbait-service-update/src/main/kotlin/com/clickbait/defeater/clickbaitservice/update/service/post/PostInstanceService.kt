@@ -17,5 +17,5 @@ interface PostInstanceService {
 
     fun findById(id: String): Mono<PostInstance>
 
-    fun ensurePersistedPostInstance(vote: ClickBaitVote): Mono<PostInstance>
+    fun ensurePersistedPostInstance(vote: ClickBaitVote): Mono<Boolean>
 }

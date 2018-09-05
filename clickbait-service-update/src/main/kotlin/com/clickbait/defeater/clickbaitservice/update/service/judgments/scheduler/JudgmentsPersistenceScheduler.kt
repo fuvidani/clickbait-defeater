@@ -43,16 +43,17 @@ class JudgmentsPersistenceScheduler(
         val yesterday = Instant.now().minus(Duration.ofHours(schedulerProperties.hoursToConsiderUntilNow.toLong()))
         voteRepository
             .findByLastUpdateAfter(yesterday)
-            .publishOn(Schedulers.parallel())
+            .publishOn(Schedulers.elastic())
             .map { entity -> entity.toModel() }
             .groupBy { it.url }
             .flatMap { group -> group.collectList() }
             .filter { votes -> votes.size >= schedulerProperties.minNumberOfVotes }
             .flatMap { votes -> getCorrespondingPostInstanceOf(votes[0]).zipWith(Mono.just(votes)) }
+            .filter { it.t1.language.contains("en") }
             .map { obtainPostInstanceJudgments(it) }
             .collectList()
             .map { listOfAggregatedJudgments -> MultiplePostInstanceJudgments(listOfAggregatedJudgments) }
-            .subscribeOn(Schedulers.parallel())
+            .subscribeOn(Schedulers.elastic())
             .subscribe { judgmentsPersistenceHandler.persist(it) }
     }
 
