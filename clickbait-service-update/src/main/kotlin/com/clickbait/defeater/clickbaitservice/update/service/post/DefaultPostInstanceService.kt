@@ -2,9 +2,10 @@ package com.clickbait.defeater.clickbaitservice.update.service.post
 
 import com.clickbait.defeater.clickbaitservice.update.model.ClickBaitVote
 import com.clickbait.defeater.clickbaitservice.update.model.PostInstance
+import com.clickbait.defeater.clickbaitservice.update.model.content.toPostInstance
 import com.clickbait.defeater.clickbaitservice.update.persistence.PostInstanceRepository
 import com.clickbait.defeater.clickbaitservice.update.service.post.client.ContentExtractionServiceClient
-import com.clickbait.defeater.clickbaitservice.update.service.post.client.ContentMapper
+import mu.KLogging
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
@@ -33,14 +34,11 @@ class DefaultPostInstanceService(
                 Mono.defer {
                     contentExtractionServiceClient
                         .extractContent(vote.url)
-                        .map {
-                            ContentMapper.toCompletePostInstance(
-                                PostInstance(vote.url, postText = vote.postText),
-                                it
-                            )
-                        }
+                        .map { it.toPostInstance(vote.postText) }
                         .flatMap { postInstanceRepository.save(it) }
                 }
             )
     }
+
+    companion object : KLogging()
 }

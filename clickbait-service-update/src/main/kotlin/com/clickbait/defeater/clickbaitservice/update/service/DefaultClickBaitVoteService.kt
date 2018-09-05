@@ -44,46 +44,5 @@ class DefaultClickBaitVoteService(
             .map { it.toModel() }
     }
 
-    /*@Scheduled(cron = "\${service.relay.votes.cron}")
-    override fun relayGatheredVotes() {
-        val yesterday = Instant.now().minus(Duration.ofHours(24))
-        voteRepository
-            .findByLastUpdateAfter(yesterday)
-            .publishOn(Schedulers.parallel())
-            .groupBy { it.id.url }
-            .flatMap { group -> group.collectList() }
-            .filter { it.size >= 5 }
-            .flatMap { postInstanceService.findById(it[0].id.url).zipWith(Mono.just(it)) }
-            .map {
-                val votes = it.t2
-                val post = it.t1
-                val stats = PostInstanceJudgmentStats(
-                    post.id,
-                    votes.map { vote -> vote.vote },
-                    0.0,
-                    0.0,
-                    0.0,
-                    CLASS_NO_CLICKBAIT
-                )
-                val wrapper = PostInstanceJudgments(post, stats)
-                logger.info("Post Instance judgement stats: $wrapper")
-                wrapper
-            }
-            .collectList()
-            .map { MultiplePostInstanceJudgments(it) }
-            .subscribeOn(Schedulers.parallel())
-            .subscribe {
-                if (it.judgments.isEmpty()) {
-                    logger.info("No judgment stats to store")
-                } else {
-                    logger.info("${it.judgments.size} judgments to store. \n${it.judgments}")
-                    judgmentsRepository
-                        .saveAll(it)
-                        .doOnError { error -> logger.error(error) { "Judgments could not be stored" } }
-                        .subscribe()
-                }
-            }
-    }*/
-
     companion object : KLogging()
 }

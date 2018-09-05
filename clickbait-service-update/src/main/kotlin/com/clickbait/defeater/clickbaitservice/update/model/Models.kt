@@ -6,6 +6,8 @@ import java.io.Serializable
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 /**
  * <h4>About this class</h4>
@@ -41,6 +43,7 @@ data class PostInstanceJudgmentStats(
 
 const val CLASS_CLICKBAIT = "clickbait"
 const val CLASS_NO_CLICKBAIT = "no-clickbait"
+const val SERVICE_ZONE_ID = "Europe/Vienna"
 
 data class PostInstanceJudgments(
     val postInstance: PostInstance,
@@ -56,7 +59,7 @@ data class ClickBaitVote(
     val url: String,
     val vote: Double = 0.0,
     val postText: List<String> = emptyList(),
-    val lastUpdate: Instant = Instant.MIN
+    val lastUpdate: ZonedDateTime = ZonedDateTime.now()
 )
 
 fun ClickBaitVote.toEntity(): ClickBaitVoteEntity {
@@ -88,5 +91,6 @@ data class ClickBaitVoteKey(
 ) : Serializable
 
 fun ClickBaitVoteEntity.toModel(): ClickBaitVote {
-    return ClickBaitVote(this.id.userId, this.id.url, this.vote, lastUpdate = this.lastUpdate)
+    return ClickBaitVote(this.id.userId, this.id.url, this.vote, lastUpdate = this.lastUpdate.atZone(ZoneId.of(
+        SERVICE_ZONE_ID)))
 }

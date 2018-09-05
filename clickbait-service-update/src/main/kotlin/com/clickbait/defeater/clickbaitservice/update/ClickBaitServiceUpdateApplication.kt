@@ -1,6 +1,7 @@
 package com.clickbait.defeater.clickbaitservice.update
 
 import com.clickbait.defeater.clickbaitservice.update.persistence.JudgmentsRepository
+import com.clickbait.defeater.clickbaitservice.update.service.judgments.scheduler.SchedulerProperties
 import com.clickbait.defeater.clickbaitservice.update.service.post.client.ContentExtractionServiceClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
@@ -38,6 +39,14 @@ class ClickBaitServiceUpdateApplication {
     @Bean
     fun taskScheduler(): TaskScheduler {
         return ConcurrentTaskScheduler()
+    }
+
+    @Bean
+    fun schedulerProperties(
+        @Value("\${service.relay.votes.hours.until.now}") hours: Int,
+        @Value("\${service.relay.votes.minimum.votes}") minVotes: Int
+    ): SchedulerProperties {
+        return SchedulerProperties(hours, minVotes)
     }
 
     @Bean

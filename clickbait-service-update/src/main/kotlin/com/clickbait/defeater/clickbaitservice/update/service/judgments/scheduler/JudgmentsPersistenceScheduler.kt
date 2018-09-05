@@ -30,6 +30,7 @@ import java.time.Instant
 class JudgmentsPersistenceScheduler(
     private val voteRepository: ClickBaitVoteRepository,
     private val postInstanceService: PostInstanceService,
+    private val schedulerProperties: SchedulerProperties,
     judgmentsRepository: JudgmentsRepository
 ) {
 
@@ -39,14 +40,14 @@ class JudgmentsPersistenceScheduler(
     @Scheduled(cron = "\${service.relay.votes.cron}")
     fun persistVotesToJudgmentRepository() {
         logger.info("Begin scheduled persist vote task")
-        val yesterday = Instant.now().minus(Duration.ofHours(24))
+        val yesterday = Instant.now().minus(Duration.ofHours(schedulerProperties.hoursToConsiderUntilNow.toLong()))
         voteRepository
             .findByLastUpdateAfter(yesterday)
             .publishOn(Schedulers.parallel())
             .map { entity -> entity.toModel() }
             .groupBy { it.url }
             .flatMap { group -> group.collectList() }
-            .filter { votes -> votes.size >= 5 }
+            .filter { votes -> votes.size >= schedulerProperties.minNumberOfVotes }
             .flatMap { votes -> getCorrespondingPostInstanceOf(votes[0]).zipWith(Mono.just(votes)) }
             .map { obtainPostInstanceJudgments(it) }
             .collectList()
