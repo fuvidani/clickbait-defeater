@@ -1,0 +1,38 @@
+.widget-container {
+    padding: 8px;
+    box-shadow: 0px 0px 1px 0px rgba(138,138,138,1);
+    border-radius: 3px;
+    margin-top: 30px;
+    margin-bottom: 5px;
+    background-color: white;
+}
+
+.score-form {
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.score-slider {
+    width: 100%;
+}
+
+.predict-container {
+    width: 83%;
+    display: inline-block;
+    float: left;
+}
+
+.slider {
+    width: 83% !important;
+}
+
+.widget-slider {
+    padding-left: 10px;
+    padding-right: 10px;
+    /*display: inline-block;*/
+    /*float: left;*/
+}
+
+.extract-button {
+    margin-top: 13px;
+}
