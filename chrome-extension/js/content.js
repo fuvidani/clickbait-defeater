@@ -12,26 +12,47 @@ const callback = function (mutationsList) {
                     // filter out sponsored posts
                     let sp, on, so, red = false;
 
-                    const div_list = mutation.target.getElementsByTagName('div');
-                    for (let div of div_list) {
-                        switch (div.innerText) {
-                            case "Sp": {
-                                sp = true;
-                                break;
+                    // const div_list = mutation.target.getElementsByTagName('div');
+                    // for (let div of div_list) {
+                    //     switch (div.innerText) {
+                    //         case "Sp": {
+                    //             sp = true;
+                    //             break;
+                    //         }
+                    //         case "on": {
+                    //             on = true;
+                    //             break;
+                    //         }
+                    //         case "so": {
+                    //             so = true;
+                    //             break;
+                    //         }
+                    //         case "red": {
+                    //             red = true;
+                    //             break;
+                    //         }
+                    //     }
+                    // }
+                    const spanList = mutation.target.getElementsByTagName('span');
+                    for (let span of spanList) {
+                            switch (span.innerText) {
+                                case "Sp": {
+                                    if (span.offsetParent !== null) sp = true;
+                                    break;
+                                }
+                                case "on": {
+                                    if (span.offsetParent !== null) on = true;
+                                    break;
+                                }
+                                case "so": {
+                                    if (span.offsetParent !== null) so = true;
+                                    break;
+                                }
+                                case "red": {
+                                    if (span.offsetParent !== null) red = true;
+                                    break;
+                                }
                             }
-                            case "on": {
-                                on = true;
-                                break;
-                            }
-                            case "so": {
-                                so = true;
-                                break;
-                            }
-                            case "red": {
-                                red = true;
-                                break;
-                            }
-                        }
                     }
 
                     if (sp && on && so && red) {
@@ -47,10 +68,23 @@ const callback = function (mutationsList) {
 
                             const extractedUrl = extractUrl(a_list[i].href);
                             console.log("extracted url: " + extractedUrl);
-                            // document.getElementById(mutation.target.id + "_extract").onclick = function () {
-                            //     const win = window.open(extractedUrl, '_blank');
-                            //     win.focus();
-                            // };
+                            const extractButton = document.getElementById(mutation.target.id + "_extract");
+                            extractButton.onclick = function () {
+                                // const win = window.open(extractedUrl, '_blank');
+                                // win.focus();
+                                chrome.runtime.sendMessage({
+                                    message: "extract_content",
+                                    data: {url: extractedUrl}
+                                }, function (response) {
+                                    const title = response.contents.filter(content => content.contentType === "META_DATA" && content.type === "TITLE")[0].data;
+                                    console.log("TITLE: " + title);
+                                    $(extractButton).attr('data-original-title', title);
+                                    $(extractButton).popover('show');
+                                    const link = document.getElementById(mutation.target.id + "_popoverLink");
+                                    link.innerText = extractedUrl;
+                                    link.setAttribute("href", extractedUrl);
+                                });
+                            };
 
                             const p_list = mutation.target.getElementsByTagName("p");
                             let postTexts = [];
@@ -186,8 +220,10 @@ const createWidget = function (post_id, mutationTarget) {
     button.id = post_id + "_extract";
     button.setAttribute("type","button");
     button.setAttribute("data-toggle", "popover");
-    button.setAttribute("title", "Popover title");
-    button.setAttribute("data-content", "And here's some amazing content. It's very engaging. Right?");
+    // button.setAttribute("data-trigger", "focus");
+    button.setAttribute("data-html", "true");
+    button.setAttribute("title", "Title");
+    button.setAttribute("data-content", '<div class=\"loader\"></div><a href="#" target="_blank" id=' + post_id + "_popoverLink" + '></a>');
     button.classList.add("btn");
     button.classList.add("btn-info");
     button.classList.add("pull-right");
@@ -198,6 +234,10 @@ const createWidget = function (post_id, mutationTarget) {
     widgetDiv.appendChild(predictDiv);
     widgetDiv.appendChild(extractDiv);
     widgetDiv.appendChild(sliderDiv);
+
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    });
 
     post_ids.push(post_id);
     mutationTarget.parentNode.insertBefore(widgetDiv, mutationTarget);
