@@ -40,7 +40,8 @@
         "js/content.js",
         "styles/jquery-3.3.1.min.js",
         "styles/bootstrap.min.js",
-        "styles/bootstrap-slider.min.js"
+        "styles/bootstrap-slider.min.js",
+        "styles/pinit.js"
       ],
       "css": [
         "styles/widget.css",
