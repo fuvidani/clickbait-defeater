@@ -64,7 +64,24 @@ const callback = function (mutationsList) {
                                             $(extractButton).attr('data-original-title', title);
                                         }
 
-                                        $(extractButton).attr('data-content', createCarousel(mutation.target.id, response.contents).outerHTML);
+                                        const texts = response.contents.filter(content => content.contentType === "TEXT");
+
+                                        let textElement = null;
+                                        if (texts.length > 0) {
+                                            const text = texts[0].data;
+                                            textElement = document.createElement("p");
+                                            textElement.innerText = text;
+                                        }
+
+                                        let contentHtml = "";
+                                        if (textElement) {
+                                            contentHtml += textElement.outerHTML;
+                                        }
+
+                                        const carouselElement = createCarousel(mutation.target.id, response.contents);
+                                        contentHtml += carouselElement.outerHTML;
+
+                                        $(extractButton).attr('data-content', contentHtml);
                                         $(extractButton).popover('show');
                                         $('.carousel').carousel();
 
@@ -189,6 +206,7 @@ const createCarousel = function (postId, contents) {
     const itemWrapper = document.createElement("div");
     itemWrapper.classList.add("carousel-inner");
     itemWrapper.setAttribute("role", "listbox");
+    itemWrapper.classList.add("extract-item-wrapper");
 
     <!-- Controls -->
     const leftControl = document.createElement("a");
@@ -220,12 +238,19 @@ const createCarousel = function (postId, contents) {
             itemWrapper.appendChild(createIframeItem(content.src + "embed", counter === 0));
             injected = true;
         } else if (content.contentType === "MEDIA" && content.type === "IMAGE") {
-            itemWrapper.appendChild(createImageItem(content.src));
+            itemWrapper.appendChild(createImageItem(content.src, counter === 0));
             injected = true;
         } else if (content.contentType === "MEDIA" && content.type === "VIDEO") {
             itemWrapper.appendChild(createIframeItem(content.src, counter === 0));
             injected = true;
+        } else if (content.contentType === "SOCIAL_MEDIA" && content.type === "TWITTER") {
+            itemWrapper.appendChild(createIframeItem("https://twitframe.com/show?url=" + content.src, counter === 0));
+            injected = true;
+        } else if (content.contentType === "HTML") {
+            itemWrapper.appendChild(createHtmlItem(content.html, counter === 0));
+            injected = true;
         }
+
         if (injected) {
             const indicator = document.createElement("li");
             indicator.setAttribute("data-target", "#" + carouselContainer.id);
@@ -236,7 +261,6 @@ const createCarousel = function (postId, contents) {
             indicatorList.appendChild(indicator);
             counter++;
         }
-        console.log(content);
     }
 
     carouselContainer.appendChild(indicatorList);
@@ -245,6 +269,16 @@ const createCarousel = function (postId, contents) {
     carouselContainer.appendChild(rightControl);
 
     return carouselContainer;
+};
+
+const createHtmlItem = function (htmlString, active) {
+    const item = document.createElement("div");
+    item.classList.add("item");
+    if (active) item.classList.add("active");
+
+    item.innerHTML = htmlString;
+
+    return item;
 };
 
 const createIframeItem = function (src, active) {
@@ -257,24 +291,25 @@ const createIframeItem = function (src, active) {
     const iframe = document.createElement("iframe");
     iframe.setAttribute("src", src);
     iframe.setAttribute("width", "400");
-    iframe.setAttribute("height", "480");
+    iframe.setAttribute("height", "800");
     iframe.setAttribute("frameborder", "0");
     iframe.setAttribute("scrolling", "no");
     iframe.setAttribute("allowtransparency", "true");
-    iframe.classList.add("extact-iframe");
+    iframe.classList.add("extract-iframe");
 
     const caption = document.createElement("div");
     caption.classList.add("carousel-caption");
 
     item.appendChild(iframe);
-    item.appendChild(caption);
+    // item.appendChild(caption);
 
     return item;
 };
 
-const createImageItem = function (src) {
+const createImageItem = function (src, active) {
     const item = document.createElement("div");
     item.classList.add("item");
+    if (active) item.classList.add("active");
 
     const img = document.createElement("img");
     img.classList.add("extract-img");
@@ -284,7 +319,7 @@ const createImageItem = function (src) {
     caption.classList.add("carousel-caption");
 
     item.appendChild(img);
-    item.appendChild(caption);
+    // item.appendChild(caption);
 
     return item;
 };

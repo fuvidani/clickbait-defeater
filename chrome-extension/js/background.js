@@ -25,8 +25,8 @@ chrome.runtime.onMessage.addListener(
                 };
                 xhr.open("POST", "http://37.252.185.77:5000/predict", true);
                 xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.send(request.data);
-                // setTimeout(function(){ xhr.send(request.data); }, 3000);
+                // xhr.send(request.data);
+                setTimeout(function(){ xhr.send(request.data); }, 3000);
 
                 return true;
             }
@@ -77,6 +77,15 @@ chrome.runtime.onMessage.addListener(
                             "contentType": "META_DATA"
                         },
                         {
+                            "type": "INSTAGRAM",
+                            "src": "https://www.instagram.com/p/BnNs_UHFQuZ/",
+                            "contentType": "SOCIAL_MEDIA"
+                        },
+                        {
+                            "data": "With Balotelli coming back into the room and in his own little world, the Napoli man jumped out on the former Liverpool , scaring him shitless and leading to him nearly dropping his phone in panic before he saw the funny side.",
+                            "contentType": "TEXT"
+                        },
+                        {
                             "type": "DESCRIPTION",
                             "data": "The first round of Champions League games will take place on September 11-12th. ",
                             "contentType": "META_DATA"
@@ -102,11 +111,6 @@ chrome.runtime.onMessage.addListener(
                             "contentType": "SOCIAL_MEDIA"
                         },
                         {
-                            "type": "INSTAGRAM",
-                            "src": "https://www.instagram.com/p/BnNs_UHFQuZ/",
-                            "contentType": "SOCIAL_MEDIA"
-                        },
-                        {
                             "type": "IMAGE",
                             "src": "http://beta.ems.ladbiblegroup.com/s3/content/808x455/bd733c055b8890b98f4e7640882ccb55.png",
                             "contentType": "MEDIA"
@@ -128,8 +132,8 @@ chrome.runtime.onMessage.addListener(
                     ]
                 };
 
-                senderResponse(testResponseString);
-                // setTimeout(function(){ senderResponse(testResponseString); }, 3000);
+                // senderResponse(testResponseString);
+                setTimeout(function(){ senderResponse(testResponseString); }, 3000);
                 return true;
             }
             default:
