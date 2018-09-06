@@ -72,7 +72,29 @@ const callback = function (mutationsList) {
                                     data: JSON.stringify({postText: postTexts, id: extractedUrl})
                                 }, function (response) {
                                     if (response.clickbaitScore) {
-                                        // document.getElementById(mutation.target.id + "_predict").innerText = (response.clickbaitScore * 100).toFixed(2) + "%";
+                                        const progressBar = document.getElementById(mutation.target.id + "_predict");
+                                        const scorePercent = (response.clickbaitScore * 100).toFixed(2);
+                                        progressBar.innerText = scorePercent + "%";
+                                        progressBar.classList.remove("active");
+                                        progressBar.setAttribute("aria-valuenow", scorePercent.toString());
+                                        progressBar.setAttribute("style", "width: " + scorePercent.toString() + "%");
+                                        progressBar.classList.remove("progress-bar-striped");
+                                        progressBar.classList.remove("progress-bar-info");
+
+                                        if (scorePercent < 34) {
+                                            progressBar.classList.add("progress-bar-success");
+                                        } else if (scorePercent >= 34 && scorePercent < 67) {
+                                            progressBar.classList.add("progress-bar-warning");
+                                        } else if (scorePercent >= 67) {
+                                            progressBar.classList.add("progress-bar-danger");
+                                        }
+                                    } else if (response.message) {
+                                        const progressBar = document.getElementById(mutation.target.id + "_predict");
+                                        progressBar.innerText = response.message;
+                                        progressBar.classList.remove("active");
+                                        progressBar.setAttribute("aria-valuenow", "100");
+                                        progressBar.setAttribute("style", "width: 100%");
+                                        progressBar.classList.remove("progress-bar-striped");
                                     }
                                 });
                             }
@@ -125,8 +147,10 @@ const callback = function (mutationsList) {
     }
 };
 
-const observer = new MutationObserver(callback);
-observer.observe(targetNode, config);
+if (targetNode) {
+    const observer = new MutationObserver(callback);
+    observer.observe(targetNode, config);
+}
 
 const createWidget = function (post_id, mutationTarget) {
     const widgetDiv = document.createElement('div');

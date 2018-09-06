@@ -26,6 +26,8 @@ chrome.runtime.onMessage.addListener(
                 xhr.open("POST", "http://37.252.185.77:5000/predict", true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.send(request.data);
+                // setTimeout(function(){ xhr.send(request.data); }, 3000);
+
                 return true;
             }
             case 'score_article': {
