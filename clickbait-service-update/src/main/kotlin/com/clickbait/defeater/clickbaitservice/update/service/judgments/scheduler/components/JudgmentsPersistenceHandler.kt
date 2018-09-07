@@ -1,8 +1,8 @@
-package com.clickbait.defeater.clickbaitservice.update.service.judgments.scheduler
+package com.clickbait.defeater.clickbaitservice.update.service.judgments.scheduler.components
 
 import com.clickbait.defeater.clickbaitservice.update.model.MultiplePostInstanceJudgments
 import com.clickbait.defeater.clickbaitservice.update.persistence.JudgmentsRepository
-import com.clickbait.defeater.clickbaitservice.update.service.DefaultClickBaitVoteService
+import mu.KLogging
 import reactor.core.scheduler.Schedulers
 
 /**
@@ -18,14 +18,16 @@ internal class JudgmentsPersistenceHandler(private val judgmentsRepository: Judg
 
     internal fun persist(judgmentsWrapper: MultiplePostInstanceJudgments) {
         if (judgmentsWrapper.judgments.isEmpty()) {
-            DefaultClickBaitVoteService.logger.info("No judgment stats to store")
+            logger.info("No judgment stats to store")
         } else {
-            DefaultClickBaitVoteService.logger.info("${judgmentsWrapper.judgments.size} judgmentsWrapper to store.")
+            logger.info("${judgmentsWrapper.judgments.size} judgmentsWrapper to store.")
             judgmentsRepository
                 .saveAll(judgmentsWrapper)
-                .doOnError { error -> DefaultClickBaitVoteService.logger.error(error) { "Judgments could not be stored" } }
+                .doOnError { error -> logger.error(error) { "Judgments could not be stored" } }
                 .subscribeOn(Schedulers.elastic())
                 .subscribe()
         }
     }
+
+    companion object : KLogging()
 }

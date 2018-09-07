@@ -1,12 +1,11 @@
 package com.clickbait.defeater.clickbaitservice.update.service.judgments.scheduler
 
-import com.clickbait.defeater.clickbaitservice.update.model.ClickBaitVote
-import com.clickbait.defeater.clickbaitservice.update.model.MultiplePostInstanceJudgments
-import com.clickbait.defeater.clickbaitservice.update.model.PostInstance
-import com.clickbait.defeater.clickbaitservice.update.model.PostInstanceJudgments
-import com.clickbait.defeater.clickbaitservice.update.model.toModel
+/* ktlint-disable no-wildcard-imports */
+import com.clickbait.defeater.clickbaitservice.update.model.*
 import com.clickbait.defeater.clickbaitservice.update.persistence.ClickBaitVoteRepository
 import com.clickbait.defeater.clickbaitservice.update.persistence.JudgmentsRepository
+import com.clickbait.defeater.clickbaitservice.update.service.judgments.scheduler.components.JudgmentsAggregator
+import com.clickbait.defeater.clickbaitservice.update.service.judgments.scheduler.components.JudgmentsPersistenceHandler
 import com.clickbait.defeater.clickbaitservice.update.service.post.PostInstanceService
 import mu.KLogging
 import org.springframework.scheduling.annotation.Scheduled
@@ -65,9 +64,23 @@ class JudgmentsPersistenceScheduler(
         val post = tuple.t1
         val votes = tuple.t2
         val stats = judgmentsAggregator.aggregate(votes)
-        val result = PostInstanceJudgments(post, stats)
+        val result = PostInstanceJudgments(post, mapAggregatorResultToObject(post, stats))
         logger.info("Post Instance judgement stats: $result")
         return result
+    }
+
+    private fun mapAggregatorResultToObject(
+        post: PostInstance,
+        stats: JudgmentsAggregator.JudgmentStats
+    ): PostInstanceJudgmentStats {
+        return PostInstanceJudgmentStats(
+            post.id,
+            stats.truthJudgments,
+            stats.truthMean,
+            stats.truthMedian,
+            stats.truthMode,
+            stats.truthClass
+        )
     }
 
     companion object : KLogging()
