@@ -43,6 +43,9 @@ class DefaultPostInstanceService(
                             logger.info("Post Instance arrived, persisting...")
                             postInstanceRepository.save(it)
                         }
+                        .doOnError {
+                            logger.error(it) { "Could not successfully invoke Content-Extraction-Service or persist PostInstance in the repository" }
+                        }
                         .subscribe()
                     Mono.just(true)
                 }

@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: test
+
+service.relay.votes:
+  cron: "0 0 0 * * *"
+  minimum.votes: 5
+  hours.until.now: 24
+
+ml.service:
+  protocol: http
+  host: 37.252.185.77
+  port: 5000
+
+content.service:
+  protocol: http
+  host: localhost
+  port: 4000
+
