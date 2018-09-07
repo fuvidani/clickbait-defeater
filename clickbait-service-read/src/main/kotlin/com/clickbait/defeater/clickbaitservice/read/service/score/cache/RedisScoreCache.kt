@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono
  * @since 1.0.0
  */
 @Component
-class RedisScoreCache(private val valueOperations: ReactiveValueOperations<String, ClickBaitScore>) : IScoreCache {
+class RedisScoreCache(private val valueOperations: ReactiveValueOperations<String, ClickBaitScore>) : ScoreCache {
 
     override fun tryAndGet(instance: PostInstance): Mono<ClickBaitScore> {
         return valueOperations.get(instance.id)

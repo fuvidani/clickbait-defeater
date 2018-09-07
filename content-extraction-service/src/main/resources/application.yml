@@ -8,3 +8,5 @@ logging:
   level:
     org.springframework.security: INFO
 
+
+mercury.web.parser.api.key: md2aEwbPiSoeKVmNzAMUOY8rjPPvJAJWf3wNTUsE

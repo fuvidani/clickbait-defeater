@@ -17,7 +17,7 @@ import retrofit2.http.POST
  * @version 1.0.0
  * @since 1.0.0
  */
-interface IScoreServiceClient {
+interface ScoreServiceClient {
 
     @Headers(
         "Accept: ${MediaType.APPLICATION_JSON_UTF8_VALUE}",

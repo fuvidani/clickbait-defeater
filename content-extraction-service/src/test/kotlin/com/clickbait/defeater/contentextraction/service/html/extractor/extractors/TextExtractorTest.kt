@@ -18,7 +18,7 @@ class TextExtractorTest : AbstractExtractorTest(BoilerPipeTextExtractor()) {
 
     @Test
     fun `Given an html source, THEN extractor returns relevant text content`() {
-        val page = WebPageSource("someUrl", "someTitle", testHtml)
+        val page = WebPageSource("someUrl", "someUrl", "someTitle", testHtml)
         val publisher = extractor.extract(page, chain)
         StepVerifier.create(publisher)
             .expectSubscription()

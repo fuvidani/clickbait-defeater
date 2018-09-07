@@ -1,6 +1,7 @@
 package com.clickbait.defeater.contentextraction.service.html
 
 import com.clickbait.defeater.contentextraction.model.WebPage
+import com.clickbait.defeater.contentextraction.model.WebPageSource
 import reactor.core.publisher.Mono
 
 /**
@@ -14,5 +15,5 @@ import reactor.core.publisher.Mono
  */
 interface HtmlProvider {
 
-    fun get(webPage: WebPage): Mono<String>
+    fun get(webPage: WebPage): Mono<WebPageSource>
 }

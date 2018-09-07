@@ -19,6 +19,7 @@ class TestData {
         fun getSampleContentWrapper(url: String): ContentWrapper {
             return ContentWrapper(
                 url,
+                url,
                 listOf(
                     getSampleTextContent(),
                     getSampleImageMediaContent(),

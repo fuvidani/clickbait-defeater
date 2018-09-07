@@ -2,9 +2,9 @@ package com.clickbait.defeater.contentextraction.service.html.extractor
 
 /* ktlint-disable no-wildcard-imports */
 import com.clickbait.defeater.contentextraction.model.*
-import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.BoilerPipeImageExtractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.image.BoilerPipeImageExtractor
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.BoilerPipeTextExtractor
-import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.JsoupVideoExtractor
+import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video.*
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.metadata.JsoupMetaDataExtractor
 import org.jsoup.Jsoup
 import org.junit.Before
@@ -35,13 +35,15 @@ class ExtractorChainTest {
             BoilerPipeTextExtractor(),
             BoilerPipeImageExtractor(),
             JsoupMetaDataExtractor(),
-            JsoupVideoExtractor()
+            JsoupVideoExtractor(JsoupNaiveIFrameVideoExtractor(), JsoupBrightCoveVideoExtractor(),
+                JsoupYouTubeVideoExtractor(), JsoupCnetVideoExtractor()
+            )
         ))
     }
 
     @Test
     fun `Given a valid input AND an extractor chain, THEN chain gets traversed in order`() {
-        val source = WebPageSource("url", "title", testHtml)
+        val source = WebPageSource("redirectUrl", "redirectUrl", "title", testHtml)
         val publisher = chain.extract(source)
         StepVerifier.create(publisher)
             .expectSubscription()

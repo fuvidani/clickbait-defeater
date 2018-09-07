@@ -23,7 +23,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
         JsonSubTypes.Type(value = TextContent::class, name = "TEXT"),
         JsonSubTypes.Type(value = MediaContent::class, name = "MEDIA"),
         JsonSubTypes.Type(value = SocialMediaContent::class, name = "SOCIAL_MEDIA"),
-        JsonSubTypes.Type(value = MetaDataContent::class, name = "META_DATA")]
+        JsonSubTypes.Type(value = MetaDataContent::class, name = "META_DATA"),
+        JsonSubTypes.Type(value = HtmlContent::class, name = "HTML")]
 )
 interface Content {
 
@@ -34,5 +35,6 @@ enum class ContentType {
     TEXT,
     MEDIA,
     SOCIAL_MEDIA,
-    META_DATA
+    META_DATA,
+    HTML
 }

@@ -1,7 +1,7 @@
 package com.clickbait.defeater.clickbaitservice.read
 
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
-import com.clickbait.defeater.clickbaitservice.read.service.score.client.IScoreServiceClient
+import com.clickbait.defeater.clickbaitservice.read.service.score.client.ScoreServiceClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
@@ -81,22 +81,32 @@ class ClickBaitServiceReadApplication {
 
     @Bean
     fun scoreServiceClient(
+        @Value("\${score.service.protocol}") protocol: String,
         @Value("\${score.service.host}") host: String,
         @Value("\${score.service.port}") port: String
-    ): IScoreServiceClient {
+    ): ScoreServiceClient {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://$host:$port/api/")
+            .baseUrl("$protocol://$host:$port/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(ReactorCallAdapterFactory.create())
             .build()
-        return retrofit.create(IScoreServiceClient::class.java)
+        return retrofit.create(ScoreServiceClient::class.java)
     }
 
     @Bean
     fun languageDetector(@Value("\${languages}") languages: Array<String>): LanguageDetector {
-        val languageProfiles = LanguageProfileReader().read(languages.asList())
+        val languageProfiles = if (languages[0] == "all") {
+            LanguageProfileReader().readAllBuiltIn()
+        } else {
+            LanguageProfileReader().read(languages.asList())
+        }
         return LanguageDetectorBuilder.create(NgramExtractors.standard())
             .withProfiles(languageProfiles)
             .build()
+    }
+
+    @Bean
+    fun supportedLanguages(@Value("\${supported.languages}") supportedLanguages: Array<String>): List<String> {
+        return supportedLanguages.asList()
     }
 }

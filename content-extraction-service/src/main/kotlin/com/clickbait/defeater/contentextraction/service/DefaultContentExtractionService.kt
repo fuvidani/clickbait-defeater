@@ -1,11 +1,9 @@
 package com.clickbait.defeater.contentextraction.service
 
 import com.clickbait.defeater.contentextraction.model.ContentWrapper
-import com.clickbait.defeater.contentextraction.model.PostInstance
 import com.clickbait.defeater.contentextraction.model.WebPage
 import com.clickbait.defeater.contentextraction.persistence.ContentDataStore
 import com.clickbait.defeater.contentextraction.service.handler.ContentExtractionHandler
-import com.clickbait.defeater.contentextraction.service.mapper.ContentMapper
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
@@ -25,18 +23,13 @@ class DefaultContentExtractionService(
 ) : ContentExtractionService {
 
     override fun extractContent(webPage: WebPage): Mono<ContentWrapper> {
-        return store.findById(webPage.url)
+        return store
+            .findById(webPage.url)
             .switchIfEmpty(
                 Mono.defer {
                     handler.extract(webPage)
-                        .collectList()
-                        .flatMap { store.save(ContentWrapper(webPage.url, it)) }
+                        .flatMap { store.save(it) }
                 }
             )
-    }
-
-    override fun getCompletePostInstanceOf(instance: PostInstance): Mono<PostInstance> {
-        return extractContent(WebPage(instance.id, instance.targetTitle))
-            .map { ContentMapper.toCompletePostInstance(instance, it) }
     }
 }
