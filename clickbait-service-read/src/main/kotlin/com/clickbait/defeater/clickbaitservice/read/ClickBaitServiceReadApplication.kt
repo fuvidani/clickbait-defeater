@@ -86,7 +86,7 @@ class ClickBaitServiceReadApplication {
         @Value("\${score.service.port}") port: String
     ): ScoreServiceClient {
         val retrofit = Retrofit.Builder()
-            .baseUrl("$protocol://$host:$port/api/")
+            .baseUrl("$protocol://$host:$port/")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(ReactorCallAdapterFactory.create())
             .build()
