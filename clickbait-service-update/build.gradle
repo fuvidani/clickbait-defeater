@@ -1,11 +1,17 @@
 plugins {
     id "org.asciidoctor.convert" version "1.5.3"
+    id 'com.sourcemuse.mongo' version '1.0.6'
 }
 
 dependencies {
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.1.RELEASE'
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
-    compile 'org.springframework.data:spring-data-redis:2.1.0.M3'
+    compile 'com.squareup.retrofit2:retrofit:2.4.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.4.0'
+    compile 'com.squareup.retrofit2:converter-jackson:2.4.0'
+    compile 'com.jakewharton.retrofit:retrofit2-reactor-adapter:2.1.0'
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+    testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.1.1'
     testCompile 'org.springframework.restdocs:spring-restdocs-webtestclient:2.0.1.RELEASE'
 }
 
@@ -15,9 +21,24 @@ ext {
 
 test {
     outputs.dir snippetsDir
+    useJUnit {
+        excludeCategories 'com.clickbait.defeater.clickbaitservice.update.config.DbIntegrationTest'
+    }
 }
 
 asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
+}
+
+task integrationTest(type: Test) {
+    runWithMongoDb = true
+    useJUnit {
+        includeCategories 'com.clickbait.defeater.clickbaitservice.update.config.DbIntegrationTest'
+    }
+}
+
+mongo {
+    port = 'RANDOM'
+    logging = 'console'
 }
