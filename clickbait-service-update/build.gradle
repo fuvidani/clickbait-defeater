@@ -6,7 +6,6 @@ plugins {
 dependencies {
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.1.RELEASE'
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
-    //compile 'org.springframework.data:spring-data-redis:2.1.0.M3'
     compile 'com.squareup.retrofit2:retrofit:2.4.0'
     compile 'com.squareup.retrofit2:converter-gson:2.4.0'
     compile 'com.squareup.retrofit2:converter-jackson:2.4.0'
@@ -22,6 +21,9 @@ ext {
 
 test {
     outputs.dir snippetsDir
+    useJUnit {
+        excludeCategories 'com.clickbait.defeater.clickbaitservice.update.config.DbIntegrationTest'
+    }
 }
 
 asciidoctor {
@@ -31,6 +33,9 @@ asciidoctor {
 
 task integrationTest(type: Test) {
     runWithMongoDb = true
+    useJUnit {
+        includeCategories 'com.clickbait.defeater.clickbaitservice.update.config.DbIntegrationTest'
+    }
 }
 
 mongo {

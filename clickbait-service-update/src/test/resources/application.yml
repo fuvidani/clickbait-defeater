@@ -16,4 +16,3 @@ content.service:
   protocol: http
   host: localhost
   port: 8888
-
