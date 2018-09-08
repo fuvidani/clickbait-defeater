@@ -9,11 +9,11 @@ service.relay.votes:
 
 ml.service:
   protocol: http
-  host: 37.252.185.77
-  port: 5000
+  host: localhost
+  port: 8888
 
 content.service:
   protocol: http
   host: localhost
-  port: 4000
+  port: 8888
 
