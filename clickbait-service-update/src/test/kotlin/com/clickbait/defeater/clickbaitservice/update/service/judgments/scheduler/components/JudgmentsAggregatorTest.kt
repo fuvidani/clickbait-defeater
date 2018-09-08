@@ -40,6 +40,15 @@ class JudgmentsAggregatorTest {
 
     @Test
     fun `GIVEN a list of genuine votes, THEN aggregator returns correctly calculated results`() {
+        val votes = getListOfVotes(0.0, 0.0, 0.0, 0.0, 0.0)
+        val expectedStats = JudgmentsAggregator.JudgmentStats(votes.map { it.vote }, 0.0, 0.0, 0.0, CLASS_NO_CLICKBAIT)
+        val actualStats = aggregator.aggregate(votes)
+
+        assertStatsEqual(expectedStats, actualStats)
+    }
+
+    @Test
+    fun `GIVEN a list of genuine votes, THEN aggregator returns correctly calculated results 2`() {
         val votes = getListOfVotes(0.0, 0.6666667, 0.0, 0.33333334, 0.0)
         val expectedStats = JudgmentsAggregator.JudgmentStats(votes.map { it.vote }, 0.2, 0.0, 0.0, CLASS_NO_CLICKBAIT)
         val actualStats = aggregator.aggregate(votes)
@@ -48,7 +57,7 @@ class JudgmentsAggregatorTest {
     }
 
     @Test
-    fun `GIVEN a list of genuine votes, THEN aggregator returns correctly calculated results 2`() {
+    fun `GIVEN a list of genuine votes, THEN aggregator returns correctly calculated results 3`() {
         val votes = getListOfVotes(0.0, 1.0, 0.33333334, 0.6666667, 0.33333334)
         val expectedStats = JudgmentsAggregator.JudgmentStats(
             votes.map { it.vote },
@@ -63,7 +72,7 @@ class JudgmentsAggregatorTest {
     }
 
     @Test
-    fun `GIVEN a list of genuine votes, THEN aggregator returns correctly calculated results 3`() {
+    fun `GIVEN a list of genuine votes, THEN aggregator returns correctly calculated results 4`() {
         val votes = getListOfVotes(1.0, 0.6666667, 1.0, 0.0, 1.0)
         val expectedStats =
             JudgmentsAggregator.JudgmentStats(votes.map { it.vote }, 0.73333335, 1.0, 1.0, CLASS_CLICKBAIT)
@@ -73,7 +82,7 @@ class JudgmentsAggregatorTest {
     }
 
     @Test
-    fun `GIVEN a list of genuine votes, THEN aggregator returns correctly calculated results 4`() {
+    fun `GIVEN a list of genuine votes, THEN aggregator returns correctly calculated results 5`() {
         val votes = getListOfVotes(0.6666667, 1.0, 0.6666667, 0.6666667, 0.6666667)
         val expectedStats =
             JudgmentsAggregator.JudgmentStats(votes.map { it.vote }, 0.73333335, 0.6666667, 0.6666667, CLASS_CLICKBAIT)
