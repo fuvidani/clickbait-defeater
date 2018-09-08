@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.jakewharton.retrofit2.adapter.reactor.ReactorCallAdapterFactory
+import okhttp3.OkHttpClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -23,6 +24,7 @@ import org.springframework.scheduling.TaskScheduler
 import retrofit2.converter.jackson.JacksonConverterFactory
 import java.time.ZoneId
 import java.util.TimeZone
+import java.util.concurrent.TimeUnit
 
 /**
  * <h4>About this class</h4>
@@ -66,6 +68,7 @@ class ClickBaitServiceUpdateApplication {
     ): ContentExtractionServiceClient {
         val retrofit = Retrofit.Builder()
             .baseUrl("$protocol://$host:$port/")
+            .client(customOkHttpClient())
             .addConverterFactory(JacksonConverterFactory.create(objectMapper))
             .addCallAdapterFactory(ReactorCallAdapterFactory.create())
             .build()
@@ -80,6 +83,7 @@ class ClickBaitServiceUpdateApplication {
     ): JudgmentsRepository {
         val retrofit = Retrofit.Builder()
             .baseUrl("$protocol://$host:$port/")
+            .client(customOkHttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(ReactorCallAdapterFactory.create())
             .build()
@@ -96,5 +100,12 @@ class ClickBaitServiceUpdateApplication {
         mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         return mapper
+    }
+
+    private fun customOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build()
     }
 }
