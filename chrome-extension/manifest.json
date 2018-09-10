@@ -12,6 +12,8 @@
   "options_page": "templates/options.html",
   "background": {
     "scripts": [
+      "constants.js",
+      "config.js",
       "js/background.js"
     ],
     "persistent": false
@@ -37,11 +39,11 @@
         "https://*.facebook.com/*"
       ],
       "js": [
+        "constants.js",
         "js/content.js",
         "styles/jquery-3.3.1.min.js",
         "styles/bootstrap.min.js",
-        "styles/bootstrap-slider.min.js",
-        "styles/pinit.js"
+        "styles/bootstrap-slider.min.js"
       ],
       "css": [
         "styles/widget.css",

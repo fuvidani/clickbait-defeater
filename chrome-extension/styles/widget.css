@@ -59,12 +59,20 @@
 
 .extract-iframe {
     display: block;
-    margin: 0 auto;
-    height: 500px;
+    margin: auto;
+}
+
+.extract-item {
+    height: 500px !important;
+    /*position: relative !important;*/
 }
 
 .extract-img {
     max-width: 100%;
+    position:absolute !important;
+    top:0 !important;
+    bottom:0 !important;
+    margin:auto !important;
 }
 
 .extract-item-wrapper {
