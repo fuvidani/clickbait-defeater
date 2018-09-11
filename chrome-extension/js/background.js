@@ -31,7 +31,7 @@ chrome.runtime.onMessage.addListener(
             }
             case VOTE_ARTICLE_SCORE: {
                 chrome.storage.sync.get(USER_ID, function (items) {
-                    let userId = items.userId;
+                    let userId = items.USER_ID;
                     if (userId) {
                         useToken(userId);
                     } else {

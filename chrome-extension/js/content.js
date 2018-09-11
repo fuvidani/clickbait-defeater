@@ -165,6 +165,60 @@ const callback = function (mutationsList) {
                                 }
                             });
 
+                            sliders[mutation.target.id].on("change", function (event) {
+                                const widget = document.getElementById(mutation.target.id + "_widget");
+                                const sliderSection = widget.getElementsByClassName("slider-selection tick-slider-selection")[0];
+                                const sliderHandle = widget.getElementsByClassName("slider-handle")[0];
+                                const sliderTicksInSelection = widget.getElementsByClassName("slider-tick");
+                                switch (event.newValue) {
+                                    case 0: {
+                                        sliderHandle.style.cssText = "background: rgb(51, 122, 183) linear-gradient(rgb(51, 122, 183) 0px, rgb(46, 109, 164) 100%);";
+                                        for (let i = 0; i < sliderTicksInSelection.length; i++) {
+                                            if (!sliderTicksInSelection[i].classList.contains("in-selection")) {
+                                                sliderTicksInSelection[i].style.cssText = "background-image: linear-gradient(rgb(249, 249, 249) 0px, rgb(245, 245, 245) 100%);"
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case 1: {
+                                        sliderSection.style.cssText = "background: rgb(92, 184, 92) !important;";
+                                        sliderHandle.style.cssText = "background: rgb(92, 184, 92) !important;";
+                                        for (let i = 0; i < sliderTicksInSelection.length; i++) {
+                                            if (sliderTicksInSelection[i].classList.contains("in-selection")) {
+                                                sliderTicksInSelection[i].style.cssText = "background: rgb(92, 184, 92) !important;";
+                                            } else {
+                                                sliderTicksInSelection[i].style.cssText = "background-image: linear-gradient(rgb(249, 249, 249) 0px, rgb(245, 245, 245) 100%);"
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case 2: {
+                                        sliderSection.style.cssText = "background: rgb(240, 173, 78) !important;";
+                                        sliderHandle.style.cssText = "background: rgb(240, 173, 78) !important;";
+                                        for (let i = 0; i < sliderTicksInSelection.length; i++) {
+                                            if (sliderTicksInSelection[i].classList.contains("in-selection")) {
+                                                sliderTicksInSelection[i].style.cssText = "background: rgb(240, 173, 78) !important;";
+                                            } else {
+                                                sliderTicksInSelection[i].style.cssText = "background-image: linear-gradient(rgb(249, 249, 249) 0px, rgb(245, 245, 245) 100%);"
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case 3: {
+                                        sliderSection.style.cssText = "background: rgb(217, 83, 79) !important;";
+                                        sliderHandle.style.cssText = "background: rgb(217, 83, 79) !important;";
+                                        for (let i = 0; i < sliderTicksInSelection.length; i++) {
+                                            if (sliderTicksInSelection[i].classList.contains("in-selection")) {
+                                                sliderTicksInSelection[i].style.cssText = "background: rgb(217, 83, 79) !important;";
+                                            } else {
+                                                sliderTicksInSelection[i].style.cssText = "background-image: linear-gradient(rgb(249, 249, 249) 0px, rgb(245, 245, 245) 100%);"
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            });
+
                             break;
                         }
                     }
@@ -407,7 +461,8 @@ const createWidget = function (post_id, mutationTarget) {
             }
 
             return "N/A"
-        }
+        },
+        // ticks_tooltip: true
     });
 
     sliders[post_id] = slider;
