@@ -144,7 +144,88 @@ const callback = function (mutationsList) {
                                 console.log("Got previous score for: " + response.url);
                             });
 
-                            sliders[mutation.target.id].on("slideStop", function (value) {
+                            sliders[mutation.target.id].on("change", function (event) {
+                                const widget = document.getElementById(mutation.target.id + "_widget");
+                                const sliderTicksInSelection = widget.getElementsByClassName("slider-tick");
+                                const sliderSection = widget.getElementsByClassName("slider-selection tick-slider-selection")[0];
+                                const sliderHandle = widget.getElementsByClassName("slider-handle")[0];
+
+                                for (let i = 0; i < sliderTicksInSelection.length; i++) {
+                                    if (i > event.newValue) {
+                                        sliderTicksInSelection[i].classList.remove("red-slider");
+                                        sliderTicksInSelection[i].classList.remove("yellow-slider");
+                                        sliderTicksInSelection[i].classList.remove("green-slider");
+                                        sliderTicksInSelection[i].classList.add("neutral-slider-tick");
+                                    } else {
+                                        switch (event.newValue) {
+                                            case 0: {
+                                                sliderSection.classList.remove("red-slider");
+                                                sliderSection.classList.remove("yellow-slider");
+                                                sliderSection.classList.remove("green-slider");
+
+                                                sliderHandle.classList.remove("red-slider");
+                                                sliderHandle.classList.remove("yellow-slider");
+                                                sliderHandle.classList.remove("green-slider");
+                                                sliderHandle.classList.add("zero-slider");
+
+                                                sliderTicksInSelection[i].classList.remove("red-slider");
+                                                sliderTicksInSelection[i].classList.remove("yellow-slider");
+                                                sliderTicksInSelection[i].classList.remove("green-slider");
+                                                sliderTicksInSelection[i].classList.remove("neutral-slider-tick");
+                                                break;
+                                            }
+                                            case 1: {
+                                                sliderSection.classList.remove("red-slider");
+                                                sliderSection.classList.remove("yellow-slider");
+                                                sliderSection.classList.add("green-slider");
+
+                                                sliderHandle.classList.remove("red-slider");
+                                                sliderHandle.classList.remove("yellow-slider");
+                                                sliderHandle.classList.add("green-slider");
+
+                                                sliderTicksInSelection[i].classList.remove("red-slider");
+                                                sliderTicksInSelection[i].classList.remove("yellow-slider");
+                                                sliderTicksInSelection[i].classList.add("green-slider");
+                                                sliderTicksInSelection[i].classList.remove("neutral-slider-tick");
+                                                break;
+                                            }
+                                            case 2: {
+                                                sliderSection.classList.remove("red-slider");
+                                                sliderSection.classList.add("yellow-slider");
+                                                sliderSection.classList.remove("green-slider");
+
+                                                sliderHandle.classList.remove("red-slider");
+                                                sliderHandle.classList.add("yellow-slider");
+                                                sliderHandle.classList.remove("green-slider");
+
+                                                sliderTicksInSelection[i].classList.remove("red-slider");
+                                                sliderTicksInSelection[i].classList.add("yellow-slider");
+                                                sliderTicksInSelection[i].classList.remove("green-slider");
+                                                sliderTicksInSelection[i].classList.remove("neutral-slider-tick");
+                                                break;
+                                            }
+                                            case 3: {
+                                                sliderSection.classList.add("red-slider");
+                                                sliderSection.classList.remove("yellow-slider");
+                                                sliderSection.classList.remove("green-slider");
+
+                                                sliderHandle.classList.add("red-slider");
+                                                sliderHandle.classList.remove("yellow-slider");
+                                                sliderHandle.classList.remove("green-slider");
+
+                                                sliderTicksInSelection[i].classList.add("red-slider");
+                                                sliderTicksInSelection[i].classList.remove("yellow-slider");
+                                                sliderTicksInSelection[i].classList.remove("green-slider");
+                                                sliderTicksInSelection[i].classList.remove("neutral-slider-tick");
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+
+                            sliders[mutation.target.id].on("slideStop", function (event) {
+                                const value = sliders[mutation.target.id].getValue();
                                 switch (value) {
                                     case 0: {
                                         sendArticleScore(extractedUrl, 0.0);
@@ -165,53 +246,97 @@ const callback = function (mutationsList) {
                                 }
                             });
 
-                            sliders[mutation.target.id].on("change", function (event) {
+                            sliders[mutation.target.id].on("slideStart", function (event) {
+                                const value = sliders[mutation.target.id].getValue();
                                 const widget = document.getElementById(mutation.target.id + "_widget");
                                 const sliderSection = widget.getElementsByClassName("slider-selection tick-slider-selection")[0];
                                 const sliderHandle = widget.getElementsByClassName("slider-handle")[0];
                                 const sliderTicksInSelection = widget.getElementsByClassName("slider-tick");
-                                switch (event.newValue) {
+                                switch (value) {
                                     case 0: {
-                                        sliderHandle.style.cssText = "background: rgb(51, 122, 183) linear-gradient(rgb(51, 122, 183) 0px, rgb(46, 109, 164) 100%);";
+                                        sliderSection.classList.remove("red-slider");
+                                        sliderSection.classList.remove("yellow-slider");
+                                        sliderSection.classList.remove("green-slider");
+
+                                        sliderHandle.classList.remove("red-slider");
+                                        sliderHandle.classList.remove("yellow-slider");
+                                        sliderHandle.classList.remove("green-slider");
+                                        sliderHandle.classList.add("zero-slider");
                                         for (let i = 0; i < sliderTicksInSelection.length; i++) {
-                                            if (!sliderTicksInSelection[i].classList.contains("in-selection")) {
-                                                sliderTicksInSelection[i].style.cssText = "background-image: linear-gradient(rgb(249, 249, 249) 0px, rgb(245, 245, 245) 100%);"
+                                            if (i > value) {
+                                                sliderTicksInSelection[i].classList.remove("red-slider");
+                                                sliderTicksInSelection[i].classList.remove("yellow-slider");
+                                                sliderTicksInSelection[i].classList.remove("green-slider");
+                                                sliderTicksInSelection[i].classList.add("neutral-slider-tick");
                                             }
                                         }
                                         break;
                                     }
                                     case 1: {
-                                        sliderSection.style.cssText = "background: rgb(92, 184, 92) !important;";
-                                        sliderHandle.style.cssText = "background: rgb(92, 184, 92) !important;";
+                                        sliderSection.classList.remove("red-slider");
+                                        sliderSection.classList.remove("yellow-slider");
+                                        sliderSection.classList.add("green-slider");
+
+                                        sliderHandle.classList.remove("red-slider");
+                                        sliderHandle.classList.remove("yellow-slider");
+                                        sliderHandle.classList.add("green-slider");
+
                                         for (let i = 0; i < sliderTicksInSelection.length; i++) {
-                                            if (sliderTicksInSelection[i].classList.contains("in-selection")) {
-                                                sliderTicksInSelection[i].style.cssText = "background: rgb(92, 184, 92) !important;";
+                                            if (i > value) {
+                                                sliderTicksInSelection[i].classList.remove("red-slider");
+                                                sliderTicksInSelection[i].classList.remove("yellow-slider");
+                                                sliderTicksInSelection[i].classList.remove("green-slider");
+                                                sliderTicksInSelection[i].classList.add("neutral-slider-tick");
                                             } else {
-                                                sliderTicksInSelection[i].style.cssText = "background-image: linear-gradient(rgb(249, 249, 249) 0px, rgb(245, 245, 245) 100%);"
+                                                sliderTicksInSelection[i].classList.remove("red-slider");
+                                                sliderTicksInSelection[i].classList.remove("yellow-slider");
+                                                sliderTicksInSelection[i].classList.add("green-slider");
                                             }
                                         }
                                         break;
                                     }
                                     case 2: {
-                                        sliderSection.style.cssText = "background: rgb(240, 173, 78) !important;";
-                                        sliderHandle.style.cssText = "background: rgb(240, 173, 78) !important;";
+                                        sliderSection.classList.remove("red-slider");
+                                        sliderSection.classList.remove("green-slider");
+                                        sliderSection.classList.add("yellow-slider");
+
+                                        sliderHandle.classList.remove("red-slider");
+                                        sliderHandle.classList.remove("green-slider");
+                                        sliderHandle.classList.add("yellow-slider");
+
                                         for (let i = 0; i < sliderTicksInSelection.length; i++) {
-                                            if (sliderTicksInSelection[i].classList.contains("in-selection")) {
-                                                sliderTicksInSelection[i].style.cssText = "background: rgb(240, 173, 78) !important;";
+                                            if (i > value) {
+                                                sliderTicksInSelection[i].classList.remove("red-slider");
+                                                sliderTicksInSelection[i].classList.remove("yellow-slider");
+                                                sliderTicksInSelection[i].classList.remove("green-slider");
+                                                sliderTicksInSelection[i].classList.add("neutral-slider-tick");
                                             } else {
-                                                sliderTicksInSelection[i].style.cssText = "background-image: linear-gradient(rgb(249, 249, 249) 0px, rgb(245, 245, 245) 100%);"
+                                                sliderTicksInSelection[i].classList.remove("red-slider");
+                                                sliderTicksInSelection[i].classList.remove("green-slider");
+                                                sliderTicksInSelection[i].classList.add("yellow-slider");
                                             }
                                         }
                                         break;
                                     }
                                     case 3: {
-                                        sliderSection.style.cssText = "background: rgb(217, 83, 79) !important;";
-                                        sliderHandle.style.cssText = "background: rgb(217, 83, 79) !important;";
+                                        sliderSection.classList.remove("green-slider");
+                                        sliderSection.classList.remove("yellow-slider");
+                                        sliderSection.classList.add("red-slider");
+
+                                        sliderHandle.classList.remove("green-slider");
+                                        sliderHandle.classList.remove("yellow-slider");
+                                        sliderHandle.classList.add("red-slider");
+
                                         for (let i = 0; i < sliderTicksInSelection.length; i++) {
-                                            if (sliderTicksInSelection[i].classList.contains("in-selection")) {
-                                                sliderTicksInSelection[i].style.cssText = "background: rgb(217, 83, 79) !important;";
+                                            if (i > value) {
+                                                sliderTicksInSelection[i].classList.remove("red-slider");
+                                                sliderTicksInSelection[i].classList.remove("yellow-slider");
+                                                sliderTicksInSelection[i].classList.remove("green-slider");
+                                                sliderTicksInSelection[i].classList.add("neutral-slider-tick");
                                             } else {
-                                                sliderTicksInSelection[i].style.cssText = "background-image: linear-gradient(rgb(249, 249, 249) 0px, rgb(245, 245, 245) 100%);"
+                                                sliderTicksInSelection[i].classList.remove("green-slider");
+                                                sliderTicksInSelection[i].classList.remove("yellow-slider");
+                                                sliderTicksInSelection[i].classList.add("red-slider");
                                             }
                                         }
                                         break;
@@ -462,7 +587,7 @@ const createWidget = function (post_id, mutationTarget) {
 
             return "N/A"
         },
-        // ticks_tooltip: true
+        ticks_tooltip: true
     });
 
     sliders[post_id] = slider;
@@ -473,7 +598,7 @@ const sendArticleScore = function (url, score, callback) {
         message: VOTE_ARTICLE_SCORE,
         data: {url: url, score: score}
     }, function (response) {
-        console.log("scored article with id: " + response);
+        console.log("scored article: ", response);
     });
 };
 

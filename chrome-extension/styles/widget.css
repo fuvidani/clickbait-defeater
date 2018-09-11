@@ -78,3 +78,26 @@
 .extract-item-wrapper {
     height: 500px; !important;
 }
+
+.green-slider {
+    background: rgb(92, 184, 92) !important;
+    opacity: 1 !important;
+}
+
+.yellow-slider {
+    background: rgb(240, 173, 78) !important;
+    opacity: 1 !important;
+}
+
+.red-slider {
+    background: rgb(217, 83, 79) !important;
+    opacity: 1 !important;
+}
+
+.zero-slider {
+    background: rgb(51, 122, 183) linear-gradient(rgb(51, 122, 183) 0px, rgb(46, 109, 164) 100%);
+}
+
+.neutral-slider-tick {
+    background-image: linear-gradient(rgb(249, 249, 249) 0px, rgb(245, 245, 245) 100%);
+}

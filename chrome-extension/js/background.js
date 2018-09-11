@@ -43,7 +43,7 @@ chrome.runtime.onMessage.addListener(
 
                     function useToken(userId) {
                         // call backend with data and userId
-                        senderResponse(userId);
+                        senderResponse({USER_ID: userId, url: request.data.url, score: request.data.score});
                     }
                 });
                 return true;
