@@ -64,17 +64,41 @@ const callback = function (mutationsList) {
 
                                         const texts = response.contents.filter(content => content.contentType === "TEXT");
 
-                                        let textElement = null;
+                                        // let textElement = null;
+                                        const textContainer = document.createElement("div");
+                                        textContainer.classList.add("text-container");
                                         if (texts.length > 0) {
-                                            const text = texts[0].data;
-                                            textElement = document.createElement("p");
-                                            textElement.innerText = text;
+                                            const firstText = document.createElement("p");
+                                            firstText.id = mutation.target.id + "_extract_firstText";
+                                            firstText.classList.add("clipped");
+                                            firstText.innerText = texts[0].data;
+                                            textContainer.appendChild(firstText);
+
+                                            const collapseButton = document.createElement("a");
+                                            collapseButton.setAttribute("href", "#" + mutation.target.id + "_extract_collapseContainer");
+                                            collapseButton.setAttribute("data-toggle", "collapse");
+                                            collapseButton.innerText = "Collapse";
+
+                                            textContainer.appendChild(collapseButton);
+
+                                            const collapseContainer = document.createElement("div");
+                                            collapseContainer.id = mutation.target.id + "_extract_collapseContainer";
+                                            collapseContainer.classList.add("collapse");
+                                            for (let i = 0; i < texts.length; i++) {
+                                                const paragraph = document.createElement("p");
+                                                paragraph.innerText = texts[i].data;
+                                                // paragraph.classList.add("clipped");
+
+                                                collapseContainer.appendChild(paragraph);
+                                            }
+
+                                            textContainer.appendChild(collapseContainer);
                                         }
 
+
                                         let contentHtml = "";
-                                        if (textElement) {
-                                            contentHtml += textElement.outerHTML;
-                                        }
+                                        contentHtml += textContainer.outerHTML;
+
 
                                         const carouselElement = createCarousel(mutation.target.id, response.contents);
                                         contentHtml += carouselElement.outerHTML;
@@ -120,7 +144,10 @@ const callback = function (mutationsList) {
                                         progressBar.classList.remove("progress-bar-striped");
                                         progressBar.classList.remove("progress-bar-info");
 
-                                        if (scorePercent < 22) {
+                                        if (scorePercent < 7) {
+                                            progressBar.classList.add("progress-bar-success");
+                                            progressBar.innerText = "";
+                                        } else if (scorePercent >= 7 && scorePercent < 22) {
                                             progressBar.classList.add("progress-bar-success");
                                             progressBar.innerText = scorePercent + "%";
                                         } else if (scorePercent >= 22 && scorePercent < 33) {
@@ -146,7 +173,7 @@ const callback = function (mutationsList) {
 
                             chrome.runtime.sendMessage({
                                 message: RETRIEVE_ARTICLE_SCORE_FOR_USER,
-                                data: {url: extractedUrl}
+                                data: {url: encodedUrl}
                             }, function (response) {
                                 console.log("Got previous score for: " + response.url);
                             });

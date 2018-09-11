@@ -101,3 +101,8 @@
 .neutral-slider-tick {
     background-image: linear-gradient(rgb(249, 249, 249) 0px, rgb(245, 245, 245) 100%);
 }
+
+.clipped {
+    max-height: 100px;
+    overflow: hidden;
+}
