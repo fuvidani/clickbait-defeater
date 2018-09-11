@@ -112,19 +112,26 @@ const callback = function (mutationsList) {
                                     if (response.clickbaitScore) {
                                         const progressBar = document.getElementById(mutation.target.id + "_predict");
                                         const scorePercent = (response.clickbaitScore * 100).toFixed(2);
-                                        progressBar.innerText = scorePercent + "%";
+                                        // progressBar.innerText = scorePercent + "%";
+
                                         progressBar.classList.remove("active");
                                         progressBar.setAttribute("aria-valuenow", scorePercent.toString());
                                         progressBar.setAttribute("style", "width: " + scorePercent.toString() + "%");
                                         progressBar.classList.remove("progress-bar-striped");
                                         progressBar.classList.remove("progress-bar-info");
 
-                                        if (scorePercent < 33) {
+                                        if (scorePercent < 22) {
                                             progressBar.classList.add("progress-bar-success");
+                                            progressBar.innerText = scorePercent + "%";
+                                        } else if (scorePercent >= 22 && scorePercent < 33) {
+                                            progressBar.classList.add("progress-bar-success");
+                                            progressBar.innerText = "Go ahead!";
                                         } else if (scorePercent >= 33 && scorePercent < 67) {
                                             progressBar.classList.add("progress-bar-warning");
+                                            progressBar.innerText = "Could be click baiting";
                                         } else if (scorePercent >= 67) {
                                             progressBar.classList.add("progress-bar-danger");
+                                            progressBar.innerText = "Tsss! Hands off!";
                                         }
                                     } else if (response.message) {
                                         const progressBar = document.getElementById(mutation.target.id + "_predict");
