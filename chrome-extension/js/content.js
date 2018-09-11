@@ -45,8 +45,8 @@ const callback = function (mutationsList) {
                     for (let i = 0; i < a_list.length; i++) {
                         if (a_list[i].href.indexOf("https://l.facebook.com/l.php?u=http") === 0 && a_list[i].hasAttribute("tabindex") && a_list[i].closest(".commentable_item") === null) {
                             createWidget(mutation.target.id, mutation.target);
-
-                            const extractedUrl = extractUrl(a_list[i].href);
+                            const encodedUrl = a_list[i].href;
+                            const extractedUrl = extractUrl(encodedUrl);
                             console.log("extracted url: " + extractedUrl);
                             const extractButton = document.getElementById(mutation.target.id + "_extract");
                             extractButton.onclick = function () {
@@ -235,19 +235,19 @@ const callback = function (mutationsList) {
                                 const value = sliders[mutation.target.id].getValue();
                                 switch (value) {
                                     case 0: {
-                                        sendArticleScore(extractedUrl, 0.0);
+                                        sendArticleScore(encodedUrl, 0.0);
                                         break;
                                     }
                                     case 1: {
-                                        sendArticleScore(extractedUrl, 0.33333334);
+                                        sendArticleScore(encodedUrl, 0.33333334);
                                         break;
                                     }
                                     case 2: {
-                                        sendArticleScore(extractedUrl, 0.6666667);
+                                        sendArticleScore(encodedUrl, 0.6666667);
                                         break;
                                     }
                                     case 3: {
-                                        sendArticleScore(extractedUrl, 1.0);
+                                        sendArticleScore(encodedUrl, 1.0);
                                         break;
                                     }
                                 }
