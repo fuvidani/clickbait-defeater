@@ -119,9 +119,9 @@ const callback = function (mutationsList) {
                                         progressBar.classList.remove("progress-bar-striped");
                                         progressBar.classList.remove("progress-bar-info");
 
-                                        if (scorePercent < 34) {
+                                        if (scorePercent < 33) {
                                             progressBar.classList.add("progress-bar-success");
-                                        } else if (scorePercent >= 34 && scorePercent < 67) {
+                                        } else if (scorePercent >= 33 && scorePercent < 67) {
                                             progressBar.classList.add("progress-bar-warning");
                                         } else if (scorePercent >= 67) {
                                             progressBar.classList.add("progress-bar-danger");
@@ -573,6 +573,7 @@ const createWidget = function (post_id, mutationTarget) {
     const slider = new Slider("#" + post_id + "_slider", {
         value: 0,
         ticks: [0, 1, 2, 3],
+        ticks_positions: [0, 33.33333, 66.66667, 100],
         formatter: function (value) {
             switch (value) {
                 case 0:
