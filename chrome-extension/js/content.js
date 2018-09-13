@@ -81,7 +81,7 @@ const callback = function (mutationsList) {
                                             const firstText = document.createElement("p");
                                             firstText.id = mutation.target.id + "_extract_firstText";
                                             firstText.classList.add("clipped");
-                                            firstText.innerText = texts[0].data;
+                                            firstText.innerText = texts[0].text;
                                             textContainer.appendChild(firstText);
 
                                             const collapseButton = document.createElement("a");
@@ -488,7 +488,7 @@ const createCarousel = function (postId, contents) {
     for (let content of contents) {
         let injected = false;
         if (content.contentType === "SOCIAL_MEDIA" && content.type === "INSTAGRAM") {
-            itemWrapper.appendChild(createIframeItem(content.src + "/embed/captioned", counter === 0, postId, counter));
+            itemWrapper.appendChild(createIframeItem(content.src + "embed/captioned", counter === 0, postId, counter));
             injected = true;
         } else if (content.contentType === "MEDIA" && content.type === "IMAGE") {
             itemWrapper.appendChild(createImageItem(content.src, counter === 0));
