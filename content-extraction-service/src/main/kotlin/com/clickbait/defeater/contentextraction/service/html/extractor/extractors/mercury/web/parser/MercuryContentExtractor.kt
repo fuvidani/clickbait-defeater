@@ -84,6 +84,8 @@ class MercuryContentExtractor(
             .fromIterable(document.select("img[src~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$], amp-img[src~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$]"))
             .filter { filterImageSrc(it.attr("src")) }
             .map { MediaContent(MediaType.IMAGE, it.attr("src")) }
+            .map { it as Content }
+            .concatWith(extractFigureImages(document))
     }
 
     private fun filterImageSrc(source: String): Boolean {
@@ -93,6 +95,11 @@ class MercuryContentExtractor(
             }
         }
         return true
+    }
+
+    private fun extractFigureImages(document: Document): Flux<Content> {
+        return Flux.fromIterable(document.select("figure a[href~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$]"))
+            .map { MediaContent(MediaType.IMAGE, it.attr("href")) }
     }
 
     companion object : KLogging()
