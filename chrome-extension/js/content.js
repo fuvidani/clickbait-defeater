@@ -70,6 +70,8 @@ const callback = function (mutationsList) {
                                         if (titles.length > 0) {
                                             const title = titles[0].data;
                                             $(extractButton).attr('data-original-title', title);
+                                        } else {
+                                            $(extractButton).attr('data-original-title', "No title found");
                                         }
 
                                         const texts = response.contents.filter(content => content.contentType === "TEXT");
@@ -617,9 +619,9 @@ const createWidget = function (post_id, mutationTarget) {
     sliderDiv.appendChild(sliderInput);
 
     const extractDiv = document.createElement('div');
-    const button = document.createElement('button');
+    const button = document.createElement('a');
     button.id = post_id + "_extract";
-    button.setAttribute("type", "button");
+    // button.setAttribute("type", "button");
     button.setAttribute("data-toggle", "popover");
     // button.setAttribute("data-trigger", "focus");
     button.setAttribute("data-html", "true");
@@ -638,6 +640,15 @@ const createWidget = function (post_id, mutationTarget) {
 
     $(function () {
         $('[data-toggle="popover"]').popover();
+    });
+
+    $(document).on("click", function (e) {
+        const $target = $(e.target);
+        const isPopover = $target.is('[data-toggle=popover]');
+        const inPopover = $target.closest('.popover').length > 0;
+
+        //hide only if clicked on button or inside popover
+        if (!isPopover && !inPopover) $(button).popover('hide');
     });
 
     post_ids.push(post_id);
