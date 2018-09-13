@@ -1,11 +1,7 @@
 package com.clickbait.defeater.contentextraction.service.html.extractor.extractors.mercury.web.parser
 
-import com.clickbait.defeater.contentextraction.model.WebPageSource
-import com.clickbait.defeater.contentextraction.model.MercuryApiResponse
-import com.clickbait.defeater.contentextraction.model.Content
-import com.clickbait.defeater.contentextraction.model.MediaContent
-import com.clickbait.defeater.contentextraction.model.HtmlContent
-import com.clickbait.defeater.contentextraction.model.MediaType
+/* ktlint-disable no-wildcard-imports */
+import com.clickbait.defeater.contentextraction.model.*
 import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorBean
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
@@ -67,12 +63,17 @@ class MercuryContentExtractor(
     private fun extractHtmlContent(response: MercuryApiResponse): Flux<Content> {
         return if (response.content != null && response.content.isNotBlank()) {
             val document = Jsoup.parse(response.content)
+            val images = extractArticleImages(document)
             document.select(blackListCssQuery).forEach { it.remove() }
             document.outputSettings(htmlOutputSettings)
             val html = document.body().html()
                 .replace("'", "&apos;")
                 .replace("\n", "")
-            Flux.concat(extractArticleImages(document), Flux.just(HtmlContent(html)))
+            Flux.concat(
+                images,
+                Flux.just(TextContent(document.body().text())),
+                Flux.just(HtmlContent(html))
+            )
         } else {
             Flux.empty()
         }
@@ -80,7 +81,7 @@ class MercuryContentExtractor(
 
     private fun extractArticleImages(document: Document): Flux<Content> {
         return Flux
-            .fromIterable(document.select("img[src~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$]"))
+            .fromIterable(document.select("img[src~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$], amp-img[src~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$]"))
             .map { MediaContent(MediaType.IMAGE, it.attr("src")) }
     }
 
