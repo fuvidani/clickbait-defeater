@@ -6,7 +6,6 @@ import com.clickbait.defeater.contentextraction.service.html.extractor.DefaultEx
 import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorBean
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
-import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.*
 import com.clickbait.defeater.contentextraction.service.html.extractor.extractors.mercury.web.parser.client.MercuryWebParserApiClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
