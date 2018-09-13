@@ -40,6 +40,11 @@ const callback = function (mutationsList) {
                         break;
                     }
 
+                    // if (document.getElementById(mutation.target.id).offsetParent === null) {
+                    //     console.log("post not visible");
+                    //     break;
+                    // }
+
                     const a_list = mutation.target.getElementsByTagName('a');
 
                     for (let i = 0; i < a_list.length; i++) {
@@ -79,20 +84,27 @@ const callback = function (mutationsList) {
                                             collapseButton.setAttribute("data-toggle", "collapse");
                                             collapseButton.innerText = "Collapse";
 
-                                            textContainer.appendChild(collapseButton);
-
                                             const collapseContainer = document.createElement("div");
+
                                             collapseContainer.id = mutation.target.id + "_extract_collapseContainer";
                                             collapseContainer.classList.add("collapse");
-                                            for (let i = 0; i < texts.length; i++) {
+                                            collapseContainer.classList.add("extract-collapse");
+                                            for (let i = 1; i < texts.length; i++) {
                                                 const paragraph = document.createElement("p");
                                                 paragraph.innerText = texts[i].data;
-                                                // paragraph.classList.add("clipped");
-
                                                 collapseContainer.appendChild(paragraph);
-                                            }
 
+                                            }
                                             textContainer.appendChild(collapseContainer);
+
+                                            // paragraph.classList.add("clipped");
+                                            textContainer.appendChild(collapseButton);
+
+                                            // $(".extract-collapse").on('shown.bs.collapse', function () {
+                                            //     console.log("Starting collapsing");
+                                            // }).on('hide.bs.collapse', function () {
+                                            //     // console.log("Back collapsing");
+                                            // });
                                         }
 
 

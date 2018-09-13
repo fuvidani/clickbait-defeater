@@ -18,11 +18,11 @@ chrome.runtime.onMessage.addListener(
             case PREDICT_ARTICLE_SCORE: {
                 const xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
+                    if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 400)) {
                         senderResponse(JSON.parse(xhr.response));
                     }
                 };
-                xhr.open("POST", hostUrl + "/predict", true);
+                xhr.open("POST", hostUrl + "/clickbait/score", true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.send(request.data);
                 // setTimeout(function(){ xhr.send(request.data); }, 3000);
