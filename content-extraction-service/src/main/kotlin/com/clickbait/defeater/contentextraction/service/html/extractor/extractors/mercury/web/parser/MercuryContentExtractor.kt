@@ -82,7 +82,17 @@ class MercuryContentExtractor(
     private fun extractArticleImages(document: Document): Flux<Content> {
         return Flux
             .fromIterable(document.select("img[src~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$], amp-img[src~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$]"))
+            .filter { filterImageSrc(it.attr("src")) }
             .map { MediaContent(MediaType.IMAGE, it.attr("src")) }
+    }
+
+    private fun filterImageSrc(source: String): Boolean {
+        if (source.contains(".svg")) {
+            if (source.contains("facebook") || source.contains("instagram") || source.contains("youtube")) {
+                return false
+            }
+        }
+        return true
     }
 
     companion object : KLogging()
