@@ -3,4 +3,4 @@ const hostPort = "8081";
 const hostProtocol = "http";
 const hostUrl = hostProtocol + "://" + hostDomain + ":" + hostPort;
 
-const logging = true;
+const logging = false;
