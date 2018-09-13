@@ -36,7 +36,7 @@ class ExtractorChainTest {
             BoilerPipeImageExtractor(),
             JsoupMetaDataExtractor(),
             JsoupVideoExtractor(JsoupNaiveIFrameVideoExtractor(), JsoupBrightCoveVideoExtractor(),
-                JsoupYouTubeVideoExtractor(), JsoupCnetVideoExtractor()
+                JsoupYouTubeVideoExtractor(), JsoupCnetVideoExtractor(), JsoupEmbedlyVideoExtractor()
             )
         ))
     }

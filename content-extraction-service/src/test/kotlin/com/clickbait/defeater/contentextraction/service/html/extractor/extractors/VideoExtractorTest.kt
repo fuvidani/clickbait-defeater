@@ -19,7 +19,7 @@ import reactor.test.StepVerifier
  */
 class VideoExtractorTest : AbstractExtractorTest(JsoupVideoExtractor(
     JsoupNaiveIFrameVideoExtractor(), JsoupBrightCoveVideoExtractor(),
-    JsoupYouTubeVideoExtractor(), JsoupCnetVideoExtractor()
+    JsoupYouTubeVideoExtractor(), JsoupCnetVideoExtractor(), JsoupEmbedlyVideoExtractor()
 )) {
 
     @Test

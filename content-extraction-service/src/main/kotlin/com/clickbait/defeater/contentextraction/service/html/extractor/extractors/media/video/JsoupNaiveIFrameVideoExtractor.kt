@@ -24,7 +24,7 @@ class JsoupNaiveIFrameVideoExtractor {
     // matches 10, 100, 100px, 100%, ...
     // doesn't match 0, 1, 2
     private val regex = "\\d{2,}(px|%)*"
-    private val sourceChunks = listOf("youtube.com/", "brightcove", "plugins/like.php?", "/recaptcha")
+    private val sourceChunks = listOf("youtube.com/", "brightcove", "plugins/like.php?", "/recaptcha", ".php")
 
     internal fun extract(document: Document): Flux<Content> {
         return Flux

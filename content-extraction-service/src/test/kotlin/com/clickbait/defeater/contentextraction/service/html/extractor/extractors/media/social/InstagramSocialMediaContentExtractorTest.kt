@@ -24,7 +24,7 @@ class InstagramSocialMediaContentExtractorTest {
     private val extractor = JsoupInstagramSocialMediaContentExtractor()
 
     @Test
-    fun `test this`() {
+    fun `GIVEN an article with an embedded instagram post in it, THEN extractor extracts link AND cuts away parameters`() {
         val url = "https://www.instagram.com/p/BnoSjf6h2Qm/?taken-by=timeavajna"
         val document = getDocumentWithTestUrl(url)
         StepVerifier.create(extractor.extract(document))
