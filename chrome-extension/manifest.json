@@ -1,15 +1,25 @@
 {
-  "name": "Getting Started Example",
+  "name": "Clickbait Defeater",
   "version": "1.0",
-  "description": "Build an Extension!",
-  "permissions": ["activeTab", "declarativeContent", "storage"],
-  "options_page": "options.html",
+  "description": "Clickbait Defeater Chrome Extension",
+  "permissions": [
+    "activeTab",
+    "declarativeContent",
+    "storage",
+    "https://*/",
+    "http://*/"
+  ],
+  "options_page": "templates/options.html",
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "constants.js",
+      "config.js",
+      "js/background.js"
+    ],
     "persistent": false
   },
   "page_action": {
-    "default_popup": "popup.html",
+    "default_popup": "templates/popup.html",
     "default_icon": {
       "16": "images/get_started16.png",
       "32": "images/get_started32.png",
@@ -24,12 +34,28 @@
     "128": "images/get_started128.png"
   },
   "content_scripts": [
-        {
-        "matches": [
-            "https://*.facebook.com/*"],
-        "js": ["content.js"],
-        "run_at": "document_end"         // pay attention to this line
-        }
-    ],
+    {
+      "matches": [
+        "https://*.facebook.com/*"
+      ],
+      "js": [
+        "constants.js",
+        "config.js",
+        "js/content.js",
+        "styles/jquery-3.3.1.min.js",
+        "styles/bootstrap.min.js",
+        "styles/bootstrap-slider.min.js"
+      ],
+      "css": [
+        "styles/widget.css",
+        "styles/bootstrap-slider.min.css",
+        "styles/bootstrap.css"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    "js/widget.css"
+  ],
   "manifest_version": 2
 }

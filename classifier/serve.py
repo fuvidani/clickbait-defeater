@@ -388,4 +388,5 @@ if __name__ == "__main__":
     sess_SAN5 = tf.Session(graph=graph_SAN5, config=sess_config)
 
     print('Starting the REST API')
+    # app.run(ssl_context='adhoc', host='0.0.0.0')
     app.run(host='0.0.0.0')
