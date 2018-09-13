@@ -1,11 +1,7 @@
 package com.clickbait.defeater.contentextraction.service.html.extractor.extractors.mercury.web.parser
 
-import com.clickbait.defeater.contentextraction.model.WebPageSource
-import com.clickbait.defeater.contentextraction.model.MercuryApiResponse
-import com.clickbait.defeater.contentextraction.model.Content
-import com.clickbait.defeater.contentextraction.model.MediaContent
-import com.clickbait.defeater.contentextraction.model.HtmlContent
-import com.clickbait.defeater.contentextraction.model.MediaType
+/* ktlint-disable no-wildcard-imports */
+import com.clickbait.defeater.contentextraction.model.*
 import com.clickbait.defeater.contentextraction.service.html.extractor.Extractor
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorBean
 import com.clickbait.defeater.contentextraction.service.html.extractor.ExtractorChain
@@ -72,7 +68,11 @@ class MercuryContentExtractor(
             val html = document.body().html()
                 .replace("'", "&apos;")
                 .replace("\n", "")
-            Flux.concat(extractArticleImages(document), Flux.just(HtmlContent(html)))
+            Flux.concat(
+                extractArticleImages(document),
+                Flux.just(TextContent(document.body().text())),
+                Flux.just(HtmlContent(html))
+            )
         } else {
             Flux.empty()
         }
