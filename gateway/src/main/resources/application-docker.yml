@@ -16,11 +16,19 @@ spring:
           args:
             name: fallback
             fallbackUri: forward:/clickBaitReadFallback
-      - id: clickbait_update_score_route
+      - id: clickbait_update_score_route_1
         uri: http://clickbait-update-service:8080
         predicates:
-        - Path=/clickbait/score
-        - Method=PUT
+        - Path=/clickbait/vote
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/clickBaitUpdateFallback
+      - id: clickbait_update_score_route_2
+        uri: http://clickbait-update-service:8080
+        predicates:
+        - Path=/clickbait/votes
         filters:
         - name: Hystrix
           args:

@@ -22,7 +22,7 @@ import reactor.test.StepVerifier
 @RunWith(SpringRunner::class)
 class LanguageDetectorTest {
 
-    private lateinit var detector: ILanguageDetector
+    private lateinit var detector: LanguageDetector
     private val libraryDetector = LanguageDetectorBuilder.create(NgramExtractors.standard())
         .withProfiles(LanguageProfileReader().readAllBuiltIn())
         .build()

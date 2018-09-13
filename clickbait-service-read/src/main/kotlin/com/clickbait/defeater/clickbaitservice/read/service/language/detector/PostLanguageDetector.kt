@@ -16,7 +16,8 @@ import reactor.core.publisher.Mono
  * @since 1.0.0
  */
 @Component
-class PostLanguageDetector(private val languageDetector: LanguageDetector) : ILanguageDetector {
+class PostLanguageDetector(private val languageDetector: LanguageDetector) :
+    com.clickbait.defeater.clickbaitservice.read.service.language.detector.LanguageDetector {
 
     override fun detect(instance: PostInstance): Mono<PostInstance> {
         return Mono.create {
