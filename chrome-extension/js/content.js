@@ -49,27 +49,27 @@ const callback = function (mutationsList) {
                             //     break;
                             // }
 
+                            const encodedUrl = a_list[i].href;
+                            const extractedUrl = extractUrl(encodedUrl);
+                            console.log("extracted url: " + extractedUrl);
+
+
                             // filter posts with utm_source=dynamic
-                            const index = a_list[i].href.indexOf("http", 1);
-                            const uri = a_list[i].href.substring(index);
-                            let decodedUrl = decodeURIComponent(uri);
-                            const url = new URL(decodedUrl);
-                            const utmSource = url.searchParams.get("utm_source");
+                            const urlObject = new URL(extractedUrl);
+                            const utmSource = urlObject.searchParams.get("utm_source");
                             if (utmSource === "dynamic") {
-                                console.log("dynamic utm_source skip post", uri);
+                                console.log("dynamic utm_source skip post", extractedUrl);
                                 break;
                             }
 
                             createWidget(mutation.target.id, mutation.target);
-                            const encodedUrl = a_list[i].href;
-                            // const extractedUrl = extractUrl(encodedUrl);
-                            // console.log("extracted url: " + extractedUrl);
+
                             const extractButton = document.getElementById(mutation.target.id + "_extract");
                             extractButton.onclick = function () {
                                 if (extractedIds.indexOf(mutation.target.id) === -1) {
                                     chrome.runtime.sendMessage({
                                         message: EXTRACT_CONTENT,
-                                        data: {url: encodedUrl}
+                                        data: {url: extractedUrl}
                                     }, function (response) {
                                         const titles = response.contents.filter(content => content.contentType === "META_DATA" && content.type === "TITLE");
 
@@ -154,7 +154,7 @@ const callback = function (mutationsList) {
                             if (postTexts.length > 0) {
                                 chrome.runtime.sendMessage({
                                     message: PREDICT_ARTICLE_SCORE,
-                                    data: JSON.stringify({postText: postTexts, id: encodedUrl})
+                                    data: JSON.stringify({postText: postTexts, id: extractedUrl})
                                 }, function (response) {
                                     if (response.clickbaitScore) {
                                         const progressBar = document.getElementById(mutation.target.id + "_predict");
@@ -196,9 +196,28 @@ const callback = function (mutationsList) {
 
                             chrome.runtime.sendMessage({
                                 message: RETRIEVE_ARTICLE_SCORE_FOR_USER,
-                                data: {url: encodedUrl}
+                                data: {url: extractedUrl}
                             }, function (response) {
-                                console.log("Got previous score for: " + response.url);
+                                console.log("Got previous score: " + response.vote);
+
+                                switch (response.vote) {
+                                    case 0: {
+                                        sliders[mutation.target.id].setValue(0, false, true);
+                                        break;
+                                    }
+                                    case 0.33333334: {
+                                        sliders[mutation.target.id].setValue(1, false, true);
+                                        break;
+                                    }
+                                    case 0.6666667: {
+                                        sliders[mutation.target.id].setValue(2, false, true);
+                                        break;
+                                    }
+                                    case 1: {
+                                        sliders[mutation.target.id].setValue(3, false, true);
+                                        break;
+                                    }
+                                }
                             });
 
                             sliders[mutation.target.id].on("change", function (event) {
@@ -285,19 +304,19 @@ const callback = function (mutationsList) {
                                 const value = sliders[mutation.target.id].getValue();
                                 switch (value) {
                                     case 0: {
-                                        sendArticleScore(encodedUrl, 0.0);
+                                        sendArticleScore(extractedUrl, 0.0, postTexts);
                                         break;
                                     }
                                     case 1: {
-                                        sendArticleScore(encodedUrl, 0.33333334);
+                                        sendArticleScore(extractedUrl, 0.33333334, postTexts);
                                         break;
                                     }
                                     case 2: {
-                                        sendArticleScore(encodedUrl, 0.6666667);
+                                        sendArticleScore(extractedUrl, 0.6666667, postTexts);
                                         break;
                                     }
                                     case 3: {
-                                        sendArticleScore(encodedUrl, 1.0);
+                                        sendArticleScore(extractedUrl, 1.0, postTexts);
                                         break;
                                     }
                                 }
@@ -652,30 +671,18 @@ const createWidget = function (post_id, mutationTarget) {
     sliders[post_id] = slider;
 };
 
-const sendArticleScore = function (url, score, callback) {
+const sendArticleScore = function (url, vote, postText, callback) {
     chrome.runtime.sendMessage({
         message: VOTE_ARTICLE_SCORE,
-        data: {url: url, score: score}
+        data: {url: url, vote: vote, postText: postText}
     }, function (response) {
         console.log("scored article: ", response);
     });
 };
 
-const extractUrl = function (href) {
-    const index = href.indexOf("http", 1);
-    const uri = href.substring(index);
-    let decodedUrl = decodeURIComponent(uri);
-    const indexOfFirstArgument = decodedUrl.indexOf('?');
-    const indexOfFirstAndMark = decodedUrl.indexOf('&');
+const extractUrl = function (uri) {
+    const decodedUrl = decodeURIComponent(uri);
+    const url = new URL(decodedUrl);
 
-    if (indexOfFirstArgument > -1 && indexOfFirstAndMark > -1) {
-        const min = Math.min(indexOfFirstArgument, indexOfFirstAndMark);
-        decodedUrl = decodedUrl.substring(0, min)
-    } else if (indexOfFirstArgument > -1) {
-        decodedUrl = decodedUrl.substring(0, indexOfFirstArgument)
-    } else if (indexOfFirstAndMark > -1) {
-        decodedUrl = decodedUrl.substring(0, indexOfFirstAndMark)
-    }
-
-    return decodedUrl
+    return url.searchParams.get("u");
 };

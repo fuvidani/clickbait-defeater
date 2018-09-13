@@ -42,14 +42,44 @@ chrome.runtime.onMessage.addListener(
                     }
 
                     function useToken(userId) {
-                        // call backend with data and userId
-                        senderResponse({USER_ID: userId, url: request.data.url, score: request.data.score});
+                        request.data.userId = userId;
+                        const xhr = new XMLHttpRequest();
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState === 4 && ((xhr.status === 200))) {
+                                senderResponse(JSON.parse(xhr.response));
+                            }
+                        };
+                        xhr.open("POST", hostUrl + "/clickbait/vote", true);
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.send(JSON.stringify(request.data));
                     }
                 });
                 return true;
             }
             case RETRIEVE_ARTICLE_SCORE_FOR_USER: {
-                senderResponse(request.data);
+                chrome.storage.sync.get(USER_ID, function (items) {
+                    let userId = items.USER_ID;
+                    if (userId) {
+                        useToken(userId);
+                    } else {
+                        userId = getRandomToken();
+                        chrome.storage.sync.set({USER_ID: userId}, function () {
+                            useToken(userId);
+                        });
+                    }
+
+                    function useToken(userId) {
+                        const xhr = new XMLHttpRequest();
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState === 4 && ((xhr.status === 200))) {
+                                senderResponse(JSON.parse(xhr.response));
+                            }
+                        };
+                        xhr.open("GET", hostUrl + "/clickbait/vote?" + "url=" + request.data.url + "&userId=" + userId, true);
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.send(null);
+                    }
+                });
                 return true;
             }
             case EXTRACT_CONTENT: {
