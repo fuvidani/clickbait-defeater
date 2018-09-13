@@ -63,13 +63,14 @@ class MercuryContentExtractor(
     private fun extractHtmlContent(response: MercuryApiResponse): Flux<Content> {
         return if (response.content != null && response.content.isNotBlank()) {
             val document = Jsoup.parse(response.content)
+            val images = extractArticleImages(document)
             document.select(blackListCssQuery).forEach { it.remove() }
             document.outputSettings(htmlOutputSettings)
             val html = document.body().html()
                 .replace("'", "&apos;")
                 .replace("\n", "")
             Flux.concat(
-                extractArticleImages(document),
+                images,
                 Flux.just(TextContent(document.body().text())),
                 Flux.just(HtmlContent(html))
             )
@@ -80,7 +81,7 @@ class MercuryContentExtractor(
 
     private fun extractArticleImages(document: Document): Flux<Content> {
         return Flux
-            .fromIterable(document.select("img[src~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$]"))
+            .fromIterable(document.select("img[src~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$], amp-img[src~=^((?:(?!http).)*http(?!.*http))?(?!http).*\$]"))
             .map { MediaContent(MediaType.IMAGE, it.attr("src")) }
     }
 

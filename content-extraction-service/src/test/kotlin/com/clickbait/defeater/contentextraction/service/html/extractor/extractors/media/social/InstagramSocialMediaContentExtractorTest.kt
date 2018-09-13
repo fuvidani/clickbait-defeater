@@ -29,13 +29,13 @@ class InstagramSocialMediaContentExtractorTest {
         val document = getDocumentWithTestUrl(url)
         StepVerifier.create(extractor.extract(document))
             .expectSubscription()
-            .expectNext(SocialMediaContent(SocialMediaEmbeddingType.INSTAGRAM,"https://www.instagram.com/p/BnoSjf6h2Qm/"))
+            .expectNext(SocialMediaContent(SocialMediaEmbeddingType.INSTAGRAM, "https://www.instagram.com/p/BnoSjf6h2Qm/"))
             .expectComplete()
             .log()
             .verify()
     }
 
-    private fun getDocumentWithTestUrl(originalUrl: String) : Document {
+    private fun getDocumentWithTestUrl(originalUrl: String): Document {
         val html = String.format(testHtml, originalUrl)
         return Jsoup.parse(html)
     }
