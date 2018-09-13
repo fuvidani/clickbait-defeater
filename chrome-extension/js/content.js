@@ -40,25 +40,36 @@ const callback = function (mutationsList) {
                         break;
                     }
 
-                    // if (document.getElementById(mutation.target.id).offsetParent === null) {
-                    //     console.log("post not visible");
-                    //     break;
-                    // }
-
                     const a_list = mutation.target.getElementsByTagName('a');
 
                     for (let i = 0; i < a_list.length; i++) {
                         if (a_list[i].href.indexOf("https://l.facebook.com/l.php?u=http") === 0 && a_list[i].hasAttribute("tabindex") && a_list[i].closest(".commentable_item") === null) {
+                            // if (a_list[i].offsetParent === null) {
+                            //     console.log("post not visible");
+                            //     break;
+                            // }
+
+                            // filter posts with utm_source=dynamic
+                            const index = a_list[i].href.indexOf("http", 1);
+                            const uri = a_list[i].href.substring(index);
+                            let decodedUrl = decodeURIComponent(uri);
+                            const url = new URL(decodedUrl);
+                            const utmSource = url.searchParams.get("utm_source");
+                            if (utmSource === "dynamic") {
+                                console.log("dynamic utm_source skip post", uri);
+                                break;
+                            }
+
                             createWidget(mutation.target.id, mutation.target);
                             const encodedUrl = a_list[i].href;
-                            const extractedUrl = extractUrl(encodedUrl);
-                            console.log("extracted url: " + extractedUrl);
+                            // const extractedUrl = extractUrl(encodedUrl);
+                            // console.log("extracted url: " + extractedUrl);
                             const extractButton = document.getElementById(mutation.target.id + "_extract");
                             extractButton.onclick = function () {
                                 if (extractedIds.indexOf(mutation.target.id) === -1) {
                                     chrome.runtime.sendMessage({
                                         message: EXTRACT_CONTENT,
-                                        data: {url: extractedUrl}
+                                        data: {url: encodedUrl}
                                     }, function (response) {
                                         const titles = response.contents.filter(content => content.contentType === "META_DATA" && content.type === "TITLE");
 
@@ -143,7 +154,7 @@ const callback = function (mutationsList) {
                             if (postTexts.length > 0) {
                                 chrome.runtime.sendMessage({
                                     message: PREDICT_ARTICLE_SCORE,
-                                    data: JSON.stringify({postText: postTexts, id: extractedUrl})
+                                    data: JSON.stringify({postText: postTexts, id: encodedUrl})
                                 }, function (response) {
                                     if (response.clickbaitScore) {
                                         const progressBar = document.getElementById(mutation.target.id + "_predict");
@@ -634,7 +645,8 @@ const createWidget = function (post_id, mutationTarget) {
 
             return "N/A"
         },
-        ticks_tooltip: true
+        ticks_tooltip: true,
+        tooltip_position: "bottom"
     });
 
     sliders[post_id] = slider;

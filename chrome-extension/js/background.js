@@ -53,8 +53,16 @@ chrome.runtime.onMessage.addListener(
                 return true;
             }
             case EXTRACT_CONTENT: {
-                senderResponse(testExtractionResponse);
-                // setTimeout(function(){ senderResponse(testResponseString); }, 3000);
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && (xhr.status === 200)) {
+                        senderResponse(JSON.parse(xhr.response));
+                    }
+                };
+                xhr.open("GET", hostUrl + "/content?" + "url=" + request.data.url, true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(null);
+
                 return true;
             }
             default:
