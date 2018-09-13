@@ -36,7 +36,7 @@ const callback = function (mutationsList) {
                     }
 
                     if (sp && on && so && red) {
-                        console.log("Sponsored post");
+                        if (logging) console.log("Sponsored post");
                         break;
                     }
 
@@ -45,20 +45,20 @@ const callback = function (mutationsList) {
                     for (let i = 0; i < a_list.length; i++) {
                         if (a_list[i].href.indexOf("https://l.facebook.com/l.php?u=http") === 0 && a_list[i].hasAttribute("tabindex") && a_list[i].closest(".commentable_item") === null) {
                             // if (a_list[i].offsetParent === null) {
-                            //     console.log("post not visible");
+                            //     if (logging) console.log("post not visible");
                             //     break;
                             // }
 
                             const encodedUrl = a_list[i].href;
                             const extractedUrl = extractUrl(encodedUrl);
-                            console.log("extracted url: " + extractedUrl);
+                            if (logging) console.log("extracted url: " + extractedUrl);
 
 
                             // filter posts with utm_source=dynamic
                             const urlObject = new URL(extractedUrl);
                             const utmSource = urlObject.searchParams.get("utm_source");
                             if (utmSource === "dynamic") {
-                                console.log("dynamic utm_source skip post", extractedUrl);
+                                if (logging) console.log("dynamic utm_source skip post", extractedUrl);
                                 break;
                             }
 
@@ -112,9 +112,9 @@ const callback = function (mutationsList) {
                                             textContainer.appendChild(collapseButton);
 
                                             // $(".extract-collapse").on('shown.bs.collapse', function () {
-                                            //     console.log("Starting collapsing");
+                                            //     if (logging) console.log("Starting collapsing");
                                             // }).on('hide.bs.collapse', function () {
-                                            //     // console.log("Back collapsing");
+                                            //     // if (logging) console.log("Back collapsing");
                                             // });
                                         }
 
@@ -149,7 +149,7 @@ const callback = function (mutationsList) {
                             if (list.length > 0) {
                                 postTexts.push(list[0].firstChild.firstChild.textContent);
                             }
-                            console.log("postText: " + postTexts);
+                            if (logging) console.log("postText: " + postTexts);
 
                             if (postTexts.length > 0) {
                                 chrome.runtime.sendMessage({
@@ -198,7 +198,7 @@ const callback = function (mutationsList) {
                                 message: RETRIEVE_ARTICLE_SCORE_FOR_USER,
                                 data: {url: extractedUrl}
                             }, function (response) {
-                                console.log("Got previous score: " + response.vote);
+                                if (logging) console.log("Got previous score: " + response.vote);
 
                                 switch (response.vote) {
                                     case 0: {
@@ -433,7 +433,7 @@ const callback = function (mutationsList) {
                         clickbaitWidget.remove();
                     }
                     removed_ids.push(node.id);
-                    console.log("clickbait-widget removed with id: " + node.id + "_widget");
+                    if (logging) console.log("clickbait-widget removed with id: " + node.id + "_widget");
                 }
             }
         }
@@ -527,7 +527,7 @@ const createCarousel = function (postId, contents) {
 };
 
 const iframeLoaded = function (iframeId) {
-    console.log("HERE");
+    if (logging) console.log("HERE");
     var iFrameID = document.getElementById(iframeId);
     if (iFrameID) {
         // here you can make the height, I delete it first, then I make it again
@@ -643,7 +643,7 @@ const createWidget = function (post_id, mutationTarget) {
 
     post_ids.push(post_id);
     mutationTarget.parentNode.insertBefore(widgetDiv, mutationTarget);
-    console.log("clickbait-widget added with id: " + post_id);
+    if (logging) console.log("clickbait-widget added with id: " + post_id);
 
     // initialize slider
     const slider = new Slider("#" + post_id + "_slider", {
@@ -676,7 +676,7 @@ const sendArticleScore = function (url, vote, postText, callback) {
         message: VOTE_ARTICLE_SCORE,
         data: {url: url, vote: vote, postText: postText}
     }, function (response) {
-        console.log("scored article: ", response);
+        if (logging) console.log("scored article: ", response);
     });
 };
 

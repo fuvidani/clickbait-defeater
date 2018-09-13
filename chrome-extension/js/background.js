@@ -13,7 +13,7 @@ chrome.runtime.onInstalled.addListener(function () {
 
 chrome.runtime.onMessage.addListener(
     (request, sender, senderResponse) => {
-        console.log(request);
+        if (logging) console.log(request);
         switch (request.message) {
             case PREDICT_ARTICLE_SCORE: {
                 const xhr = new XMLHttpRequest();
@@ -25,7 +25,6 @@ chrome.runtime.onMessage.addListener(
                 xhr.open("POST", hostUrl + "/clickbait/score", true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.send(request.data);
-                // setTimeout(function(){ xhr.send(request.data); }, 3000);
 
                 return true;
             }
