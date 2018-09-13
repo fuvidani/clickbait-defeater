@@ -44,8 +44,8 @@ chrome.runtime.onMessage.addListener(
                         request.data.userId = userId;
                         const xhr = new XMLHttpRequest();
                         xhr.onreadystatechange = function () {
-                            if (xhr.readyState === 4 && ((xhr.status === 200))) {
-                                senderResponse(JSON.parse(xhr.response));
+                            if (xhr.readyState === 4 && xhr.status === 200) {
+                                senderResponse(true);
                             }
                         };
                         xhr.open("POST", hostUrl + "/clickbait/vote", true);
@@ -82,6 +82,7 @@ chrome.runtime.onMessage.addListener(
                 return true;
             }
             case EXTRACT_CONTENT: {
+                // senderResponse(testExtractionResponse);
                 const xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4 && (xhr.status === 200)) {
@@ -91,7 +92,6 @@ chrome.runtime.onMessage.addListener(
                 xhr.open("GET", hostUrl + "/content?" + "url=" + request.data.url, true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.send(null);
-
                 return true;
             }
             default:

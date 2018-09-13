@@ -44,17 +44,11 @@ const callback = function (mutationsList) {
 
                     for (let i = 0; i < a_list.length; i++) {
                         if (a_list[i].href.indexOf("https://l.facebook.com/l.php?u=http") === 0 && a_list[i].hasAttribute("tabindex") && a_list[i].closest(".commentable_item") === null) {
-                            // if (a_list[i].offsetParent === null) {
-                            //     if (logging) console.log("post not visible");
-                            //     break;
-                            // }
-
                             const encodedUrl = a_list[i].href;
                             const extractedUrl = extractUrl(encodedUrl);
                             if (logging) console.log("extracted url: " + extractedUrl);
 
-
-                            // filter posts with utm_source=dynamic
+                            // filter out posts with utm_source=dynamic
                             const urlObject = new URL(extractedUrl);
                             const utmSource = urlObject.searchParams.get("utm_source");
                             if (utmSource === "dynamic") {
@@ -91,9 +85,12 @@ const callback = function (mutationsList) {
                                             textContainer.appendChild(firstText);
 
                                             const collapseButton = document.createElement("a");
-                                            collapseButton.setAttribute("href", "#" + mutation.target.id + "_extract_collapseContainer");
+                                            collapseButton.id = mutation.target.id + "_extract_collapseButton";
+                                            collapseButton.setAttribute("data-target", "#" + mutation.target.id + "_extract_collapseContainer");
+                                            collapseButton.setAttribute("href", "#");
                                             collapseButton.setAttribute("data-toggle", "collapse");
-                                            collapseButton.innerText = "Collapse";
+                                            collapseButton.innerText = "SHOW MORE";
+                                            collapseButton.classList.add("collapse-button");
 
                                             const collapseContainer = document.createElement("div");
 
@@ -104,24 +101,15 @@ const callback = function (mutationsList) {
                                                 const paragraph = document.createElement("p");
                                                 paragraph.innerText = texts[i].data;
                                                 collapseContainer.appendChild(paragraph);
-
                                             }
                                             textContainer.appendChild(collapseContainer);
 
-                                            // paragraph.classList.add("clipped");
                                             textContainer.appendChild(collapseButton);
 
-                                            // $(".extract-collapse").on('shown.bs.collapse', function () {
-                                            //     if (logging) console.log("Starting collapsing");
-                                            // }).on('hide.bs.collapse', function () {
-                                            //     // if (logging) console.log("Back collapsing");
-                                            // });
                                         }
-
 
                                         let contentHtml = "";
                                         contentHtml += textContainer.outerHTML;
-
 
                                         const carouselElement = createCarousel(mutation.target.id, response.contents);
                                         contentHtml += carouselElement.outerHTML;
@@ -130,6 +118,16 @@ const callback = function (mutationsList) {
                                         $(extractButton).popover('show');
                                         $('.carousel').carousel({
                                             interval: 0
+                                        });
+
+                                        $("#" + mutation.target.id + "_extract_collapseContainer").on('show.bs.collapse', function () {
+                                            if (logging) console.log("Starting collapsing");
+                                            document.getElementById(mutation.target.id + "_extract_firstText").classList.remove("clipped");
+                                            document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "SHOW LESS";
+                                        }).on('hide.bs.collapse', function () {
+                                            if (logging) console.log("Back collapsing");
+                                            document.getElementById(mutation.target.id + "_extract_firstText").classList.add("clipped");
+                                            document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "SHOW MORE";
                                         });
 
                                         extractedIds.push(mutation.target.id);
@@ -501,10 +499,11 @@ const createCarousel = function (postId, contents) {
         } else if (content.contentType === "SOCIAL_MEDIA" && content.type === "TWITTER") {
             itemWrapper.appendChild(createIframeItem("https://twitframe.com/show?url=" + content.src, counter === 0, postId, counter));
             injected = true;
-        } else if (content.contentType === "HTML") {
-            itemWrapper.appendChild(createHtmlItem(content.html, counter === 0));
-            injected = true;
         }
+        // else if (content.contentType === "HTML") {
+        //     itemWrapper.appendChild(createHtmlItem(content.html, counter === 0));
+        //     injected = true;
+        // }
 
         if (injected) {
             const indicator = document.createElement("li");
