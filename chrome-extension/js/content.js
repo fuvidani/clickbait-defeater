@@ -511,14 +511,19 @@ const createCarousel = function (postId, contents) {
             itemWrapper.appendChild(createIframeItem(content.src + "embed/captioned", counter === 0, postId, counter));
             injected = true;
         } else if (content.contentType === "MEDIA" && content.type === "IMAGE") {
-            if (imageUrls.indexOf(content.src) === -1) {
+            if (imageUrls.indexOf(content.src) === -1 && !content.src.startsWith("data")) {
                 itemWrapper.appendChild(createImageItem(content.src, counter === 0));
                 imageUrls.push(content.src);
                 injected = true;
             }
         } else if (content.contentType === "MEDIA" && content.type === "VIDEO") {
-            itemWrapper.appendChild(createIframeItem(content.src, counter === 0, postId, counter));
-            injected = true;
+            if (content.src.startsWith("https")) {
+                const item = createIframeItem(content.src, counter === 0, postId, counter);
+                itemWrapper.appendChild(item);
+                injected = true;
+            } else {
+                if (logging) console.log("VIDEO with http. Skip!");
+            }
         } else if (content.contentType === "SOCIAL_MEDIA" && content.type === "TWITTER") {
             itemWrapper.appendChild(createIframeItem("https://twitframe.com/show?url=" + content.src, counter === 0, postId, counter));
             injected = true;
