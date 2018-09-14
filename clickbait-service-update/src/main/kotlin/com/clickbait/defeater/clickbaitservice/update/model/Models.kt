@@ -35,11 +35,7 @@ data class PostInstance(
 
 data class PostInstanceJudgmentStats(
     val id: String,
-    val truthJudgments: List<Double>,
-    val truthMean: Double,
-    val truthMedian: Double,
-    val truthMode: Double,
-    val truthClass: String
+    val truthJudgments: List<Double>
 )
 
 const val CLASS_CLICKBAIT = "clickbait"
