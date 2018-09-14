@@ -435,8 +435,8 @@ const callback = function (mutationsList) {
             }
         } else if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
             for (let node of mutation.removedNodes) {
-                if (node.id !== undefined && node.id.indexOf("hyperfeed_story_id") === 0) {
-                    const clickbaitWidget = document.getElementById(node + "_widget");
+                if (node.id !== undefined && node.id.indexOf("hyperfeed_story_id") === 0 && node.id.split("_").length === 4) {
+                    const clickbaitWidget = document.getElementById(node.id + "_widget");
                     if (clickbaitWidget) {
                         clickbaitWidget.remove();
                     }
