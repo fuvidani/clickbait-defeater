@@ -28,6 +28,7 @@ data class PostInstance(
     val postMedia: List<String> = emptyList(),
     val targetTitle: String = "",
     val targetDescription: String = "",
+    val targetCaptions: List<String> = emptyList(),
     val targetKeywords: String = "",
     val targetParagraphs: List<String> = emptyList()
 )

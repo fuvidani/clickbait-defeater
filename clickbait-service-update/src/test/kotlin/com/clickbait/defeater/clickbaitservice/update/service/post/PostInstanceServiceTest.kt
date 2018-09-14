@@ -101,6 +101,7 @@ class PostInstanceServiceTest {
             emptyList(),
             (TestData.getSampleTitleMetaDataContent() as MetaDataContent).data,
             (TestData.getSampleDescriptionMetaDataContent() as MetaDataContent).data,
+            emptyList(),
             (TestData.getSampleKeywordsMetaDataContent() as MetaDataContent).data,
             listOf((TestData.getSampleTextContent() as TextContent).text)
         )
@@ -151,6 +152,7 @@ class PostInstanceServiceTest {
             emptyList(),
             (TestData.getSampleTitleMetaDataContent() as MetaDataContent).data,
             (TestData.getSampleDescriptionMetaDataContent() as MetaDataContent).data,
+            emptyList(),
             (TestData.getSampleKeywordsMetaDataContent() as MetaDataContent).data,
             listOf((TestData.getSampleTextContent() as TextContent).text)
         )

@@ -45,6 +45,7 @@ fun ContentWrapper.toPostInstance(postText: List<String>): PostInstance {
         timeStamp, emptyList(),
         targetTitle,
         targetDescription,
+        emptyList(),
         targetKeyWords,
         targetParagraphs)
 }
