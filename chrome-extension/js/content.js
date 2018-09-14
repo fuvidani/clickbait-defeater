@@ -145,7 +145,7 @@ const callback = function (mutationsList) {
                                             document.getElementById(mutation.target.id + "_extract_firstText").classList.remove("large-clipped");
                                             document.getElementById(mutation.target.id + "_extract_firstText").classList.add("clipped");
                                             document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "Show more";
-
+                                            document.getElementById(mutation.target.id + "_extract_firstText").scrollTop = 0;
                                             $(extractButton).popover('reposition');
                                         });
 
@@ -184,10 +184,10 @@ const callback = function (mutationsList) {
                                         progressBar.classList.remove("progress-bar-striped");
                                         progressBar.classList.remove("progress-bar-info");
 
-                                        if (scorePercent < 7) {
+                                        if (scorePercent < 9) {
                                             progressBar.classList.add("progress-bar-success");
                                             progressBar.innerText = "";
-                                        } else if (scorePercent >= 7 && scorePercent < 22) {
+                                        } else if (scorePercent >= 9 && scorePercent < 22) {
                                             progressBar.classList.add("progress-bar-success");
                                             progressBar.innerText = scorePercent + "%";
                                         } else if (scorePercent >= 22 && scorePercent < 33) {
