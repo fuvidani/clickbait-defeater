@@ -40,6 +40,11 @@ const callback = function (mutationsList) {
                         break;
                     }
 
+                    if (mutation.target.classList.contains("hidden_elem")) {
+                        if (logging) console.log("Hidden post!");
+                        break;
+                    }
+
                     const a_list = mutation.target.getElementsByTagName('a');
 
                     for (let i = 0; i < a_list.length; i++) {
