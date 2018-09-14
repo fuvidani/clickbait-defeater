@@ -503,6 +503,7 @@ const createCarousel = function (postId, contents) {
     rightIcon.setAttribute("aria-hidden", "true");
     rightControl.appendChild(rightIcon);
 
+    const imageUrls = [];
     let counter = 0;
     for (let content of contents) {
         let injected = false;
@@ -510,8 +511,11 @@ const createCarousel = function (postId, contents) {
             itemWrapper.appendChild(createIframeItem(content.src + "embed/captioned", counter === 0, postId, counter));
             injected = true;
         } else if (content.contentType === "MEDIA" && content.type === "IMAGE") {
-            itemWrapper.appendChild(createImageItem(content.src, counter === 0));
-            injected = true;
+            if (imageUrls.indexOf(content.src) === -1) {
+                itemWrapper.appendChild(createImageItem(content.src, counter === 0));
+                imageUrls.push(content.src);
+                injected = true;
+            }
         } else if (content.contentType === "MEDIA" && content.type === "VIDEO") {
             itemWrapper.appendChild(createIframeItem(content.src, counter === 0, postId, counter));
             injected = true;

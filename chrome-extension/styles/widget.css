@@ -73,6 +73,9 @@
     top:0 !important;
     bottom:0 !important;
     margin:auto !important;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%)
 }
 
 .extract-item-wrapper {
