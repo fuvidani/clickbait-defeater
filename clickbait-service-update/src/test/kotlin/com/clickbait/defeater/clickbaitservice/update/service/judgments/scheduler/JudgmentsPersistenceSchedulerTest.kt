@@ -65,21 +65,9 @@ class JudgmentsPersistenceSchedulerTest {
         Mockito.`when`(postInstanceService.findById(englishPost2.id)).thenReturn(Mono.just(englishPost2))
         Mockito.`when`(postInstanceService.findById(spanishPost.id)).thenReturn(Mono.just(spanishPost))
 
-        val englishPost1Stats = PostInstanceJudgmentStats(
-            englishPost1.id, englishVotes1.map { it.vote }, 0.466666676,
-            0.33333334,
-            0.33333334,
-            CLASS_NO_CLICKBAIT
-        )
+        val englishPost1Stats = PostInstanceJudgmentStats(englishPost1.id, englishVotes1.map { it.vote })
         val englishPost1Judgments = PostInstanceJudgments(englishPost1, englishPost1Stats)
-        val englishPost2Stats = PostInstanceJudgmentStats(
-            englishPost2.id,
-            englishVotes2.map { it.vote },
-            0.73333334,
-            1.0,
-            1.0,
-            CLASS_CLICKBAIT
-        )
+        val englishPost2Stats = PostInstanceJudgmentStats(englishPost2.id, englishVotes2.map { it.vote })
         val englishPost2Judgments = PostInstanceJudgments(englishPost2, englishPost2Stats)
         val expectedJudgmentsWrapper =
             MultiplePostInstanceJudgments(listOf(englishPost2Judgments, englishPost1Judgments))
@@ -111,22 +99,18 @@ class JudgmentsPersistenceSchedulerTest {
             .thenReturn(Mono.empty())
 
         val englishPostStats = PostInstanceJudgmentStats(
-            englishPost.id, listOf(0.33333334, 0.0, 0.33333334, 1.0, 0.6666667), 0.466666676,
-            0.33333334,
-            0.33333334,
-            CLASS_NO_CLICKBAIT
+            englishPost.id, listOf(0.33333334, 0.0, 0.33333334, 1.0, 0.6666667)
         )
         val englishPostJudgments = PostInstanceJudgments(englishPost, englishPostStats)
 
         val englishUsPostStats = PostInstanceJudgmentStats(
             englishUsPost.id,
-            listOf(1.0, 1.0, 0.0, 1.0, 0.6666667), 0.73333334, 1.0, 1.0, CLASS_CLICKBAIT
+            listOf(1.0, 1.0, 0.0, 1.0, 0.6666667)
         )
         val englishUsPostJudgments = PostInstanceJudgments(englishUsPost, englishUsPostStats)
 
         val englishUkPostStats = PostInstanceJudgmentStats(
-            englishUkPost.id, listOf(0.0, 0.0, 0.0, 0.0, 0.0), 0.0, 0.0, 0.0,
-            CLASS_NO_CLICKBAIT
+            englishUkPost.id, listOf(0.0, 0.0, 0.0, 0.0, 0.0)
         )
         val englishUkPostJudgments = PostInstanceJudgments(englishUkPost, englishUkPostStats)
 

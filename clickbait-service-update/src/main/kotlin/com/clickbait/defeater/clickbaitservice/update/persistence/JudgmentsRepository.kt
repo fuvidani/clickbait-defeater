@@ -1,7 +1,6 @@
 package com.clickbait.defeater.clickbaitservice.update.persistence
 
 import com.clickbait.defeater.clickbaitservice.update.model.MultiplePostInstanceJudgments
-import com.clickbait.defeater.clickbaitservice.update.model.PostInstanceJudgments
 import org.springframework.http.MediaType
 import reactor.core.publisher.Mono
 import retrofit2.http.Body
@@ -23,13 +22,6 @@ interface JudgmentsRepository {
         "Accept: ${MediaType.APPLICATION_JSON_UTF8_VALUE}",
         "Content-Type: ${MediaType.APPLICATION_JSON_UTF8_VALUE}"
     )
-    @POST("vote")
-    fun save(@Body judgments: PostInstanceJudgments): Mono<Void>
-
-    @Headers(
-        "Accept: ${MediaType.APPLICATION_JSON_UTF8_VALUE}",
-        "Content-Type: ${MediaType.APPLICATION_JSON_UTF8_VALUE}"
-    )
-    @POST("votes")
+    @POST("train")
     fun saveAll(@Body multipleJudgments: MultiplePostInstanceJudgments): Mono<Void>
 }
