@@ -73,6 +73,9 @@
     top:0 !important;
     bottom:0 !important;
     margin:auto !important;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%)
 }
 
 .extract-item-wrapper {
@@ -105,6 +108,11 @@
 .clipped {
     max-height: 100px;
     overflow: hidden;
+}
+
+.large-clipped {
+    max-height: 350px;
+    overflow-y: auto;
 }
 
 .collapse-button {

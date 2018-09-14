@@ -44,7 +44,7 @@ class JudgmentsPersistenceHandlerTest {
         val post = PostInstance("id", "en", emptyList())
         val judgment = PostInstanceJudgments(
             post,
-            PostInstanceJudgmentStats(post.id, listOf(0.0, 0.0, 0.0), 0.0, 0.0, 0.0, CLASS_NO_CLICKBAIT)
+            PostInstanceJudgmentStats(post.id, listOf(0.0, 0.0, 0.0))
         )
         val wrapper = MultiplePostInstanceJudgments(listOf(judgment, judgment, judgment))
 
@@ -60,7 +60,7 @@ class JudgmentsPersistenceHandlerTest {
         val post = PostInstance("id", "en", emptyList())
         val judgment = PostInstanceJudgments(
             post,
-            PostInstanceJudgmentStats(post.id, listOf(0.0, 0.0, 0.0), 0.0, 0.0, 0.0, CLASS_NO_CLICKBAIT)
+            PostInstanceJudgmentStats(post.id, listOf(0.0, 0.0, 0.0))
         )
         val wrapper = MultiplePostInstanceJudgments(listOf(judgment))
 

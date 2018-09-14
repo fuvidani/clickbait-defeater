@@ -28,17 +28,14 @@ data class PostInstance(
     val postMedia: List<String> = emptyList(),
     val targetTitle: String = "",
     val targetDescription: String = "",
+    val targetCaptions: List<String> = emptyList(),
     val targetKeywords: String = "",
     val targetParagraphs: List<String> = emptyList()
 )
 
 data class PostInstanceJudgmentStats(
     val id: String,
-    val truthJudgments: List<Double>,
-    val truthMean: Double,
-    val truthMedian: Double,
-    val truthMode: Double,
-    val truthClass: String
+    val truthJudgments: List<Double>
 )
 
 const val CLASS_CLICKBAIT = "clickbait"

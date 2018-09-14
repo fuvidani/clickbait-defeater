@@ -7,7 +7,6 @@ logging:
     org.springframework.security: INFO
 
 
-#service.relay.votes.cron: "0 0 0 * * *"
 service.relay.votes:
   cron: "0 0 0 * * *"
   minimum.votes: 5
@@ -15,5 +14,5 @@ service.relay.votes:
 
 ml.service:
   protocol: http
-  host: 37.252.185.77
+  host: 193.31.25.242
   port: 5000

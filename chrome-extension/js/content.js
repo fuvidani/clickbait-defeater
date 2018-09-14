@@ -40,6 +40,11 @@ const callback = function (mutationsList) {
                         break;
                     }
 
+                    if (mutation.target.classList.contains("hidden_elem")) {
+                        if (logging) console.log("Hidden post!");
+                        break;
+                    }
+
                     const a_list = mutation.target.getElementsByTagName('a');
 
                     for (let i = 0; i < a_list.length; i++) {
@@ -70,6 +75,8 @@ const callback = function (mutationsList) {
                                         if (titles.length > 0) {
                                             const title = titles[0].data;
                                             $(extractButton).attr('data-original-title', title);
+                                        } else {
+                                            $(extractButton).attr('data-original-title', "No title found");
                                         }
 
                                         const texts = response.contents.filter(content => content.contentType === "TEXT");
@@ -89,7 +96,7 @@ const callback = function (mutationsList) {
                                             collapseButton.setAttribute("data-target", "#" + mutation.target.id + "_extract_collapseContainer");
                                             collapseButton.setAttribute("href", "#");
                                             collapseButton.setAttribute("data-toggle", "collapse");
-                                            collapseButton.innerText = "SHOW MORE";
+                                            collapseButton.innerText = "Show more";
                                             collapseButton.classList.add("collapse-button");
 
                                             const collapseContainer = document.createElement("div");
@@ -99,10 +106,16 @@ const callback = function (mutationsList) {
                                             collapseContainer.classList.add("extract-collapse");
                                             for (let i = 1; i < texts.length; i++) {
                                                 const paragraph = document.createElement("p");
-                                                paragraph.innerText = texts[i].data;
+                                                paragraph.innerText = texts[i].text;
                                                 collapseContainer.appendChild(paragraph);
                                             }
+                                            const link = document.createElement("a");
+                                            link.setAttribute("href", extractedUrl);
+                                            link.setAttribute("target", "_blank");
+                                            link.innerText = "Go to original page";
+                                            link.classList.add("pull-right");
                                             textContainer.appendChild(collapseContainer);
+                                            textContainer.appendChild(link);
 
                                             textContainer.appendChild(collapseButton);
 
@@ -121,13 +134,19 @@ const callback = function (mutationsList) {
                                         });
 
                                         $("#" + mutation.target.id + "_extract_collapseContainer").on('show.bs.collapse', function () {
-                                            if (logging) console.log("Starting collapsing");
+                                            if (logging) console.log("Starting collapsing", mutation.target.id);
                                             document.getElementById(mutation.target.id + "_extract_firstText").classList.remove("clipped");
-                                            document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "SHOW LESS";
+                                            document.getElementById(mutation.target.id + "_extract_firstText").classList.add("large-clipped");
+                                            document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "Show less";
+
+                                            $(extractButton).popover('reposition');
                                         }).on('hide.bs.collapse', function () {
-                                            if (logging) console.log("Back collapsing");
+                                            if (logging) console.log("Back collapsing", mutation.target.id);
+                                            document.getElementById(mutation.target.id + "_extract_firstText").classList.remove("large-clipped");
                                             document.getElementById(mutation.target.id + "_extract_firstText").classList.add("clipped");
-                                            document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "SHOW MORE";
+                                            document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "Show more";
+                                            document.getElementById(mutation.target.id + "_extract_firstText").scrollTop = 0;
+                                            $(extractButton).popover('reposition');
                                         });
 
                                         extractedIds.push(mutation.target.id);
@@ -165,10 +184,10 @@ const callback = function (mutationsList) {
                                         progressBar.classList.remove("progress-bar-striped");
                                         progressBar.classList.remove("progress-bar-info");
 
-                                        if (scorePercent < 7) {
+                                        if (scorePercent < 9) {
                                             progressBar.classList.add("progress-bar-success");
                                             progressBar.innerText = "";
-                                        } else if (scorePercent >= 7 && scorePercent < 22) {
+                                        } else if (scorePercent >= 9 && scorePercent < 22) {
                                             progressBar.classList.add("progress-bar-success");
                                             progressBar.innerText = scorePercent + "%";
                                         } else if (scorePercent >= 22 && scorePercent < 33) {
@@ -425,8 +444,8 @@ const callback = function (mutationsList) {
             }
         } else if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
             for (let node of mutation.removedNodes) {
-                if (node.id !== undefined && node.id.indexOf("hyperfeed_story_id") === 0) {
-                    const clickbaitWidget = document.getElementById(node + "_widget");
+                if (node.id !== undefined && node.id.indexOf("hyperfeed_story_id") === 0 && node.id.split("_").length === 4) {
+                    const clickbaitWidget = document.getElementById(node.id + "_widget");
                     if (clickbaitWidget) {
                         clickbaitWidget.remove();
                     }
@@ -484,6 +503,7 @@ const createCarousel = function (postId, contents) {
     rightIcon.setAttribute("aria-hidden", "true");
     rightControl.appendChild(rightIcon);
 
+    const imageUrls = [];
     let counter = 0;
     for (let content of contents) {
         let injected = false;
@@ -491,11 +511,19 @@ const createCarousel = function (postId, contents) {
             itemWrapper.appendChild(createIframeItem(content.src + "embed/captioned", counter === 0, postId, counter));
             injected = true;
         } else if (content.contentType === "MEDIA" && content.type === "IMAGE") {
-            itemWrapper.appendChild(createImageItem(content.src, counter === 0));
-            injected = true;
+            if (imageUrls.indexOf(content.src) === -1 && !content.src.startsWith("data")) {
+                itemWrapper.appendChild(createImageItem(content.src, counter === 0));
+                imageUrls.push(content.src);
+                injected = true;
+            }
         } else if (content.contentType === "MEDIA" && content.type === "VIDEO") {
-            itemWrapper.appendChild(createIframeItem(content.src, counter === 0, postId, counter));
-            injected = true;
+            if (content.src.startsWith("https")) {
+                const item = createIframeItem(content.src, counter === 0, postId, counter);
+                itemWrapper.appendChild(item);
+                injected = true;
+            } else {
+                if (logging) console.log("VIDEO with http. Skip!");
+            }
         } else if (content.contentType === "SOCIAL_MEDIA" && content.type === "TWITTER") {
             itemWrapper.appendChild(createIframeItem("https://twitframe.com/show?url=" + content.src, counter === 0, postId, counter));
             injected = true;
@@ -517,12 +545,16 @@ const createCarousel = function (postId, contents) {
         }
     }
 
-    // carouselContainer.appendChild(indicatorList);
-    carouselContainer.appendChild(itemWrapper);
-    carouselContainer.appendChild(leftControl);
-    carouselContainer.appendChild(rightControl);
+    if (counter !== 0) {
+        // carouselContainer.appendChild(indicatorList);
+        carouselContainer.appendChild(itemWrapper);
+        carouselContainer.appendChild(leftControl);
+        carouselContainer.appendChild(rightControl);
 
-    return carouselContainer;
+        return carouselContainer;
+    } else {
+        return document.createElement("div");
+    }
 };
 
 const iframeLoaded = function (iframeId) {
@@ -617,9 +649,9 @@ const createWidget = function (post_id, mutationTarget) {
     sliderDiv.appendChild(sliderInput);
 
     const extractDiv = document.createElement('div');
-    const button = document.createElement('button');
+    const button = document.createElement('a');
     button.id = post_id + "_extract";
-    button.setAttribute("type", "button");
+    // button.setAttribute("type", "button");
     button.setAttribute("data-toggle", "popover");
     // button.setAttribute("data-trigger", "focus");
     button.setAttribute("data-html", "true");
@@ -638,6 +670,19 @@ const createWidget = function (post_id, mutationTarget) {
 
     $(function () {
         $('[data-toggle="popover"]').popover();
+    });
+
+    $(document).on("click", function (e) {
+        const $target = $(e.target);
+        const isPopover = $target.is('[data-toggle=popover]');
+        const inPopover = $target.closest('.popover').length > 0;
+
+        //hide only if clicked on button or inside popover
+        if (!isPopover && !inPopover) $(button).popover('hide');
+    });
+
+    $(document).on('hidden.bs.popover', function (e) {
+        $(e.target).data("bs.popover").inState.click = false;
     });
 
     post_ids.push(post_id);

@@ -114,8 +114,8 @@ def retrain():
         model = Word2Vec.load("data/" + timestamp + "/s_clickbait.100.model")
 
         sentences = []
-        for each_line in data['instances']:
-            each_item = each_line
+        for each_line in data:
+            each_item = each_line['postInstance']
             for each_sentence in each_item["postText"]:
                 sentences.append(tokenise(each_sentence))
             if each_item["targetTitle"]:
@@ -147,8 +147,9 @@ def retrain():
 
         # write data into train data csv
         ids = {}
-        for each_line in data['instances']:
-            ids[each_line['id']] = False
+        for each_line in data:
+            each_item = each_line['postInstance']
+            ids[each_item['id']] = False
 
         with open('data/clickbait17-train-170331/instances.jsonl', 'ab+') as fin:
             for each_line in fin:
@@ -157,9 +158,10 @@ def retrain():
                 if instance_id in ids.keys():
                     ids[instance_id] = True
 
-            for each_line in data['instances']:
-                if not ids[each_line['id']]:
-                    fin.write('\n' + json.dumps(each_line))
+            for each_line in data:
+                each_item = each_line['postInstance']
+                if not ids[each_item['id']]:
+                    fin.write('\n' + json.dumps(each_item))
 
             fin.close()
 
@@ -173,24 +175,28 @@ def retrain():
 
             fin.seek(0)
 
-            for each_line in data['truth']:
-                truth_id = each_line['id']
+            for each_line in data:
+                each_item = each_line['stats']
+                truth_id = each_item['id']
                 if truth_id in truth_lines.keys():
-                    truth_lines[truth_id]['truthJudgments'] = each_line['truthJudgments'] + truth_lines[truth_id][
+                    truth_lines[truth_id]['truthJudgments'] = each_item['truthJudgments'] + truth_lines[truth_id][
                         'truthJudgments']
-                    truth_lines[truth_id]['truthMean'] = np.mean(truth_lines[truth_id]['truthJudgments'])
-                    truth_lines[truth_id]['truthMedian'] = np.median(truth_lines[truth_id]['truthJudgments'])
-                    truth_lines[truth_id]['truthMode'] = max(set(truth_lines[truth_id]['truthJudgments']),
-                                                             key=truth_lines[truth_id]['truthJudgments'].count)
-
-                    # set truthClass
-                    mean = truth_lines[truth_id]['truthMean']
-                    if mean < 0.5:
-                        truth_lines[truth_id]['truthClass'] = "no-clickbait"
-                    else:
-                        truth_lines[truth_id]['truthClass'] = "clickbait"
                 else:
-                    truth_lines[truth_id] = each_line
+                    truth_lines[truth_id] = {}
+                    truth_lines[truth_id]['truthJudgments'] = each_item['truthJudgments']
+                    truth_lines[truth_id]['id'] = each_item['id']
+
+                truth_lines[truth_id]['truthMean'] = np.mean(truth_lines[truth_id]['truthJudgments'])
+                truth_lines[truth_id]['truthMedian'] = np.median(truth_lines[truth_id]['truthJudgments'])
+                truth_lines[truth_id]['truthMode'] = max(set(truth_lines[truth_id]['truthJudgments']),
+                                                         key=truth_lines[truth_id]['truthJudgments'].count)
+
+                # set truthClass
+                mean = truth_lines[truth_id]['truthMean']
+                if mean < 0.5:
+                    truth_lines[truth_id]['truthClass'] = "no-clickbait"
+                else:
+                    truth_lines[truth_id]['truthClass'] = "clickbait"
 
             for i, truth in enumerate(truth_lines.values()):
                 if i == len(truth_lines.values()) - 1:

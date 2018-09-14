@@ -4,7 +4,6 @@ package com.clickbait.defeater.clickbaitservice.update.service.judgments.schedul
 import com.clickbait.defeater.clickbaitservice.update.model.*
 import com.clickbait.defeater.clickbaitservice.update.persistence.ClickBaitVoteRepository
 import com.clickbait.defeater.clickbaitservice.update.persistence.JudgmentsRepository
-import com.clickbait.defeater.clickbaitservice.update.service.judgments.scheduler.components.JudgmentsAggregator
 import com.clickbait.defeater.clickbaitservice.update.service.judgments.scheduler.components.JudgmentsPersistenceHandler
 import com.clickbait.defeater.clickbaitservice.update.service.post.PostInstanceService
 import mu.KLogging
@@ -33,7 +32,6 @@ class JudgmentsPersistenceScheduler(
     judgmentsRepository: JudgmentsRepository
 ) {
 
-    private val judgmentsAggregator = JudgmentsAggregator()
     private val judgmentsPersistenceHandler = JudgmentsPersistenceHandler(judgmentsRepository)
 
     @Scheduled(cron = "\${service.relay.votes.cron}")
@@ -63,24 +61,9 @@ class JudgmentsPersistenceScheduler(
     private fun obtainPostInstanceJudgments(tuple: Tuple2<PostInstance, List<ClickBaitVote>>): PostInstanceJudgments {
         val post = tuple.t1
         val votes = tuple.t2
-        val stats = judgmentsAggregator.aggregate(votes)
-        val result = PostInstanceJudgments(post, mapAggregatorResultToObject(post, stats))
+        val result = PostInstanceJudgments(post, PostInstanceJudgmentStats(post.id, votes.map { it.vote }))
         logger.info("Post Instance judgement stats: $result")
         return result
-    }
-
-    private fun mapAggregatorResultToObject(
-        post: PostInstance,
-        stats: JudgmentsAggregator.JudgmentStats
-    ): PostInstanceJudgmentStats {
-        return PostInstanceJudgmentStats(
-            post.id,
-            stats.truthJudgments,
-            stats.truthMean,
-            stats.truthMedian,
-            stats.truthMode,
-            stats.truthClass
-        )
     }
 
     companion object : KLogging()
