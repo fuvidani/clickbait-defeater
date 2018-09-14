@@ -32,11 +32,11 @@ const testExtractionResponse = {
             "contentType": "SOCIAL_MEDIA"
         },
         {
-            "data": "With Balotelli coming back into the room and in his own little world, the Napoli man jumped out on the former Liverpool , scaring him shitless and leading to him nearly dropping his phone in panic before he saw the funny side. With Balotelli coming back into the room and in his own little world, the Napoli man jumped out on the former Liverpool , scaring him shitless and leading to him nearly dropping his phone in panic before h With Balotelli coming back into the room and in his own little world, the Napoli man jumped out on the former Liverpool , scaring him shitless and leading to him nearly dropping his phone in panic before h With Balotelli coming back into the room and in his own little world, the Napoli man jumped out on the former Liverpool , scaring him shitless and leading to him nearly dropping his phone in panic before.",
+            "text": "With Balotelli coming back into the room and in his own little world, the Napoli man jumped out on the former Liverpool , scaring him shitless and leading to him nearly dropping his phone in panic before he saw the funny side. With Balotelli coming back into the room and in his own little world, the Napoli man jumped out on the former Liverpool , scaring him shitless and leading to him nearly dropping his phone in panic before h With Balotelli coming back into the room and in his own little world, the Napoli man jumped out on the former Liverpool , scaring him shitless and leading to him nearly dropping his phone in panic before h With Balotelli coming back into the room and in his own little world, the Napoli man jumped out on the former Liverpool , scaring him shitless and leading to him nearly dropping his phone in panic before.",
             "contentType": "TEXT"
         },
         {
-            "data": "alsklasdkflasdm lasdkf lskdf lasdjf lasdjflöasjdflö asjdfölajsdlfk jasldkjf aölsdjflöaksjd flöakjdf ölaskjdfl ajsdlfjasldfkjal.",
+            "text": "alsklasdkflasdm lasdkf lskdf lasdjf lasdjflöasjdflö asjdfölajsdlfk jasldkjf aölsdjflöaksjd flöakjdf ölaskjdfl ajsdlfjasldfkjal.",
             "contentType": "TEXT"
         },
         {

@@ -106,7 +106,7 @@ const callback = function (mutationsList) {
                                             collapseContainer.classList.add("extract-collapse");
                                             for (let i = 1; i < texts.length; i++) {
                                                 const paragraph = document.createElement("p");
-                                                paragraph.innerText = texts[i].data;
+                                                paragraph.innerText = texts[i].text;
                                                 collapseContainer.appendChild(paragraph);
                                             }
                                             const link = document.createElement("a");
@@ -536,12 +536,16 @@ const createCarousel = function (postId, contents) {
         }
     }
 
-    // carouselContainer.appendChild(indicatorList);
-    carouselContainer.appendChild(itemWrapper);
-    carouselContainer.appendChild(leftControl);
-    carouselContainer.appendChild(rightControl);
+    if (counter !== 0) {
+        // carouselContainer.appendChild(indicatorList);
+        carouselContainer.appendChild(itemWrapper);
+        carouselContainer.appendChild(leftControl);
+        carouselContainer.appendChild(rightControl);
 
-    return carouselContainer;
+        return carouselContainer;
+    } else {
+        return document.createElement("div");
+    }
 };
 
 const iframeLoaded = function (iframeId) {
