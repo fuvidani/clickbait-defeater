@@ -4,6 +4,7 @@ package com.clickbait.defeater.contentextraction.service.html.extractor.extracto
 import com.clickbait.defeater.contentextraction.model.*
 import org.jsoup.nodes.Document
 import org.springframework.stereotype.Component
+import org.springframework.web.util.UriComponentsBuilder
 import reactor.core.publisher.Flux
 
 /**
@@ -21,6 +22,11 @@ class JsoupInstagramSocialMediaContentExtractor {
     internal fun extract(document: Document): Flux<Content> {
         return Flux
             .fromIterable(document.select("a[href*=instagram.com/p/]"))
-            .map { SocialMediaContent(SocialMediaEmbeddingType.INSTAGRAM, it.attr("href")) }
+            .map { SocialMediaContent(SocialMediaEmbeddingType.INSTAGRAM, getTrimmedInstagramUrl(it.attr("href"))) }
+    }
+
+    private fun getTrimmedInstagramUrl(source: String): String {
+        val components = UriComponentsBuilder.fromUriString(source).build()
+        return "https://www.instagram.com${components.path}"
     }
 }
