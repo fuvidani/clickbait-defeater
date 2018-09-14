@@ -107,6 +107,11 @@
     overflow: hidden;
 }
 
+.large-clipped {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
 .collapse-button {
     margin-bottom: 5px;
 }

@@ -91,7 +91,7 @@ const callback = function (mutationsList) {
                                             collapseButton.setAttribute("data-target", "#" + mutation.target.id + "_extract_collapseContainer");
                                             collapseButton.setAttribute("href", "#");
                                             collapseButton.setAttribute("data-toggle", "collapse");
-                                            collapseButton.innerText = "SHOW MORE";
+                                            collapseButton.innerText = "Show more";
                                             collapseButton.classList.add("collapse-button");
 
                                             const collapseContainer = document.createElement("div");
@@ -104,7 +104,13 @@ const callback = function (mutationsList) {
                                                 paragraph.innerText = texts[i].data;
                                                 collapseContainer.appendChild(paragraph);
                                             }
+                                            const link = document.createElement("a");
+                                            link.setAttribute("href", extractedUrl);
+                                            link.setAttribute("target", "_blank");
+                                            link.innerText = "Go to original page";
+                                            link.classList.add("pull-right");
                                             textContainer.appendChild(collapseContainer);
+                                            textContainer.appendChild(link);
 
                                             textContainer.appendChild(collapseButton);
 
@@ -123,13 +129,15 @@ const callback = function (mutationsList) {
                                         });
 
                                         $("#" + mutation.target.id + "_extract_collapseContainer").on('show.bs.collapse', function () {
-                                            if (logging) console.log("Starting collapsing");
+                                            if (logging) console.log("Starting collapsing", mutation.target.id);
                                             document.getElementById(mutation.target.id + "_extract_firstText").classList.remove("clipped");
-                                            document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "SHOW LESS";
+                                            document.getElementById(mutation.target.id + "_extract_firstText").classList.add("large-clipped");
+                                            document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "Show less";
                                         }).on('hide.bs.collapse', function () {
-                                            if (logging) console.log("Back collapsing");
+                                            if (logging) console.log("Back collapsing", mutation.target.id);
+                                            document.getElementById(mutation.target.id + "_extract_firstText").classList.remove("large-clipped");
                                             document.getElementById(mutation.target.id + "_extract_firstText").classList.add("clipped");
-                                            document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "SHOW MORE";
+                                            document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "Show more";
                                         });
 
                                         extractedIds.push(mutation.target.id);
@@ -649,6 +657,10 @@ const createWidget = function (post_id, mutationTarget) {
 
         //hide only if clicked on button or inside popover
         if (!isPopover && !inPopover) $(button).popover('hide');
+    });
+
+    $(document).on('hidden.bs.popover', function (e) {
+        $(e.target).data("bs.popover").inState.click = false;
     });
 
     post_ids.push(post_id);
