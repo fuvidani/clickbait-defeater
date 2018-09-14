@@ -595,7 +595,7 @@ const createIframeItem = function (src, active, postId, counter) {
     caption.classList.add("carousel-caption");
 
     item.appendChild(iframe);
-    item.appendChild(caption);
+    // item.appendChild(caption);
 
     return item;
 };
