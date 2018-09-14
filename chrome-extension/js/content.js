@@ -133,11 +133,15 @@ const callback = function (mutationsList) {
                                             document.getElementById(mutation.target.id + "_extract_firstText").classList.remove("clipped");
                                             document.getElementById(mutation.target.id + "_extract_firstText").classList.add("large-clipped");
                                             document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "Show less";
+
+                                            $(extractButton).popover('reposition');
                                         }).on('hide.bs.collapse', function () {
                                             if (logging) console.log("Back collapsing", mutation.target.id);
                                             document.getElementById(mutation.target.id + "_extract_firstText").classList.remove("large-clipped");
                                             document.getElementById(mutation.target.id + "_extract_firstText").classList.add("clipped");
                                             document.getElementById(mutation.target.id + "_extract_collapseButton").innerText = "Show more";
+
+                                            $(extractButton).popover('reposition');
                                         });
 
                                         extractedIds.push(mutation.target.id);
