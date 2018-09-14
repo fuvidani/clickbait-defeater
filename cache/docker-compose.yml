@@ -1,21 +1,16 @@
 version: '3'
 
 services:
-  redis_master:
+  clickbait_redis:
     image: redis:4.0.10-alpine
+    container_name: clickbait-redis
+    command: redis-server --requirepass a2vjPx2CJ4HcE3f323oxmG4anv
+    ports:
+      - 6379:6379
 
-  redis_slave:
+  content_redis:
     image: redis:4.0.10-alpine
-    command: redis-server --slaveof redis_master 6379
-    depends_on:
-    - redis_master
-
-  sentinel:
-    build: .
-    image: redis-sentinel
-    environment:
-    - MASTER_NAME=ClickbaitRedisMaster
-    - QUORUM=1
-    - MASTER=redis_master
-    depends_on:
-    - redis_master
+    container_name: content-redis
+    command: redis-server --requirepass a2vjPx2CJ4HcE3f323oxmG4anv
+    ports:
+    - 6380:6379

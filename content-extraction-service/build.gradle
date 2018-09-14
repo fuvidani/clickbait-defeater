@@ -3,9 +3,16 @@ plugins {
 }
 
 dependencies {
+    compile fileTree(dir: 'boilerpipe', include: ['*.jar'])
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.1.RELEASE'
+    compile group: 'xerces', name: 'xercesImpl', version: '2.9.1'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     compile 'org.springframework.data:spring-data-redis:2.1.0.M3'
+    compile "org.springframework.boot:spring-boot-starter-data-redis-reactive"
+    compile 'com.squareup.retrofit2:retrofit:2.4.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.4.0'
+    compile 'com.jakewharton.retrofit:retrofit2-reactor-adapter:2.1.0'
     testCompile 'org.springframework.restdocs:spring-restdocs-webtestclient:2.0.1.RELEASE'
 }
 

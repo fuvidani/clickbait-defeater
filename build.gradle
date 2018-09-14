@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.51'
+    ext.kotlin_version = '1.2.60'
     ext.spring_version = '2.0.3.RELEASE'
     ext.springCloudVersion = 'Finchley.RELEASE'
     ext.reactorAddonsVersion = '3.1.6.RELEASE'
@@ -72,6 +72,7 @@ subprojects {
         ktlint "com.github.shyiko:ktlint:0.25.0"
         compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         compile "org.jetbrains.kotlin:kotlin-reflect"
+        compile 'io.github.microutils:kotlin-logging:1.5.9'
         compile 'org.springframework.boot:spring-boot-starter-webflux'
         compile 'org.springframework.boot:spring-boot-starter-actuator'
         compile 'com.fasterxml.jackson.module:jackson-module-kotlin'

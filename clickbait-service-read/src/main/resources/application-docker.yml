@@ -1,0 +1,4 @@
+spring:
+  redis:
+    host: clickbait-redis
+    port: 6379

@@ -1,7 +1,10 @@
-FROM java:8-jre
+FROM openjdk:8-jdk-alpine
 
 ARG VERSION
+RUN apk add --no-cache bash
 ADD ./build/libs/content-extraction-service-${VERSION}.jar app.jar
-CMD ["java", "-Dspring.profiles.active=prod", "-Djava.security.egd=file:/dev/./urandom", "-Xmx2048m", "-jar", "/app.jar"]
+ADD entrypoint.sh /entrypoint.sh
 
-EXPOSE 7000
+EXPOSE 8080
+
+ENTRYPOINT ["sh", "/entrypoint.sh"]

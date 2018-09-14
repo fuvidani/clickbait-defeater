@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      password: clickBaitServicePassword
+      database: clickBaitServiceDatabase
+      username: clickBaitService
+
+content.service:
+  protocol: http
+  host: localhost
+  port: 4000

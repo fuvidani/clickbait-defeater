@@ -9,12 +9,40 @@ spring:
   cloud:
     gateway:
       routes:
-      - id: clickbait_route
-        uri: http://${host}:5000
+      - id: clickbait_read_score_route
+        uri: http://${host}:8080
         predicates:
-        - Path=/clickbait/**
+        - Path=/clickbait/score
+        - Method=POST
         filters:
         - name: Hystrix
           args:
             name: fallback
-            fallbackUri: forward:/clickBaitFallback
+            fallbackUri: forward:/clickBaitReadFallback
+      - id: clickbait_update_score_route_1
+        uri: http://${host}:8081
+        predicates:
+        - Path=/clickbait/vote
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/clickBaitUpdateFallback
+      - id: clickbait_update_score_route_2
+        uri: http://${host}:8081
+        predicates:
+        - Path=/clickbait/votes
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/clickBaitUpdateFallback
+      - id: content_extraction_route
+        uri: http://${host}:8082
+        predicates:
+        - Path=/content/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/contentExtractionFallback

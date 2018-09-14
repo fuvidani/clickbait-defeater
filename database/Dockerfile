@@ -1,6 +1,5 @@
 FROM mongo:3
 
-ADD ./dump /
 ADD mongod.conf /mongod.conf
 
 COPY init.sh /init.sh
