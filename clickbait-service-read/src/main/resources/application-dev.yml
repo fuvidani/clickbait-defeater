@@ -2,3 +2,10 @@ spring:
   redis:
     host: localhost
     port: 6379
+
+score.service:
+  protocol: http
+  host: localhost
+  port: 4000
+
+security.authorized.hosts.pattern: ^(localhost)$

@@ -7,3 +7,5 @@ logging:
     org.springframework.security: INFO
 
 hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 15000
+
+security.auth.encoded: $2a$05$SI6NINi.zos1NW6pUDguM.7D8FvCVTSNRhpdIFJJ0Qnj4vXE7D18i

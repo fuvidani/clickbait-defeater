@@ -2,6 +2,8 @@ server:
   servlet:
     context-path: ""
 
+security.authorized.hosts.pattern: ^(37.252.185.74)|(37.252.185.77)|(37.252.185.75)$
+
 spring:
   cloud:
     gateway:
@@ -43,3 +45,13 @@ spring:
           args:
             name: fallback
             fallbackUri: forward:/contentExtractionFallback
+      - id: ml_service_precict_route
+        uri: http://193.31.25.242:5000
+        predicates:
+        - Path=/predict
+        - Method=POST
+      - id: ml_service_train_route
+        uri: http://193.31.25.242:5000
+        predicates:
+        - Path=/train
+        - Method=POST
