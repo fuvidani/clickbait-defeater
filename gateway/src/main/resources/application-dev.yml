@@ -5,6 +5,8 @@ server:
 
 host: localhost
 
+security.authorized.hosts.pattern: ^(localhost)$
+
 spring:
   cloud:
     gateway:
@@ -46,3 +48,13 @@ spring:
           args:
             name: fallback
             fallbackUri: forward:/contentExtractionFallback
+      - id: ml_service_precict_route
+        uri: http://${host}:5000
+        predicates:
+        - Path=/predict
+        - Method=POST
+      - id: ml_service_train_route
+        uri: http://${host}:5000
+        predicates:
+        - Path=/train
+        - Method=POST
