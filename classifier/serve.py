@@ -3,7 +3,7 @@ import time
 import train as train
 from threading import Thread
 import tensorflow as tf
-from flask import Flask, request
+from flask import Flask, request, abort
 from flask import jsonify
 from flask_cors import CORS
 from freeze import freeze_graph
@@ -15,6 +15,12 @@ warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 
 app = Flask(__name__)
 cors = CORS(app)
+
+
+@app.before_request
+def limit_remote_addr():
+    if request.remote_addr != '37.221.195.13':
+        abort(403)
 
 
 @app.route("/predict", methods=['POST'])
