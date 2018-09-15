@@ -12,3 +12,5 @@ spring:
       password: contentExtractionServicePassword
       database: contentExtractionServiceDatabase
       username: contentExtractionService
+
+security.authorized.hosts.pattern: ^(localhost)$

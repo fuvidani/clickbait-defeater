@@ -9,3 +9,5 @@ spring:
       password: contentExtractionServicePassword
       database: contentExtractionServiceDatabase
       username: contentExtractionService
+
+security.authorized.hosts.pattern: ^(clickbait-gateway)|(37.221.195.13)$
