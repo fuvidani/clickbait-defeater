@@ -11,8 +11,3 @@ service.relay.votes:
   cron: "0 0 0 * * *"
   minimum.votes: 5
   hours.until.now: 24
-
-ml.service:
-  protocol: http
-  host: 193.31.25.242
-  port: 5000

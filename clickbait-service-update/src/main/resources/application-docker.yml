@@ -10,4 +10,11 @@ spring:
 content.service:
   protocol: http
   host: clickbait-gateway
-  port: 8080
+  port: 4000
+
+ml.service:
+  protocol: http
+  host: clickbait-gateway
+  port: 4000
+
+security.authorized.hosts.pattern: ^(clickbait-gateway)|(37.221.195.13)$

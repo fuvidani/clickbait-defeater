@@ -14,3 +14,10 @@ content.service:
   protocol: http
   host: localhost
   port: 4000
+
+ml.service:
+  protocol: http
+  host: localhost
+  port: 4000
+
+security.authorized.hosts.pattern: ^(localhost)$
