@@ -18,12 +18,13 @@ chrome.runtime.onMessage.addListener(
             case PREDICT_ARTICLE_SCORE: {
                 const xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 400)) {
+                    if (xhr.readyState === 4 && (xhr.status === 200 || xhr.status === 400 || xhr.status === 500)) {
                         senderResponse(JSON.parse(xhr.response));
                     }
                 };
                 xhr.open("POST", hostUrl + "/clickbait/score", true);
                 xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader("Authorization", "Basic " + btoa("username" + ":" + "49v28G2Dvj3?F6cg3GAH&fBA.X"));
                 xhr.send(request.data);
 
                 return true;
@@ -50,6 +51,7 @@ chrome.runtime.onMessage.addListener(
                         };
                         xhr.open("POST", hostUrl + "/clickbait/vote", true);
                         xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.setRequestHeader("Authorization", "Basic " + btoa("username" + ":" + "49v28G2Dvj3?F6cg3GAH&fBA.X"));
                         xhr.send(JSON.stringify(request.data));
                     }
                 });
@@ -76,6 +78,7 @@ chrome.runtime.onMessage.addListener(
                         };
                         xhr.open("GET", hostUrl + "/clickbait/vote?" + "url=" + request.data.url + "&userId=" + userId, true);
                         xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.setRequestHeader("Authorization", "Basic " + btoa("username" + ":" + "49v28G2Dvj3?F6cg3GAH&fBA.X"));
                         xhr.send(null);
                     }
                 });
@@ -91,6 +94,7 @@ chrome.runtime.onMessage.addListener(
                 };
                 xhr.open("GET", hostUrl + "/content?" + "url=" + request.data.url, true);
                 xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.setRequestHeader("Authorization", "Basic " + btoa("username" + ":" + "49v28G2Dvj3?F6cg3GAH&fBA.X"));
                 xhr.send(null);
                 return true;
             }
