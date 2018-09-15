@@ -37,6 +37,8 @@ class SecurityConfig {
             .csrf()
             .disable()
             .authorizeExchange()
+            .pathMatchers("/actuator/**")
+            .denyAll()
             .anyExchange()
             .access { _, context ->
                 val address = context.exchange.request.remoteAddress
