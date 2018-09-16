@@ -49,6 +49,11 @@ class GatewayApplication : WebFluxConfigurer {
         return Mono.just("Fallback for Content-Extraction-Service")
     }
 
+    @RequestMapping("/mlServiceFallback", produces = [MediaType.TEXT_PLAIN_VALUE])
+    fun contentMlServiceFallback(): Mono<String> {
+        return Mono.just("Fallback for ML-Service")
+    }
+
     /**
      * Add resource handlers for serving static resources.
      * @see ResourceHandlerRegistry

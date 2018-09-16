@@ -1,0 +1,85 @@
+server:
+  servlet:
+    context-path: ""
+
+services:
+  read-service:
+    protocol: http
+    host: 37.252.185.74
+    port: 10941
+  update-service:
+    protocol: http
+    host: 37.252.185.77
+    port: 11502
+  content-service:
+    protocol: http
+    host: 37.252.185.75
+    port: 15732
+  ml-service:
+    protocol: http
+    host: 193.31.25.242
+    port: 12956
+
+security.authorized.hosts.pattern: ^(${services.read-service.host})|(${services.update-service.host})|(${services.content-service.host})$
+
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: clickbait_read_score_route
+        uri: ${services.read-service.protocol}://${services.read-service.host}:${services.read-service.port}
+        predicates:
+        - Path=/clickbait/score
+        - Method=POST
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/clickBaitReadFallback
+      - id: clickbait_update_score_route_1
+        uri: ${services.update-service.protocol}://${services.update-service.host}:${services.update-service.port}
+        predicates:
+        - Path=/clickbait/vote
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/clickBaitUpdateFallback
+      - id: clickbait_update_score_route_2
+        uri: ${services.update-service.protocol}://${services.update-service.host}:${services.update-service.port}
+        predicates:
+        - Path=/clickbait/votes
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/clickBaitUpdateFallback
+      - id: content_extraction_route
+        uri: ${services.content-service.protocol}://${services.content-service.host}:${services.content-service.port}
+        predicates:
+        - Path=/content/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/contentExtractionFallback
+      - id: ml_service_precict_route
+        uri: ${services.ml-service.protocol}://${services.ml-service.host}:${services.ml-service.port}
+        predicates:
+        - Path=/predict
+        - Method=POST
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/mlServiceFallback
+      - id: ml_service_train_route
+        uri: ${services.ml-service.protocol}://${services.ml-service.host}:${services.ml-service.port}
+        predicates:
+        - Path=/train
+        - Method=POST
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/mlServiceFallback

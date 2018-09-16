@@ -50,12 +50,8 @@ class SecurityConfig {
             .anyExchange()
             .access { _, context ->
                 val address = context.exchange.request.remoteAddress
-                val origin = context.exchange.request.headers.getFirst(HttpHeaders.ORIGIN)
                 if (address != null && address.hostString.matches(authorizedHostsPattern)) {
                     accept()
-                } else if (origin == null || !origin.startsWith("chrome-extension://")) {
-                    logger.warn("Request from unauthorized client (Host: ${address?.hostString}, Origin: $origin)")
-                    deny()
                 } else {
                     val authorization = context.exchange.request.headers.getFirst(HttpHeaders.AUTHORIZATION)
                     if (authorization == null || !authorization.startsWith("Basic ") || !passwordEncoder.matches(
@@ -63,7 +59,7 @@ class SecurityConfig {
                             gatewayAuth
                         )
                     ) {
-                        logger.warn("No authorization header or invalid credentials provided (Host: ${address?.hostString}, Origin: $origin)")
+                        logger.warn("No authorization header or invalid credentials provided (Host: ${address?.hostString})")
                         deny()
                     } else {
                         accept()

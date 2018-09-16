@@ -50,8 +50,18 @@ spring:
         predicates:
         - Path=/predict
         - Method=POST
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/mlServiceFallback
       - id: ml_service_train_route
         uri: http://clickbait-classifier:5000
         predicates:
         - Path=/train
         - Method=POST
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/mlServiceFallback
