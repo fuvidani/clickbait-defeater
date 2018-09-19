@@ -591,6 +591,7 @@ const createIframeItem = function (src, active, postId, counter) {
     iframe.setAttribute("width", "300");
     iframe.setAttribute("height", "500");
     iframe.setAttribute("frameborder", "0");
+    iframe.setAttribute("allowfullscreen", "true");
     iframe.classList.add("extract-iframe");
 
     const caption = document.createElement("div");
