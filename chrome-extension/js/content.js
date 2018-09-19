@@ -40,7 +40,7 @@ const callback = function (mutationsList) {
                         break;
                     }
 
-                    if (mutation.target.classList.contains("hidden_elem")) {
+                    if (mutation.target.classList.contains("hidden_elem") || mutation.target.style.display === "none" || mutation.target.style.display === "none !important") {
                         if (logging) console.log("Hidden post!");
                         break;
                     }
@@ -217,22 +217,24 @@ const callback = function (mutationsList) {
                             }, function (response) {
                                 if (logging) console.log("Got previous score: " + response.vote);
 
-                                switch (response.vote) {
-                                    case 0: {
-                                        sliders[mutation.target.id].setValue(0, false, true);
-                                        break;
-                                    }
-                                    case 0.33333334: {
-                                        sliders[mutation.target.id].setValue(1, false, true);
-                                        break;
-                                    }
-                                    case 0.6666667: {
-                                        sliders[mutation.target.id].setValue(2, false, true);
-                                        break;
-                                    }
-                                    case 1: {
-                                        sliders[mutation.target.id].setValue(3, false, true);
-                                        break;
+                                if (response) {
+                                    switch (response.vote) {
+                                        case 0: {
+                                            sliders[mutation.target.id].setValue(0, false, true);
+                                            break;
+                                        }
+                                        case 0.33333334: {
+                                            sliders[mutation.target.id].setValue(1, false, true);
+                                            break;
+                                        }
+                                        case 0.6666667: {
+                                            sliders[mutation.target.id].setValue(2, false, true);
+                                            break;
+                                        }
+                                        case 1: {
+                                            sliders[mutation.target.id].setValue(3, false, true);
+                                            break;
+                                        }
                                     }
                                 }
                             });
