@@ -1,6 +1,6 @@
-const hostDomain = "37.221.195.13";
+const hostDomain = "davidmolnar.eu";
 const hostPort = "10487";
-const hostProtocol = "http";
+const hostProtocol = "https";
 const hostUrl = hostProtocol + "://" + hostDomain + ":" + hostPort;
 
 const logging = false;
