@@ -1,6 +1,11 @@
 server:
   servlet:
     context-path: ""
+  ssl:
+    key-store: ./keystore.p12
+    key-store-password: it>^g>iRnUY-p8P_nUDtva*A
+    keyStoreType: PKCS12
+    keyAlias: tomcat
 
 services:
   read-service:
@@ -9,7 +14,7 @@ services:
     port: 10941
   update-service:
     protocol: http
-    host: 37.252.185.77
+    host: 37.252.187.128
     port: 11502
   content-service:
     protocol: http
@@ -20,6 +25,7 @@ services:
     host: 193.31.25.242
     port: 12956
 
+security.require-ssl: true
 security.authorized.hosts.pattern: ^(${services.read-service.host})|(${services.update-service.host})|(${services.content-service.host})$
 
 spring:
