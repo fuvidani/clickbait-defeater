@@ -1,0 +1,4 @@
+clickbait-service-read/src/main/resources/static/docs/* linguist-documentation
+clickbait-service-update/src/main/resources/static/docs/* linguist-documentation
+gateway/src/main/resources/static/docs/* linguist-documentation
+content-extraction-service/src/main/resources/static/docs/* linguist-documentation
