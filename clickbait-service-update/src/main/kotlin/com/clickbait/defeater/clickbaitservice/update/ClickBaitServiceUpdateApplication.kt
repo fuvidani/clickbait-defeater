@@ -16,11 +16,15 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
+import org.springframework.http.CacheControl
 import org.springframework.scheduling.annotation.EnableScheduling
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler
 import org.springframework.scheduling.TaskScheduler
+import org.springframework.web.reactive.config.EnableWebFlux
+import org.springframework.web.reactive.config.ResourceHandlerRegistry
+import org.springframework.web.reactive.config.WebFluxConfigurer
 import retrofit2.converter.jackson.JacksonConverterFactory
 import java.time.ZoneId
 import java.util.TimeZone
@@ -36,8 +40,9 @@ import java.util.concurrent.TimeUnit
  * @since 1.0.0
  */
 @SpringBootApplication
+@EnableWebFlux
 @EnableScheduling
-class ClickBaitServiceUpdateApplication {
+class ClickBaitServiceUpdateApplication : WebFluxConfigurer {
 
     companion object {
         @JvmStatic
@@ -100,6 +105,16 @@ class ClickBaitServiceUpdateApplication {
         mapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         return mapper
+    }
+
+    /**
+     * Add resource handlers for serving static resources.
+     * @see ResourceHandlerRegistry
+     */
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        registry.addResourceHandler("/documentation/**")
+            .addResourceLocations("classpath:/static/docs/")
+            .setCacheControl(CacheControl.noStore())
     }
 
     private fun customOkHttpClient(): OkHttpClient {

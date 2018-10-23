@@ -20,4 +20,4 @@ ml.service:
   host: localhost
   port: 4000
 
-security.authorized.hosts.pattern: ^(localhost)$
+security.authorized.hosts.pattern: ^(localhost)|(0:0:0:0:0:0:0:1)|(127.0.0.1)$
