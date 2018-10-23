@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.data.redis.core.ReactiveValueOperations
 import org.springframework.http.MediaType
 import org.springframework.restdocs.JUnitRestDocumentation
+import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document
@@ -54,7 +55,10 @@ class ClickBaitServiceReadDocumentationTest {
         client = WebTestClient.bindToController(clickBaitReadController)
             .configureClient()
             .baseUrl("http://clickbait-defeater.com/clickbait")
-            .filter(documentationConfiguration(restDocumentation))
+            .filter(documentationConfiguration(restDocumentation)
+                .operationPreprocessors()
+                .withRequestDefaults(prettyPrint())
+                .withResponseDefaults(prettyPrint()))
             .build()
         }
 
@@ -84,34 +88,34 @@ class ClickBaitServiceReadDocumentationTest {
                             .description("Unique identifier of the social media post instance."),
                         fieldWithPath("language")
                             .type(JsonFieldType.STRING)
-                            .description("Language of the post instance's content or \"unknown\" otherwise.")
+                            .description("Optional language of the post instance's content or \"unknown\" otherwise.")
                             .optional(),
                         fieldWithPath("postText")
                             .type(JsonFieldType.ARRAY)
                             .description("An array/list of strings as the content of the post. E.g. if the post consists of 5 sentences, then the array may contain these 5 as elements."),
                         fieldWithPath("postTimestamp")
                             .type(JsonFieldType.STRING)
-                            .description("Timestamp of the post instance's publication.")
+                            .description("Optional timestamp of the post instance's publication.")
                             .optional(),
                         fieldWithPath("postMedia")
                             .type(JsonFieldType.ARRAY)
-                            .description("An array/list of strings, where each string refers to the identifier/location of a media element (image) connected to this post instance. May be empty.")
+                            .description("Optional array/list of strings, where each string refers to the identifier/location of a media element (image) connected to this post instance. May be empty.")
                             .optional(),
                         fieldWithPath("targetTitle")
                             .type(JsonFieldType.STRING)
-                            .description("The title of the targeted external content. This is not to be confused with the `postText`")
+                            .description("Optional title of the targeted external content. This is not to be confused with the `postText`")
                             .optional(),
                         fieldWithPath("targetDescription")
                             .type(JsonFieldType.STRING)
-                            .description("The description of the targeted external content, usually found in the metadata.")
+                            .description("Optional description of the targeted external content, usually found in the metadata.")
                             .optional(),
                         fieldWithPath("targetKeywords")
                             .type(JsonFieldType.STRING)
-                            .description("Comma-separated keywords corresponding to the targeted external content.")
+                            .description("Optional comma-separated keywords corresponding to the targeted external content.")
                             .optional(),
                         fieldWithPath("targetParagraphs")
                             .type(JsonFieldType.ARRAY)
-                            .description("An array/list of strings, where each string refers to a paragraph in the targeted external content. May be empty.")
+                            .description("Optional array/list of strings, where each string refers to a paragraph in the targeted external content. May be empty.")
                             .optional()
                     ),
                     responseFields(
@@ -158,34 +162,34 @@ class ClickBaitServiceReadDocumentationTest {
                             .description("Unique identifier of the social media post instance."),
                         fieldWithPath("language")
                             .type(JsonFieldType.STRING)
-                            .description("Language of the post instance's content or \"unknown\" otherwise.")
+                            .description("Optional language of the post instance's content or \"unknown\" otherwise.")
                             .optional(),
                         fieldWithPath("postText")
                             .type(JsonFieldType.ARRAY)
                             .description("An array/list of strings as the content of the post. E.g. if the post consists of 5 sentences, then the array may contain these 5 as elements."),
                         fieldWithPath("postTimestamp")
                             .type(JsonFieldType.STRING)
-                            .description("Timestamp of the post instance's publication.")
+                            .description("Optional timestamp of the post instance's publication.")
                             .optional(),
                         fieldWithPath("postMedia")
                             .type(JsonFieldType.ARRAY)
-                            .description("An array/list of strings, where each string refers to the identifier/location of a media element (image) connected to this post instance. May be empty.")
+                            .description("Optional array/list of strings, where each string refers to the identifier/location of a media element (image) connected to this post instance. May be empty.")
                             .optional(),
                         fieldWithPath("targetTitle")
                             .type(JsonFieldType.STRING)
-                            .description("The title of the targeted external content. This is not to be confused with the `postText`")
+                            .description("Optional title of the targeted external content. This is not to be confused with the `postText`")
                             .optional(),
                         fieldWithPath("targetDescription")
                             .type(JsonFieldType.STRING)
-                            .description("The description of the targeted external content, usually found in the metadata.")
+                            .description("Optional description of the targeted external content, usually found in the metadata.")
                             .optional(),
                         fieldWithPath("targetKeywords")
                             .type(JsonFieldType.STRING)
-                            .description("Comma-separated keywords corresponding to the targeted external content.")
+                            .description("Optional comma-separated keywords corresponding to the targeted external content.")
                             .optional(),
                         fieldWithPath("targetParagraphs")
                             .type(JsonFieldType.ARRAY)
-                            .description("An array/list of strings, where each string refers to a paragraph in the targeted external content. May be empty.")
+                            .description("Optional array/list of strings, where each string refers to a paragraph in the targeted external content. May be empty.")
                             .optional()
                     ),
                     responseFields(

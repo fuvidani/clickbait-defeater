@@ -27,6 +27,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
+import org.springframework.http.CacheControl
+import org.springframework.web.reactive.config.EnableWebFlux
+import org.springframework.web.reactive.config.ResourceHandlerRegistry
+import org.springframework.web.reactive.config.WebFluxConfigurer
 
 /**
  * <h4>About this class</h4>
@@ -38,8 +42,9 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
  * @since 1.0.0
  */
 @SpringBootApplication
+@EnableWebFlux
 @Configuration
-class ClickBaitServiceReadApplication {
+class ClickBaitServiceReadApplication : WebFluxConfigurer {
 
     companion object {
         @JvmStatic
@@ -108,5 +113,15 @@ class ClickBaitServiceReadApplication {
     @Bean
     fun supportedLanguages(@Value("\${supported.languages}") supportedLanguages: Array<String>): List<String> {
         return supportedLanguages.asList()
+    }
+
+    /**
+     * Add resource handlers for serving static resources.
+     * @see ResourceHandlerRegistry
+     */
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        registry.addResourceHandler("/documentation/**")
+            .addResourceLocations("classpath:/static/docs/")
+            .setCacheControl(CacheControl.noStore())
     }
 }

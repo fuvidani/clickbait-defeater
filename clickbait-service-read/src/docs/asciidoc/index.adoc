@@ -1,0 +1,41 @@
+= ClickBait Read-Service Documentation
+Daniel Füvesi - Version 1.0.0.RELEASE;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+This documentation describes the the available endpoints of the ClickBait Read-Service API and how to interact
+with them.
+
+== Get the clickbait score of a social media post instance
+
+[NOTE]
+Endpoint: `POST /clickbait/score`
+
+This endpoint requires a social media post encoded into a JSON object
+with the structure shown below in the examples.
+
+Example request with a minimal json input:
+include::{snippets}/score-valid-post-minimal/http-request.adoc[]
+include::{snippets}/score-valid-post-minimal/request-fields.adoc[]
+
+HTTP response:
+include::{snippets}/score-valid-post-minimal/http-response.adoc[]
+
+The above example response returns an object containing the same ID and the determined clickbait score:
+include::{snippets}/score-valid-post-minimal/response-fields.adoc[]
+
+[WARNING]
+Currently, only the English language is supported. The service performs
+language detection and if the content is not in English, the endpoint
+returns 400 BAD_REQUEST
+
+Second example with more (optional) data provided:
+include::{snippets}/score-valid-post-filled/http-request.adoc[]
+
+Corresponding response:
+include::{snippets}/score-valid-post-filled/http-response.adoc[]
+
+
+
+
