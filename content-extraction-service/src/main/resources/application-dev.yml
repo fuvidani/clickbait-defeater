@@ -13,4 +13,4 @@ spring:
       database: contentExtractionServiceDatabase
       username: contentExtractionService
 
-security.authorized.hosts.pattern: ^(localhost)$
+security.authorized.hosts.pattern: ^(localhost)|(0:0:0:0:0:0:0:1)|(127.0.0.1)$

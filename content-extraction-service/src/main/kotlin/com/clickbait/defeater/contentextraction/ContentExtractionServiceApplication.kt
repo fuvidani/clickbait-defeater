@@ -28,6 +28,10 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
+import org.springframework.http.CacheControl
+import org.springframework.web.reactive.config.EnableWebFlux
+import org.springframework.web.reactive.config.ResourceHandlerRegistry
+import org.springframework.web.reactive.config.WebFluxConfigurer
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 import javax.net.ssl.*
@@ -42,7 +46,8 @@ import javax.net.ssl.*
  * @since 1.0.0
  */
 @SpringBootApplication
-class ContentExtractionServiceApplication {
+@EnableWebFlux
+class ContentExtractionServiceApplication : WebFluxConfigurer {
 
     companion object {
         @JvmStatic
@@ -121,5 +126,15 @@ class ContentExtractionServiceApplication {
             .sslSocketFactory(sslSocketFactory, trustManager[0] as X509TrustManager)
             .hostnameVerifier { _, _ -> true }
             .build()
+    }
+
+    /**
+     * Add resource handlers for serving static resources.
+     * @see ResourceHandlerRegistry
+     */
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        registry.addResourceHandler("/documentation/**")
+            .addResourceLocations("classpath:/static/docs/")
+            .setCacheControl(CacheControl.noStore())
     }
 }

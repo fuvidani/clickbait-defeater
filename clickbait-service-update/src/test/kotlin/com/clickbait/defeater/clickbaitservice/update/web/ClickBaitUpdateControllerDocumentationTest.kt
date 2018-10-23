@@ -17,11 +17,9 @@ import org.springframework.http.MediaType
 import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.restdocs.JUnitRestDocumentation
-import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document
-import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration
 import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
 import org.springframework.restdocs.request.RequestDocumentation.requestParameters
