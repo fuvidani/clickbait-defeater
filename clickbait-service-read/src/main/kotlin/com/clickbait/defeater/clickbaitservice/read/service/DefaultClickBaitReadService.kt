@@ -9,9 +9,12 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
+ * Implementation of the [ClickBaitReadService] interface, fulfilling its contracts.
  *
- * <p>Description</p>
+ * @property scoreService a [ScoreService] responsible for determining the clickbait
+ * score of a post instance
+ * @property scoreCache in-memory cache of already obtained [ClickBaitScore] objects
+ * @property languageChecker a language checker for post instances
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -24,6 +27,16 @@ class DefaultClickBaitReadService(
     private val languageChecker: LanguageChecker
 ) : ClickBaitReadService {
 
+    /**
+     * Determines the clickbait score of the provided social media post instance.
+     *
+     * This operation guarantees a valid [ClickBaitScore] object or an appropriate
+     * exception if an error occurs.
+     *
+     * @param instance a valid social media post instance
+     * @return a Mono publisher with the clickbait score object corresponding to the
+     * provided instance
+     */
     override fun scorePostInstance(instance: PostInstance): Mono<ClickBaitScore> {
         return scoreCache
             .tryAndGet(instance)

@@ -5,9 +5,7 @@ import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Interface for scoring operations.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -15,5 +13,12 @@ import reactor.core.publisher.Mono
  */
 interface ScoreService {
 
+    /**
+     * Analyzes the provided social media post instance and determines its clickbait
+     * score, i.e. how "clickbaity" the post might be.
+     *
+     * @param instance a valid social media post instance
+     * @return a Mono of a valid [ClickBaitScore] containing the determined score
+     */
     fun scorePostInstance(instance: PostInstance): Mono<ClickBaitScore>
 }

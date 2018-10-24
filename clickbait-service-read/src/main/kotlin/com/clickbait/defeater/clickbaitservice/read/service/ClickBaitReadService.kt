@@ -5,9 +5,7 @@ import com.clickbait.defeater.clickbaitservice.read.model.PostInstance
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Interface for top-level functionality of the Read-Service.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -15,5 +13,15 @@ import reactor.core.publisher.Mono
  */
 interface ClickBaitReadService {
 
+    /**
+     * Determines the clickbait score of the provided social media post instance.
+     *
+     * This operation guarantees a valid [ClickBaitScore] object or an appropriate
+     * exception if an error occurs.
+     *
+     * @param instance a valid social media post instance
+     * @return a Mono publisher with the clickbait score object corresponding to the
+     * provided instance
+     */
     fun scorePostInstance(instance: PostInstance): Mono<ClickBaitScore>
 }

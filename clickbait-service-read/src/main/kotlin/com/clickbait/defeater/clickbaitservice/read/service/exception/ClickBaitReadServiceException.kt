@@ -4,9 +4,11 @@ import org.springframework.http.HttpStatus
 import java.lang.RuntimeException
 
 /**
- * <h4>About this class</h4>
+ * A general [RuntimeException] for errors in this service that can be propagated towards
+ * the client.
  *
- * <p>Description</p>
+ * @property message the detail message of the error
+ * @property statusMapping the [HttpStatus] the error should be propagated towards http clients
  *
  * @author Daniel Fuevesi
  * @version 1.0.0

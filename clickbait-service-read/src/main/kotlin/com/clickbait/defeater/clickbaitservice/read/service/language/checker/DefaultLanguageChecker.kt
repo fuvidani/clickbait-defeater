@@ -8,9 +8,14 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
+ * Concrete implementation of the [LanguageChecker] interface.
+ * Utilizes the [LanguageDetector] interface and a list of currently supported
+ * languages provided by instantiation.
  *
- * <p>Description</p>
+ * @property supportedLanguages list of ISO-639-1 language codes that this checker
+ * currently accepts
+ * @property languageDetector implementation of the [LanguageDetector] interface for
+ * detecting the most probable language of a certain string
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -22,6 +27,14 @@ class DefaultLanguageChecker(
     private val languageDetector: LanguageDetector
 ) : LanguageChecker {
 
+    /**
+     * Performs certain checks on the provided [PostInstance] object
+     * and either emits the `instance` or an error as a result.
+     *
+     * @param instance a valid social media post instance
+     * @return a Mono emitting the provided `instance` if all checks
+     * passed, otherwise an error
+     */
     override fun check(instance: PostInstance): Mono<PostInstance> {
         return languageDetector
             .detect(instance)

@@ -10,9 +10,10 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
+ * Implementation of the [ScoreService] interface.
  *
- * <p>Description</p>
+ * @property scoreServiceClient client interface for communicating with the remote service
+ * where the actual scoring process is executed
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -21,8 +22,16 @@ import reactor.core.publisher.Mono
 @Component
 class DefaultScoreService(private val scoreServiceClient: ScoreServiceClient) : ScoreService {
 
+    /**
+     * Analyzes the provided social media post instance and determines its clickbait
+     * score, i.e. how "clickbaity" the post might be.
+     *
+     * @param instance a valid social media post instance
+     * @return a Mono of a valid [ClickBaitScore] containing the determined score
+     */
     override fun scorePostInstance(instance: PostInstance): Mono<ClickBaitScore> {
-        return scoreServiceClient.scorePostInstance(instance)
+        return scoreServiceClient
+            .scorePostInstance(instance)
             .onErrorMap {
                 logger.error("Remote score service cannot be reached", it)
                 ClickBaitReadServiceException("The post could not be scored.", HttpStatus.INTERNAL_SERVER_ERROR)

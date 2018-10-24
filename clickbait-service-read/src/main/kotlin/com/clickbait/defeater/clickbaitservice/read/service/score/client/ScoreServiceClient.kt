@@ -9,9 +9,8 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * A declarative HTTP Score service client responsible for invoking a remote API.
+ * The actual implementation is deferred.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -19,6 +18,13 @@ import retrofit2.http.POST
  */
 interface ScoreServiceClient {
 
+    /**
+     * Makes a remote API call with the provided [PostInstance] and retrieves
+     * its [ClickBaitScore] result in a non-blocking way via a [Mono] publisher.
+     *
+     * @param instance a valid social media post instance
+     * @return a Mono containing the serialized [ClickBaitScore] object
+     */
     @Headers(
         "Accept: ${MediaType.APPLICATION_JSON_UTF8_VALUE}",
         "Content-Type: ${MediaType.APPLICATION_JSON_UTF8_VALUE}"

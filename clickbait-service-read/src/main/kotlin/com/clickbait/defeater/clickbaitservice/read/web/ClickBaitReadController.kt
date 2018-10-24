@@ -12,9 +12,10 @@ import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
+ * Reactive, non-blocking REST controller for the ClickBait Read-Service.
  *
- * <p>Description</p>
+ * @property clickBaitReadService an implementation of the [ClickBaitReadService] interface
+ * supporting all its operations
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -24,10 +25,22 @@ import reactor.core.publisher.Mono
 @RequestMapping("/clickbait")
 class ClickBaitReadController(private val clickBaitReadService: ClickBaitReadService) {
 
+    /**
+     * Accepts a valid [PostInstance] object in the body and returns the
+     * corresponding [ClickBaitScore] object emitted by a Mono.
+     *
+     * @return a Mono emitting the [ClickBaitScore] object or an error if the service
+     * failed
+     */
     @PostMapping("/score")
     fun scoreMediaPost(@RequestBody instance: PostInstance): Mono<ClickBaitScore> {
         return clickBaitReadService
             .scorePostInstance(instance)
-            .onErrorMap(ClickBaitReadServiceException::class.java) { ResponseStatusException(it.statusMapping, it.message) }
+            .onErrorMap(ClickBaitReadServiceException::class.java) {
+                ResponseStatusException(
+                    it.statusMapping,
+                    it.message
+                )
+            }
     }
 }
