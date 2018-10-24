@@ -8,9 +8,8 @@ import retrofit2.http.Headers
 import retrofit2.http.Query
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * A declarative HTTP Content-Extraction Service client responsible for invoking
+ * a remote API. The actual implementation is deferred.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -18,6 +17,14 @@ import retrofit2.http.Query
  */
 interface ContentExtractionServiceClient {
 
+    /**
+     * Executes a remote API call with the provided `url` and retrieves
+     * the [ContentWrapper] result in a non-blocking way via a [Mono] publisher.
+     *
+     * @param url absolute URL of the web page for which the contents should be
+     * extracted
+     * @return a Mono containing the serialized [ContentWrapper] object
+     */
     @Headers(
         "Accept: ${MediaType.APPLICATION_JSON_UTF8_VALUE}",
         "Content-Type: ${MediaType.APPLICATION_JSON_UTF8_VALUE}"

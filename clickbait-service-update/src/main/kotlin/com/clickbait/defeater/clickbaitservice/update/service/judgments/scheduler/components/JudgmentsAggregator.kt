@@ -8,16 +8,20 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.commons.math3.stat.descriptive.rank.Median
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * @deprecated This class is not in use anymore nor is intended for further use,
+ * therefore it is subject to deletion.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
  * @since 1.0.0
  */
+@Deprecated(
+    "This class is not in use anymore nor is intended for further use, \n" +
+            " therefore it is subject to deletion."
+)
 internal class JudgmentsAggregator {
 
+    @Deprecated("Not to be used anymore; will be removed")
     internal fun aggregate(votes: List<ClickBaitVote>): JudgmentStats {
         val voteValues = votes.map { it.vote }
         val array = voteValues.toDoubleArray()
@@ -51,6 +55,7 @@ internal class JudgmentsAggregator {
         }
     }
 
+    @Deprecated("Not to be used anymore; will be removed")
     data class JudgmentStats(
         val truthJudgments: List<Double>,
         val truthMean: Double,

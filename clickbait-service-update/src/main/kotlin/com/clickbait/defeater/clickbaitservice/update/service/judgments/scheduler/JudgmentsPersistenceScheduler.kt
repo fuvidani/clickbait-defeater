@@ -16,13 +16,22 @@ import java.time.Duration
 import java.time.Instant
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Component for time-scheduled tasks. This scheduler has the responsibility
+ * (i) to periodically aggregate the votes for a certain time window,
+ * (ii) to process them and (iii) to delegate them to the their adequate
+ * repository.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
  * @since 1.0.0
+ *
+ * @property voteRepository a repository for [ClickBaitVoteEntity]
+ * @property postInstanceService an implementation of the [PostInstanceService]
+ * interface
+ * @property schedulerProperties properties specific to the scheduled task
+ * @property judgmentsPersistenceHandler handler for the persistence of
+ * aggregated votes
+ * @param judgmentsRepository an implementation of [JudgmentsRepository]
  */
 @Component
 class JudgmentsPersistenceScheduler(
@@ -34,6 +43,18 @@ class JudgmentsPersistenceScheduler(
 
     private val judgmentsPersistenceHandler = JudgmentsPersistenceHandler(judgmentsRepository)
 
+    /**
+     * Collects all recent votes for which it holds:
+     * - its corresponding [PostInstance] object has English language
+     * - there are at least `minNumberOfVotes`(specified by [schedulerProperties])
+     * for an occurring URL
+     * The votes are then aggregated and delegated to the [judgmentsPersistenceHandler].
+     *
+     * This method is periodically called by the framework, therefore it is neither needed
+     * nor intended for manual invocations (except for test cases of course). The time
+     * between invocations is specified by a cron pattern injected from the application's
+     * properties.
+     */
     @Scheduled(cron = "\${service.relay.votes.cron}")
     fun persistVotesToJudgmentRepository() {
         logger.info("Begin scheduled persist vote task")

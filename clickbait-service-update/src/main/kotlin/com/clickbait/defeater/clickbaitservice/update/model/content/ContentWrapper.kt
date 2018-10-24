@@ -3,13 +3,21 @@ package com.clickbait.defeater.clickbaitservice.update.model.content
 import com.clickbait.defeater.clickbaitservice.update.model.PostInstance
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * A wrapper object encapsulating the redirect- and source-URL of a
+ * certain web page (they aren't necessarily different) along with
+ * a list of [Content] objects that this particular web page contains.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
  * @since 1.0.0
+ *
+ * @property redirectUrl the originally obtained URL which may be a
+ * statically or dynamically redirected one. In this case the `redirectUrl`
+ * differs from the `sourceUrl`.
+ * @property sourceUrl the actual URL of the web page, i.e. it is not a
+ * redirect one.
+ * @property contents list of [Content] objects describing the web page's
+ * content
  */
 data class ContentWrapper(
     val redirectUrl: String,
@@ -17,6 +25,18 @@ data class ContentWrapper(
     val contents: List<Content>
 )
 
+/**
+ * Transforms this [ContentWrapper] instance to a valid [PostInstance]
+ * instance with the provided `postText` list.
+ *
+ * @param postText a list of strings where each string can be a word,
+ * sentence or a paragraph. Since `postText` is the only information
+ * which cannot be deducted from a [ContentWrapper] object, it needs
+ * to be provided.
+ * @receiver valid [ContentWrapper] instance
+ * @return a valid [PostInstance] instance reflecting this [ContentWrapper]
+ * and the `postText`
+ */
 fun ContentWrapper.toPostInstance(postText: List<String>): PostInstance {
     var timeStamp = ""
     var targetTitle = ""
@@ -39,7 +59,8 @@ fun ContentWrapper.toPostInstance(postText: List<String>): PostInstance {
                 }
             }
         }
-    return PostInstance(this.redirectUrl,
+    return PostInstance(
+        this.redirectUrl,
         language ?: "unknown",
         postText,
         timeStamp, emptyList(),
@@ -47,5 +68,6 @@ fun ContentWrapper.toPostInstance(postText: List<String>): PostInstance {
         targetDescription,
         emptyList(),
         targetKeyWords,
-        targetParagraphs)
+        targetParagraphs
+    )
 }

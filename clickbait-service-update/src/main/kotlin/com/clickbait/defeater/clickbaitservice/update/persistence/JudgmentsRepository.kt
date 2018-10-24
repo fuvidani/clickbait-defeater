@@ -8,9 +8,9 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Reactive repository interface for [MultiplePostInstanceJudgments] objects.
+ * For the client this acts just like any other repository with limited
+ * functionality, in reality the objects are persisted to a remote API.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -18,6 +18,13 @@ import retrofit2.http.POST
  */
 interface JudgmentsRepository {
 
+    /**
+     * Saves the provided `multipleJudgments` to the JudgmentsRepository and
+     * returns an empty mono.
+     *
+     * @param multipleJudgments valid instance of [MultiplePostInstanceJudgments]
+     * @return an empty Mono
+     */
     @Headers(
         "Accept: ${MediaType.APPLICATION_JSON_UTF8_VALUE}",
         "Content-Type: ${MediaType.APPLICATION_JSON_UTF8_VALUE}"

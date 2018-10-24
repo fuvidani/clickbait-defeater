@@ -31,9 +31,8 @@ import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Entry-point of the ClickBait Update-Service application.
+ * Several beans are configured here that are used for dependency injection.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
