@@ -37,9 +37,8 @@ import java.security.cert.X509Certificate
 import javax.net.ssl.*
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Entry-point of the ClickBait Content-Extraction-Service application.
+ * Several beans are configured here that are used for dependency injection.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -56,6 +55,14 @@ class ContentExtractionServiceApplication : WebFluxConfigurer {
         }
     }
 
+    /**
+     * Specifies the [ReactiveRedisConnectionFactory] this applications uses.
+     *
+     * @param host host of the Redis cache
+     * @param port port of the Redis cache
+     * @param password password for accessing the Redis cache
+     * @return a [ReactiveRedisConnectionFactory] bean
+     */
     @Bean
     @Primary
     fun redisConnectionFactory(
@@ -82,6 +89,11 @@ class ContentExtractionServiceApplication : WebFluxConfigurer {
         return redisTemplate.opsForValue()
     }
 
+    /**
+     * Instantiates a [DefaultExtractorChain] with the annotation-based
+     * [Extractor] implementations respecting their order-value.
+     * Provides an [ExtractorChain] bean for the application context.
+     */
     @Bean
     fun extractors(context: ApplicationContext): ExtractorChain {
         val beans = context.getBeansWithAnnotation(ExtractorBean::class.java)
@@ -103,6 +115,10 @@ class ContentExtractionServiceApplication : WebFluxConfigurer {
         return retrofit.create(MercuryWebParserApiClient::class.java)
     }
 
+    /**
+     * Custom [OkHttpClient] instance which doesn't check for certificates
+     * in order to seamlessly invoke the Mercury Web Parser API using Retrofit.
+     */
     private fun unsafeOkHttpClient(): OkHttpClient {
         val trustManager = arrayOf<TrustManager>(object : X509TrustManager {
 

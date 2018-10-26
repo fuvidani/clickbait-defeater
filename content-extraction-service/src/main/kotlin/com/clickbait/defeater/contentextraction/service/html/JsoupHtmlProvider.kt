@@ -10,9 +10,8 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Implementation of the [HtmlProvider] interface with the help of a powerful
+ * HTML parser library called [Jsoup](https://jsoup.org/).
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -21,6 +20,17 @@ import java.nio.charset.StandardCharsets
 @Component
 class JsoupHtmlProvider : HtmlProvider {
 
+    /**
+     * Tries to get the HTML source code of the given
+     * `webPage`. The result is returned in a [Mono]
+     * inside a [WebPageSource] object.
+     *
+     * @param webPage a valid [WebPage] object describing
+     * the web page for which the HTML source code should
+     * be retrieved
+     * @return the source of the requested web page emitted
+     * by a [Mono]
+     */
     override fun get(webPage: WebPage): Mono<WebPageSource> {
         val url = tryAndGetRealUrl(webPage.url)
         @Suppress("DEPRECATION") // not validating TLS certificates may be problematic on Android, ignoring here

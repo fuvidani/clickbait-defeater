@@ -5,9 +5,9 @@ import com.clickbait.defeater.contentextraction.model.WebPageSource
 import reactor.core.publisher.Flux
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Contract to allow an [Extractor] to delegate to the next one
+ * in the chain. This contract/structure follows the pattern
+ * described in [org.springframework.web.server.WebFilterChain].
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -15,5 +15,14 @@ import reactor.core.publisher.Flux
  */
 interface ExtractorChain {
 
+    /**
+     * Delegate to the next [Extractor] in the chain.
+     *
+     * @param source the web page source each [Extractor]
+     * should process
+     * @return a Flux of [Content] published by the chain;
+     * the end of the chain emits a complete signal thus
+     * ensuring a finite stream
+     */
     fun extract(source: WebPageSource): Flux<Content>
 }

@@ -5,9 +5,9 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import org.springframework.stereotype.Repository
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Reactive Repository for [ContentWrapper] objects. This interface extends the
+ * [ReactiveMongoRepository] from Spring s.t. the implementation is provided by the
+ * framework as well.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0

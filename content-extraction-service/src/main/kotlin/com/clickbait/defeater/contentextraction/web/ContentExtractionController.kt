@@ -13,9 +13,11 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
+ * Reactive, non-blocking REST controller for the ClickBait Content-Extraction-Service.
+ * An extensive REST documentation in HTML format can be found in the resources.
  *
- * <p>Description</p>
+ * @property contentExtractionService an implementation of the [ContentExtractionService] interface
+ * supporting all its operations
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -25,6 +27,18 @@ import reactor.core.publisher.Mono
 @RequestMapping("/content")
 class ContentExtractionController(private val contentExtractionService: ContentExtractionService) {
 
+    /**
+     * Retrieves the relevant contents for the given `url` as a continuous stream of
+     * [Content] objects. This endpoint is intended only for use-cases, where the
+     * non-blocking streaming of extracted contents (with back-pressure) is desired.
+     * For a composite result, the [extractRelevantContent] endpoint should be preferred.
+     *
+     * @param url the absolute, decoded URL of the web page/article for which the contents
+     * should be extracted
+     * @param title optional title of the web page, in case the client already possesses
+     * this information
+     * @return a stream of [Content] implementations emitted by a Flux
+     */
     @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE, MediaType.APPLICATION_STREAM_JSON_VALUE])
     fun extractRelevantContentAsStream(
         @RequestParam url: String,
@@ -35,6 +49,16 @@ class ContentExtractionController(private val contentExtractionService: ContentE
             .flatMapMany { Flux.fromIterable(it.contents) }
     }
 
+    /**
+     * Retrieves the relevant contents for the given `url` and returns a composite
+     * result in a [ContentWrapper] object.
+     *
+     * @param url the absolute, decoded URL of the web page/article for which the contents
+     * should be extracted
+     * @param title optional title of the web page, in case the client already possesses
+     * this information
+     * @return a Mono emitting the [ContentWrapper] containing the extracted contents
+     */
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     fun extractRelevantContent(
         @RequestParam url: String,

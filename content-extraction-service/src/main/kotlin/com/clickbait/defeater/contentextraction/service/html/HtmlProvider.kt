@@ -5,9 +5,7 @@ import com.clickbait.defeater.contentextraction.model.WebPageSource
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Interface for a general HTML provider component.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -15,5 +13,16 @@ import reactor.core.publisher.Mono
  */
 interface HtmlProvider {
 
+    /**
+     * Tries to get the HTML source code of the given
+     * `webPage`. The result is returned in a [Mono]
+     * inside a [WebPageSource] object.
+     *
+     * @param webPage a valid [WebPage] object describing
+     * the web page for which the HTML source code should
+     * be retrieved
+     * @return the source of the requested web page emitted
+     * by a [Mono]
+     */
     fun get(webPage: WebPage): Mono<WebPageSource>
 }

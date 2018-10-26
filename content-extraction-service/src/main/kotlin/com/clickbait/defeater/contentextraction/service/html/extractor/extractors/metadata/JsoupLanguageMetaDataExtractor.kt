@@ -7,9 +7,8 @@ import org.jsoup.nodes.Document
 import reactor.core.publisher.Flux
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Meta-data extractor specialized for extracting the language identifier
+ * from a Jsoup [Document].
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -17,6 +16,13 @@ import reactor.core.publisher.Flux
  */
 internal class JsoupLanguageMetaDataExtractor {
 
+    /**
+     * Extracts the language identifier from the given `document`
+     * and emits it in a [Flux].
+     *
+     * @param document a valid HTML document of [org.jsoup.Jsoup]
+     * @return a Flux emitting the found language
+     */
     internal fun extract(document: Document): Flux<Content> {
         val lang = document.selectFirst("html").attr("lang")
         return if (lang.isNotEmpty()) {

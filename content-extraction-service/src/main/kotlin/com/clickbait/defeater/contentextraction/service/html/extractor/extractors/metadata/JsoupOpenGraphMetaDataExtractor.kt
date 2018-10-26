@@ -9,9 +9,8 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.toFlux
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Meta-data extractor specialized for extracting the Facebook [Open Graph](http://ogp.me/)
+ * attributes from a Jsoup [Document].
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -19,6 +18,14 @@ import reactor.core.publisher.toFlux
  */
 internal class JsoupOpenGraphMetaDataExtractor {
 
+    /**
+     * Extracts the supported Open-Graph meta-data values
+     * from the given `document` and emits them in a [Flux]
+     * as [Content]s.
+     *
+     * @param document a valid HTML document of [org.jsoup.Jsoup]
+     * @return a Flux emitting the found contents
+     */
     internal fun extract(document: Document): Flux<Content> {
         return document
             .getElementsByTag("meta")

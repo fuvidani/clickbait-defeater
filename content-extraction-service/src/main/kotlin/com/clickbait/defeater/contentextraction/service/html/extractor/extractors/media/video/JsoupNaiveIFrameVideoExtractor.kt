@@ -10,9 +10,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Video media extractor specialized for HTML iframe elements.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -24,8 +22,15 @@ class JsoupNaiveIFrameVideoExtractor {
     // matches 10, 100, 100px, 100%, ...
     // doesn't match 0, 1, 2
     private val regex = "\\d{2,}(px|%)*"
-    private val sourceChunks = listOf("youtube.com/", "brightcove", "plugins/like.php?", "/recaptcha", ".php")
+    private val blackListSourceChunks = listOf("youtube.com/", "brightcove", "plugins/like.php?", "/recaptcha", ".php")
 
+    /**
+     * Extracts multiple potential iframe-based video content from
+     * the given `document`.
+     *
+     * @param document a valid HTML document of [org.jsoup.Jsoup]
+     * @return a Flux emitting the found video [Content]s
+     */
     internal fun extract(document: Document): Flux<Content> {
         return Flux
             .fromIterable(document.select("iframe[width~=$regex],  iframe[height~=$regex]"))
@@ -41,7 +46,7 @@ class JsoupNaiveIFrameVideoExtractor {
     }
 
     private fun isNotComposedOfChunks(source: String): Boolean {
-        for (chunk in sourceChunks) {
+        for (chunk in blackListSourceChunks) {
             if (source.contains(chunk)) {
                 return false
             }

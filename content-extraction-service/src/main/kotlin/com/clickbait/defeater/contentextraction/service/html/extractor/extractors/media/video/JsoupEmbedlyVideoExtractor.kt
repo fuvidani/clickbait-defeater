@@ -9,9 +9,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Video media extractor specific to the [Embedly](https://embed.ly/) platform.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -20,6 +18,13 @@ import reactor.core.publisher.Flux
 @Component
 class JsoupEmbedlyVideoExtractor {
 
+    /**
+     * Extracts multiple potential video content from
+     * the given `document`.
+     *
+     * @param document a valid HTML document of [org.jsoup.Jsoup]
+     * @return a Flux emitting the found video [Content]s
+     */
     internal fun extract(document: Document): Flux<Content> {
         return Flux.fromIterable(document.select("a[class*=embedly]"))
             .map { MediaContent(MediaType.VIDEO, it.attr("href")) }

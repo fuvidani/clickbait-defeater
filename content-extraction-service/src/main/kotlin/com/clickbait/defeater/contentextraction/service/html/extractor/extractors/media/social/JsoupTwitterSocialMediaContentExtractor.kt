@@ -8,9 +8,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Social media extractor specific to the [Twitter](https://twitter.com/) platform.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -21,6 +19,13 @@ class JsoupTwitterSocialMediaContentExtractor {
 
     private val twitterEmbedUrlRegex = "https:\\/\\/twitter.com\\/[^\\/]*\\/status\\/.*"
 
+    /**
+     * Extracts multiple potential embedded "tweets" as social media
+     * content from the given `document`.
+     *
+     * @param document a valid HTML document of [org.jsoup.Jsoup]
+     * @return a Flux emitting the found social media [Content]s
+     */
     internal fun extract(document: Document): Flux<Content> {
         return Flux
             .fromIterable(document.select("a[href~=$twitterEmbedUrlRegex]"))

@@ -8,9 +8,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Social media extractor specific to the [Pinterest](https://www.pinterest.com/) platform.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -21,6 +19,13 @@ class JsoupPinterestSocialMediaContentExtractor {
 
     private val pinterestUrlRegex = "https:\\/\\/www.pinterest.com\\/.+"
 
+    /**
+     * Extracts multiple potential Pinterest "pins" as social media
+     * content from the given `document`.
+     *
+     * @param document a valid HTML document of [org.jsoup.Jsoup]
+     * @return a Flux emitting the found social media [Content]s
+     */
     internal fun extract(document: Document): Flux<Content> {
         return Flux
             .fromIterable(document.select("a[href~=$pinterestUrlRegex]"))

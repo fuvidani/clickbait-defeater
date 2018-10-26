@@ -15,13 +15,21 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * A composite [Extractor] implementation leveraging the
+ * [Mercury Web Parser API](https://mercury.postlight.com/web-parser/). While the accuracy of this
+ * extractor mainly depends on the result of the API, it supports the extraction of article images
+ * and relevant text content both in String and HTML representation.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
  * @since 1.0.0
+ *
+ * @property apiClient a [MercuryWebParserApiClient] implementation
+ * @property apiKey a valid API-key for the Web-parser
+ * @property blackListCssQuery a CSS query containing elements which should not be part
+ * of the textual content
+ * @property htmlOutputSettings specific output settings when a [Document] is converted
+ * into a String representation
  */
 @ExtractorBean
 @Component
@@ -37,6 +45,20 @@ class MercuryContentExtractor(
         .charset("ASCII")
         .prettyPrint(false)
 
+    /**
+     * Performs the extraction process on the given `source` and
+     * (optionally) delegates to the next [Extractor] through
+     * the given [ExtractorChain]. The result of this extractor
+     * and of the chain are published through a single [Flux].
+     *
+     * @param source the source of a web page from which the
+     * contents should be extracted
+     * @param chain the chain to allow delegation to the next
+     * [Extractor]
+     * @return a Flux of [Content] extracted by this extractor
+     * and optionally of other [Extractor]s in the chain (in
+     * case of a delegation)
+     */
     override fun extract(source: WebPageSource, chain: ExtractorChain): Flux<Content> {
         val content = apiClient
             .getArticleContent(apiKey, source.sourceUrl)

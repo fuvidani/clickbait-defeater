@@ -6,11 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Indicates that an annotated class is an implementation of the
+ * {@link com.clickbait.defeater.contentextraction.service.html.extractor.Extractor}
+ * interface and can be used for automatic dependency injection.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -22,7 +21,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 public @interface ExtractorBean {
 
     /**
-     * The order value.
+     * The order value indicating the priority of
+     * this bean.
+     *
      * <p>Default is {@link Integer#MAX_VALUE}.
      */
     int order() default Integer.MAX_VALUE;

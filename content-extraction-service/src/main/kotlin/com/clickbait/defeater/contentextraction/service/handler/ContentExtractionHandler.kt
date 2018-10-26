@@ -5,9 +5,7 @@ import com.clickbait.defeater.contentextraction.model.WebPage
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Interface for abstracting away the actual content extraction procedure.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -15,5 +13,14 @@ import reactor.core.publisher.Mono
  */
 interface ContentExtractionHandler {
 
+    /**
+     * Processes the input `webPage`, performs content extraction
+     * and returns the result in a [ContentWrapper] object emitted
+     * by a [Mono].
+     *
+     * @param webPage a valid [WebPage] object as input, describing
+     * the web page of which the contents should be extracted
+     * @return a Mono emitting the extracted contents
+     */
     fun extract(webPage: WebPage): Mono<ContentWrapper>
 }

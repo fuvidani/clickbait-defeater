@@ -12,9 +12,8 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Centralized security configuration for this service.
+ * Only enabled if the current profile is not `test`.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -25,6 +24,15 @@ import reactor.core.publisher.Mono
 @Profile("!test")
 class SecurityConfig {
 
+    /**
+     * Custom [SecurityWebFilterChain]. Denies all requests on the `/actuator/` paths,
+     * disables form login and accepts requests only from an injected list of authorzied
+     * hosts.
+     *
+     * @param authorizedHostsPattern a regex pattern describing from which hosts (IP-address patterns)
+     * requests should be accepted
+     * @param http [ServerHttpSecurity] bean from the Spring Framework
+     */
     @Bean
     fun securityFilterChain(
         @Value("\${security.authorized.hosts.pattern}") authorizedHostsPattern: Regex,

@@ -11,9 +11,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Video media extractor specific to the [Cnet](https://www.cnet.com/) platform.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -24,6 +22,13 @@ class JsoupCnetVideoExtractor {
 
     private val jsonParser = JsonParser()
 
+    /**
+     * Extracts multiple potential video content from
+     * the given `document`.
+     *
+     * @param document a valid HTML document of [org.jsoup.Jsoup]
+     * @return a Flux emitting the found video [Content]s
+     */
     internal fun extract(document: Document): Flux<Content> {
         return Flux
             .fromIterable(document.select("[data-video-playlist]"))
