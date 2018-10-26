@@ -18,13 +18,19 @@ services:
     - 6379
 
   mongo_db:
-    image: danielfuvesi/clickbait-defeater:mongo
+    build:
+      context: ./database
+    image: clickbait-mongo
     container_name: mongo
     ports:
     - 27017:27017
 
   gateway:
-    image: danielfuvesi/clickbait-defeater:gateway-0.0.2
+    build:
+      context: ./gateway
+      args:
+        VERSION: 0.0.1-SNAPSHOT
+    image: clickbait-gateway
     container_name: clickbait-gateway
     ports:
     - 4000:8080
@@ -34,19 +40,25 @@ services:
     mem_limit: 367001600
 
   clickbait_read_service:
-    image: danielfuvesi/clickbait-defeater:read-service-0.0.1
+    build:
+      context: ./clickbait-service-read
+      args:
+        VERSION: 0.0.1-SNAPSHOT
+    image: clickbait-read-service
     container_name: clickbait-read-service
     ports:
     - 8080:8080
     environment:
     - SPRING_PROFILES_ACTIVE=docker
-    - SPRING_REDIS_PASSWORD=a2vjPx2CJ4HcE3f323oxmG4anv
-    - SECURITY_AUTHORIZED_HOSTS_PATTERN=^(clickbait-gateway)$
     - JAVA_OPTS=-Xmx300m
     mem_limit: 367001600
 
   clickbait_update_service:
-    image: danielfuvesi/clickbait-defeater:update-service-0.0.1
+    build:
+      context: ./clickbait-service-update
+      args:
+        VERSION: 0.0.1-SNAPSHOT
+    image: clickbait-update-service
     container_name: clickbait-update-service
     ports:
     - 8081:8080
@@ -56,7 +68,11 @@ services:
     mem_limit: 367001600
 
   content_extraction_service:
-    image: danielfuvesi/clickbait-defeater:content-extraction-service-0.0.1
+    build:
+      context: ./content-extraction-service
+      args:
+        VERSION: 0.0.1-SNAPSHOT
+    image: content-extraction-service
     container_name: content-extraction-service
     ports:
     - 8082:8080
