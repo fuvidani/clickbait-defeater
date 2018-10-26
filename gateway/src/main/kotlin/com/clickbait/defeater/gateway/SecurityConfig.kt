@@ -18,9 +18,8 @@ import java.security.SecureRandom
 import java.util.Base64
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Centralized security configuration for the gateway.
+ * Only enabled if the current profile is not `test`.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -31,6 +30,17 @@ import java.util.Base64
 @Profile("!test")
 class SecurityConfig {
 
+    /**
+     * Custom [SecurityWebFilterChain]. Denies all requests on the `/actuator/` paths,
+     * disables form login and accepts requests only if
+     * (i) the requesting host is from an injected list of authorized hosts (i.e. it's
+     * a case of intra-service communication) OR
+     * (ii) there is a Basic authentication header with the correct password of the gateway.
+     *
+     * @param authorizedHostsPattern a regex pattern describing from which hosts (IP-address patterns)
+     * requests should be accepted
+     * @param http [ServerHttpSecurity] bean from the Spring Framework
+     */
     @Bean
     fun securityFilterChain(
         @Value("\${security.auth.encoded}") gatewayAuth: String,

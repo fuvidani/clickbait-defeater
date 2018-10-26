@@ -106,11 +106,11 @@ data class MultiplePostInstanceJudgments(
  *
  * @property userId unique ID of a client who this particular vote "belongs" to.
  * It can be of any schema or structure.
- * @property url the absolute URL of the webpage for which this vote is casted
+ * @property url the absolute URL of the web page for which this vote is casted
  * @property vote the vote of the user ranging between 0.0 (no-clickbait) and
  * 1.0 (clickbait)
  * @property postText optional list of strings representing the sentences/paragraphs
- * of the text which the webpage (identified via the `url`) has been posted with on
+ * of the text which the web page (identified via the `url`) has been posted with on
  * a social media platform
  * @property lastUpdate optional date and time of the last update of this
  * particular vote. Defaults to the date and time of object instantiation.

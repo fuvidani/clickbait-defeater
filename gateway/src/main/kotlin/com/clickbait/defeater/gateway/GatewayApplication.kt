@@ -13,9 +13,8 @@ import org.springframework.web.reactive.config.WebFluxConfigurer
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Entry-point of the ClickBait Gateway application.
+ * Several beans are configured here that are used for dependency injection.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -34,21 +33,37 @@ class GatewayApplication : WebFluxConfigurer {
         }
     }
 
+    /**
+     * Simple plain fallback response in case the gateway cannot reach the
+     * Read-Service.
+     */
     @RequestMapping("/clickBaitReadFallback", produces = [MediaType.TEXT_PLAIN_VALUE])
     fun clickBaitReadServiceFallback(): Mono<String> {
         return Mono.just("Fallback for ClickBait-Read-Service")
     }
 
+    /**
+     * Simple plain fallback response in case the gateway cannot reach the
+     * Update-Service.
+     */
     @RequestMapping("/clickBaitUpdateFallback", produces = [MediaType.TEXT_PLAIN_VALUE])
     fun clickBaitUpdateServiceFallback(): Mono<String> {
         return Mono.just("Fallback for ClickBait-Update-Service")
     }
 
+    /**
+     * Simple plain fallback response in case the gateway cannot reach the
+     * Content-Extraction-Service.
+     */
     @RequestMapping("/contentExtractionFallback", produces = [MediaType.TEXT_PLAIN_VALUE])
     fun contentExtractionServiceFallback(): Mono<String> {
         return Mono.just("Fallback for Content-Extraction-Service")
     }
 
+    /**
+     * Simple plain fallback response in case the gateway cannot reach the
+     * ML-Service.
+     */
     @RequestMapping("/mlServiceFallback", produces = [MediaType.TEXT_PLAIN_VALUE])
     fun contentMlServiceFallback(): Mono<String> {
         return Mono.just("Fallback for ML-Service")

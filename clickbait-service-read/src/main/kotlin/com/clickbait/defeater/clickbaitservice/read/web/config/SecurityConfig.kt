@@ -26,7 +26,7 @@ class SecurityConfig {
 
     /**
      * Custom [SecurityWebFilterChain]. Denies all requests on the `/actuator/` paths,
-     * disables form login and accepts requests only from an injected list of authorzied
+     * disables form login and accepts requests only from an injected list of authorized
      * hosts.
      *
      * @param authorizedHostsPattern a regex pattern describing from which hosts (IP-address patterns)
