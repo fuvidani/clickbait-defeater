@@ -5,12 +5,17 @@ const removed_ids = [];
 const sliders = {};
 const extractedIds = [];
 
+/**
+ * Callback for mutation observer. It listens to changes on DOM for a particular html element.
+ *
+ * @param mutationsList
+ */
 const callback = function (mutationsList) {
     for (let mutation of mutationsList) {
         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
             if (mutation.target.id !== undefined && mutation.target.id.indexOf("hyperfeed_story_id") === 0) {
                 if (post_ids.indexOf(mutation.target.id) === -1 && removed_ids.indexOf(mutation.target.id) === -1) {
-                    // filter out sponsored posts
+                    // filter out sponsored posts, if "Sponsored" is visible
                     let sp, on, so, red = false;
 
                     const spanList = mutation.target.getElementsByTagName('span');
@@ -40,11 +45,13 @@ const callback = function (mutationsList) {
                         break;
                     }
 
+                    // filter hidden posts
                     if (mutation.target.classList.contains("hidden_elem") || mutation.target.style.display === "none" || mutation.target.style.display === "none !important") {
                         if (logging) console.log("Hidden post!");
                         break;
                     }
 
+                    // observe mutations on a tags
                     const a_list = mutation.target.getElementsByTagName('a');
 
                     for (let i = 0; i < a_list.length; i++) {
@@ -61,8 +68,10 @@ const callback = function (mutationsList) {
                                 break;
                             }
 
+                            // create and inject clickbait widget
                             createWidget(mutation.target.id, mutation.target);
 
+                            // add extraction button for clickbait widget
                             const extractButton = document.getElementById(mutation.target.id + "_extract");
                             extractButton.onclick = function () {
                                 if (extractedIds.indexOf(mutation.target.id) === -1) {
@@ -154,6 +163,7 @@ const callback = function (mutationsList) {
                                 }
                             };
 
+                            // extract post texts from the post
                             const p_list = mutation.target.getElementsByTagName("p");
                             let postTexts = [];
                             for (let p of p_list) {
@@ -168,6 +178,7 @@ const callback = function (mutationsList) {
                             }
                             if (logging) console.log("postText: " + postTexts);
 
+                            // call background service for clickbait score
                             if (postTexts.length > 0) {
                                 chrome.runtime.sendMessage({
                                     message: PREDICT_ARTICLE_SCORE,
@@ -211,6 +222,7 @@ const callback = function (mutationsList) {
                                 });
                             }
 
+                            // retrieve previous score for a particular article for user
                             chrome.runtime.sendMessage({
                                 message: RETRIEVE_ARTICLE_SCORE_FOR_USER,
                                 data: {url: extractedUrl}
@@ -239,6 +251,7 @@ const callback = function (mutationsList) {
                                 }
                             });
 
+                            // inject slider into clickbait widget
                             sliders[mutation.target.id].on("change", function (event) {
                                 const widget = document.getElementById(mutation.target.id + "_widget");
                                 const sliderTicksInSelection = widget.getElementsByClassName("slider-tick");
@@ -319,6 +332,7 @@ const callback = function (mutationsList) {
                                 }
                             });
 
+                            // add slider listeners for correctly setting color of the slider
                             sliders[mutation.target.id].on("slideStop", function (event) {
                                 const value = sliders[mutation.target.id].getValue();
                                 switch (value) {
@@ -444,7 +458,7 @@ const callback = function (mutationsList) {
                     }
                 }
             }
-        } else if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
+        } else if (mutation.type === 'childList' && mutation.removedNodes.length > 0) { // remove widget if post gets removed from the news feed
             for (let node of mutation.removedNodes) {
                 if (node.id !== undefined && node.id.indexOf("hyperfeed_story_id") === 0 && node.id.split("_").length === 4) {
                     const clickbaitWidget = document.getElementById(node.id + "_widget");
@@ -464,6 +478,13 @@ if (targetNode) {
     observer.observe(targetNode, config);
 }
 
+/**
+ * Creates carousel for media view.
+ *
+ * @param postId: Id of post.
+ * @param contents: Extracted content for post.
+ * @returns {HTMLElement} containing the carousel.
+ */
 const createCarousel = function (postId, contents) {
     <!-- Container -->
     const carouselContainer = document.createElement("div");
@@ -530,10 +551,6 @@ const createCarousel = function (postId, contents) {
             itemWrapper.appendChild(createIframeItem("https://twitframe.com/show?url=" + content.src, counter === 0, postId, counter));
             injected = true;
         }
-        // else if (content.contentType === "HTML") {
-        //     itemWrapper.appendChild(createHtmlItem(content.html, counter === 0));
-        //     injected = true;
-        // }
 
         if (injected) {
             const indicator = document.createElement("li");
@@ -559,26 +576,15 @@ const createCarousel = function (postId, contents) {
     }
 };
 
-const iframeLoaded = function (iframeId) {
-    if (logging) console.log("HERE");
-    var iFrameID = document.getElementById(iframeId);
-    if (iFrameID) {
-        // here you can make the height, I delete it first, then I make it again
-        iFrameID.height = "";
-        iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + "px";
-    }
-};
-
-const createHtmlItem = function (htmlString, active) {
-    const item = document.createElement("div");
-    item.classList.add("item");
-    if (active) item.classList.add("active");
-
-    item.innerHTML = htmlString;
-
-    return item;
-};
-
+/**
+ * Creates Iframe element for media viewer.
+ *
+ * @param src: Url for media content.
+ * @param active: True if first carousel slide.
+ * @param postId: Id of post.
+ * @param counter: Index of carousel slide.
+ * @returns {HTMLElement} containing the Iframe element.
+ */
 const createIframeItem = function (src, active, postId, counter) {
     const item = document.createElement("div");
     item.classList.add("item");
@@ -603,6 +609,13 @@ const createIframeItem = function (src, active, postId, counter) {
     return item;
 };
 
+/**
+ * Creates image element for media viewer.
+ *
+ * @param src: Url of image.
+ * @param active: True if first slide of carousel.
+ * @returns {HTMLElement} containing the image element.
+ */
 const createImageItem = function (src, active) {
     const item = document.createElement("div");
     item.classList.add("item");
@@ -622,6 +635,12 @@ const createImageItem = function (src, active) {
     return item;
 };
 
+/**
+ * Creates clickbait widget template and appends before facebook post element.
+ *
+ * @param post_id: Id of post.
+ * @param mutationTarget: HTML object of target post.
+ */
 const createWidget = function (post_id, mutationTarget) {
     const widgetDiv = document.createElement('div');
     widgetDiv.id = post_id + "_widget";
@@ -718,6 +737,14 @@ const createWidget = function (post_id, mutationTarget) {
     sliders[post_id] = slider;
 };
 
+/**
+ * Calls background script to vote for an article.
+ *
+ * @param url: Url of article.
+ * @param vote: Number between 0 and 1 referring to the user vote.
+ * @param postText: List of post texts.
+ * @param callback: Will be called on successful processing of voting.
+ */
 const sendArticleScore = function (url, vote, postText, callback) {
     chrome.runtime.sendMessage({
         message: VOTE_ARTICLE_SCORE,
@@ -727,6 +754,12 @@ const sendArticleScore = function (url, vote, postText, callback) {
     });
 };
 
+/**
+ * Extracts base url from facebook intern url scheme.
+ *
+ * @param uri: Uri to decode.
+ * @returns {string} decoded url.
+ */
 const extractUrl = function (uri) {
     const decodedUrl = decodeURIComponent(uri);
     const url = new URL(decodedUrl);

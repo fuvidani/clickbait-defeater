@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Adds listener to inject script on the right page.
+ */
 chrome.runtime.onInstalled.addListener(function () {
     chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
         chrome.declarativeContent.onPageChanged.addRules([{
@@ -11,6 +14,9 @@ chrome.runtime.onInstalled.addListener(function () {
     });
 });
 
+/**
+ * Adds listeners to catch in-extension messages and process them accordingly.
+ */
 chrome.runtime.onMessage.addListener(
     (request, sender, senderResponse) => {
         if (logging) console.log(request);
@@ -103,6 +109,11 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
+/**
+ * Generates random id for extension.
+ *
+ * @returns {string} Generated id.
+ */
 function getRandomToken() {
     const randomPool = new Uint8Array(32);
     crypto.getRandomValues(randomPool);
