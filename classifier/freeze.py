@@ -2,6 +2,16 @@ import tensorflow as tf
 
 
 def freeze_graph(model_dir, output_node_names):
+    """
+    Generates and stores frozen graph from TensorFlow meta graph.
+
+    :param model_dir: str
+        Path to TensorFlow meta graph.
+    :param output_node_names: list of str
+        List of output node names to freeze.
+    :return: GraphDef
+        GraphDef containing a simplified version of the original.
+    """
     checkpoints_path = model_dir + "/checkpoints"
     models_path = model_dir + "/models"
     for model in ["SAN1", "SAN2", "SAN3", "SAN4", "SAN5"]:

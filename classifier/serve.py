@@ -11,6 +11,7 @@ from utils import *
 import shutil
 import warnings
 
+# Ignore numpy.dtype warning (known issue).
 warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 
 app = Flask(__name__)
@@ -19,12 +20,20 @@ cors = CORS(app)
 
 @app.before_request
 def limit_remote_addr():
+    """
+    IP filter to restrict IPs that can access this API.
+    """
     if request.remote_addr != '37.221.195.13':
         abort(403)
 
 
 @app.route("/predict", methods=['POST'])
 def predict():
+    """
+    REST endpoint to score article based on hosted models.
+
+    For a detailed API description see REST documentation.
+    """
     start = time.time()
     max_post_text_len = 39
     data = request.get_json()
@@ -105,6 +114,11 @@ def predict():
 
 @app.route("/train", methods=['POST'])
 def retrain():
+    """
+    REST endpoint to retrain the clickbait model and to host the new one.
+
+    For a detailed API description see REST documentation.
+    """
     print "retrain request received"
     data = request.get_json()
 
@@ -113,6 +127,15 @@ def retrain():
     print "new timestamp: " + new_timestamp
 
     def retrain_model(data, new_timestamp):
+        """
+        Inner method that encapsulates the model re-train capabilities.
+        This is needed to be able to start task asynchronously.
+
+        :param data: json
+            JSON object containing the request body.
+        :param new_timestamp: str
+            New timestamp for storing purposes.
+        """
         global timestamp
 
         # generate embeddings
@@ -236,6 +259,7 @@ def retrain():
         timestamp = new_timestamp
         print "set new timestamp: " + new_timestamp
 
+    # Start re-train task asynchronously.
     thread = Thread(target=retrain_model, kwargs={'data': data, 'new_timestamp': new_timestamp})
     thread.start()
 
@@ -243,8 +267,15 @@ def retrain():
 
 
 def load_graph(frozen_graph_filename):
-    # We load the protobuf file from the disk and parse it to retrieve the 
-    # unserialized graph_def
+    """
+    Loads frozen graph into TensorFlow graph object.
+
+    :param frozen_graph_filename: str
+        Path to frozen graph.
+    :return: GraphDef
+        GraphDef containing the frozen graph.
+    """
+    # We load the protobuf file from the disk and parse it to retrieve the unserialized graph_def
     with tf.gfile.GFile(frozen_graph_filename, "rb") as f:
         graph_def = tf.GraphDef()
         graph_def.ParseFromString(f.read())
@@ -258,6 +289,12 @@ def load_graph(frozen_graph_filename):
 
 
 def load_model(target_timestamp):
+    """
+    Loads all frozen graphs and sets them into global variables.
+
+    :param target_timestamp: str
+        New timestamp for storing purposes.
+    """
     global word2id
     global graph_SAN1, input_x1_SAN1, input_x1_len_SAN1, dropout_rate_cell_SAN1, batch_size_SAN1, output_prediction_SAN1, output_distribution_SAN1, sess_SAN1
     global graph_SAN2, input_x1_SAN2, input_x1_len_SAN2, dropout_rate_cell_SAN2, batch_size_SAN2, output_prediction_SAN2, output_distribution_SAN2, sess_SAN2
@@ -330,8 +367,10 @@ def load_model(target_timestamp):
 
 
 if __name__ == "__main__":
+    # Timestamp to identify last stored model.
     timestamp = '16082018'
 
+    # Set configuration
     with open(os.path.join('data', timestamp, 'word2id.json'), 'r') as fin:
         word2id = json.load(fin)
 
@@ -339,6 +378,7 @@ if __name__ == "__main__":
     gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=gpu_memory)
     sess_config = tf.ConfigProto(gpu_options=gpu_options)
 
+    # Load SAN1
     print('Loading the model SAN1')
     graph_SAN1 = load_graph("data/" + timestamp + "/runs/models/frozen_model_SAN1.pb")
     input_x1_SAN1 = graph_SAN1.get_tensor_by_name("clickbait/post_text:0")
@@ -348,9 +388,11 @@ if __name__ == "__main__":
     output_prediction_SAN1 = graph_SAN1.get_tensor_by_name("clickbait/prediction:0")
     output_distribution_SAN1 = graph_SAN1.get_tensor_by_name("clickbait/distribution:0")
 
+    # Start SAN1
     print('Starting Session SAN1, setting the GPU memory usage to %f' % gpu_memory)
     sess_SAN1 = tf.Session(graph=graph_SAN1, config=sess_config)
 
+    # Load SAN2
     print('Loading the model SAN2')
     graph_SAN2 = load_graph("data/" + timestamp + "/runs/models/frozen_model_SAN2.pb")
     input_x1_SAN2 = graph_SAN2.get_tensor_by_name("clickbait/post_text:0")
@@ -360,9 +402,11 @@ if __name__ == "__main__":
     output_prediction_SAN2 = graph_SAN2.get_tensor_by_name("clickbait/prediction:0")
     output_distribution_SAN2 = graph_SAN2.get_tensor_by_name("clickbait/distribution:0")
 
+    # Start SAN2
     print('Starting Session SAN2, setting the GPU memory usage to %f' % gpu_memory)
     sess_SAN2 = tf.Session(graph=graph_SAN2, config=sess_config)
 
+    # Load SAN3
     print('Loading the model SAN3')
     graph_SAN3 = load_graph("data/" + timestamp + "/runs/models/frozen_model_SAN3.pb")
     input_x1_SAN3 = graph_SAN3.get_tensor_by_name("clickbait/post_text:0")
@@ -372,9 +416,11 @@ if __name__ == "__main__":
     output_prediction_SAN3 = graph_SAN3.get_tensor_by_name("clickbait/prediction:0")
     output_distribution_SAN3 = graph_SAN3.get_tensor_by_name("clickbait/distribution:0")
 
+    # Start SAN3
     print('Starting Session SAN3, setting the GPU memory usage to %f' % gpu_memory)
     sess_SAN3 = tf.Session(graph=graph_SAN3, config=sess_config)
 
+    # Load SAN4
     print('Loading the model SAN4')
     graph_SAN4 = load_graph("data/" + timestamp + "/runs/models/frozen_model_SAN4.pb")
     input_x1_SAN4 = graph_SAN4.get_tensor_by_name("clickbait/post_text:0")
@@ -384,9 +430,11 @@ if __name__ == "__main__":
     output_prediction_SAN4 = graph_SAN4.get_tensor_by_name("clickbait/prediction:0")
     output_distribution_SAN4 = graph_SAN4.get_tensor_by_name("clickbait/distribution:0")
 
+    # Start SAN4
     print('Starting Session SAN4, setting the GPU memory usage to %f' % gpu_memory)
     sess_SAN4 = tf.Session(graph=graph_SAN4, config=sess_config)
 
+    # Load SAN5
     print('Loading the model SAN5')
     graph_SAN5 = load_graph("data/" + timestamp + "/runs/models/frozen_model_SAN5.pb")
     input_x1_SAN5 = graph_SAN5.get_tensor_by_name("clickbait/post_text:0")
@@ -396,9 +444,11 @@ if __name__ == "__main__":
     output_prediction_SAN5 = graph_SAN5.get_tensor_by_name("clickbait/prediction:0")
     output_distribution_SAN5 = graph_SAN5.get_tensor_by_name("clickbait/distribution:0")
 
+    # Start SAN5
     print('Starting Session SAN5, setting the GPU memory usage to %f' % gpu_memory)
     sess_SAN5 = tf.Session(graph=graph_SAN5, config=sess_config)
 
+    # Start REST API
     print('Starting the REST API')
     # app.run(ssl_context='adhoc', host='0.0.0.0')
     app.run(host='0.0.0.0')
