@@ -1,3 +1,21 @@
+/*
+ * Clickbait-Defeater
+ * Copyright (c) 2018. Daniel Füvesi
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.clickbait.defeater.clickbaitservice.update.model
 
 import org.springframework.data.annotation.Id
@@ -10,13 +28,24 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Model of a social media post instance
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
  * @since 1.0.0
+ *
+ * @property id the unique ID of the instance, usually the URL of the social media content this
+ * instance represents
+ * @property language the language of the content this instance consists of in ISO-639-1 format. This
+ * is optional and defaults to "unknown".
+ * @property postText the text as a list of strings which this social media instance has been posted with
+ * @property postTimestamp optional timestamp when the instance has been published
+ * @property postMedia optional list of strings, where each string points to the location of a media file
+ * associated with this instance
+ * @property targetTitle optional title of the shared (targeted) link/content
+ * @property targetDescription optional description of the shared (targeted) link/content
+ * @property targetKeywords optional comma-separated keywords of the shared (targeted) link/content
+ * @property targetParagraphs optional list of strings as the paragraphs of the shared (targeted) link/content
  */
 @Document(collection = "posts")
 data class PostInstance(
@@ -33,6 +62,19 @@ data class PostInstance(
     val targetParagraphs: List<String> = emptyList()
 )
 
+/**
+ * Object containing a list of votes corresponding to a single
+ * social media post.
+ *
+ * @author Daniel Fuevesi
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ * @property id the unique ID of the [PostInstance] object these votes
+ * refer to
+ * @property truthJudgments a valid list of [Double], where each element is
+ * a vote between 0.0 and 1.0
+ */
 data class PostInstanceJudgmentStats(
     val id: String,
     val truthJudgments: List<Double>
@@ -42,15 +84,55 @@ const val CLASS_CLICKBAIT = "clickbait"
 const val CLASS_NO_CLICKBAIT = "no-clickbait"
 const val SERVICE_ZONE_ID = "Europe/Vienna"
 
+/**
+ * Wrapper object around a [PostInstance] and its corresponding
+ * [PostInstanceJudgmentStats] for better encapsulation.
+ *
+ * @author Daniel Fuevesi
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ * @property postInstance valid social media post instance
+ * @property stats valid vote stats referring to the `postInstance`
+ */
 data class PostInstanceJudgments(
     val postInstance: PostInstance,
     val stats: PostInstanceJudgmentStats
 )
 
+/**
+ * Wrapper object encapsulating multiple instances of
+ * [PostInstanceJudgments].
+ *
+ * @author Daniel Fuevesi
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ * @property judgments a valid list of [PostInstanceJudgments] elements
+ */
 data class MultiplePostInstanceJudgments(
     val judgments: List<PostInstanceJudgments>
 )
 
+/**
+ * Domain object representing a specific vote, i.e. a vote which
+ * belongs to exactly one `userId` and `url`.
+ *
+ * @author Daniel Fuevesi
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ * @property userId unique ID of a client who this particular vote "belongs" to.
+ * It can be of any schema or structure.
+ * @property url the absolute URL of the web page for which this vote is casted
+ * @property vote the vote of the user ranging between 0.0 (no-clickbait) and
+ * 1.0 (clickbait)
+ * @property postText optional list of strings representing the sentences/paragraphs
+ * of the text which the web page (identified via the `url`) has been posted with on
+ * a social media platform
+ * @property lastUpdate optional date and time of the last update of this
+ * particular vote. Defaults to the date and time of object instantiation.
+ */
 data class ClickBaitVote(
     val userId: String,
     val url: String,
@@ -59,21 +141,66 @@ data class ClickBaitVote(
     val lastUpdate: ZonedDateTime = ZonedDateTime.now()
 )
 
+/**
+ * Transforms this [ClickBaitVote] to an equivalent [ClickBaitVoteEntity]
+ *
+ * @receiver a valid [ClickBaitVote] instance
+ * @return equivalent [ClickBaitVoteEntity] instance to this object
+ */
 fun ClickBaitVote.toEntity(): ClickBaitVoteEntity {
     val key = ClickBaitVoteKey(this.userId, this.url)
     return ClickBaitVoteEntity(key, this.vote, Instant.now())
 }
 
+/**
+ * Overloaded variant of [toEntity] s.t the `lastUpdate` attribute
+ * can be provided. Mainly used in testing scenarios where dates and
+ * times must always match.
+ *
+ * @param lastUpdate a valid [Instant] instance
+ * @receiver valid [ClickBaitVote] instance
+ * @return a valid [ClickBaitVoteEntity] equivalent to this [ClickBaitVote]
+ * instance with the difference being the `lastUpdate` attribute
+ */
 fun ClickBaitVote.toEntity(lastUpdate: Instant): ClickBaitVoteEntity {
     val key = ClickBaitVoteKey(this.userId, this.url)
     return ClickBaitVoteEntity(key, this.vote, lastUpdate)
 }
 
+/**
+ * Replaces this instance's `url` attribute with a UTF-8 decoded one.
+ * Sometimes an arbitrary input URL might be encoded which makes it
+ * difficult to process. This function merely does a safety decoding of
+ * it.
+ *
+ * @receiver a valid [ClickBaitVote] instance
+ * @return same [ClickBaitVote] instance with a decoded `url` attribute
+ */
 fun ClickBaitVote.toDecoded(): ClickBaitVote {
     val decodedUrl = URLDecoder.decode(this.url, StandardCharsets.UTF_8.name())
     return ClickBaitVote(this.userId, decodedUrl, this.vote, this.postText, this.lastUpdate)
 }
 
+/**
+ * A semantically equivalent representation of a [ClickBaitVote] instance,
+ * however optimized for data persistence. Since a `userId` can be paired
+ * with multiple `url`s and vice versa, only a composite key can
+ * unambiguously identify a single vote.
+ *
+ * This object uses [Instant] instead of [ZonedDateTime] due to the limitations
+ * of persistence technology. However, since only the zone of the service itself
+ * matters, the time-zone can manually be added when converting an [Instant] to
+ * a [ZonedDateTime].
+ *
+ * @author Daniel Fuevesi
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ * @property id a valid key consisting of a `userId` and `url`
+ * @property vote the vote of the user ranging between 0.0 (no-clickbait) and
+ * 1.0 (clickbait)
+ * @property lastUpdate a zone-less date and time of the last update of this vote
+ */
 @Document(collection = "votes")
 data class ClickBaitVoteEntity(
     @Id
@@ -82,12 +209,36 @@ data class ClickBaitVoteEntity(
     val lastUpdate: Instant
 )
 
+/**
+ * Object representing the composite key of a [ClickBaitVoteEntity] instance.
+ *
+ * @author Daniel Fuevesi
+ * @version 1.0.0
+ * @since 1.0.0
+ *
+ * @property userId unique ID of a client who this particular vote "belongs" to.
+ * It can be of any schema or structure.
+ * @property url the absolute URL of the webpage for which this vote is casted
+ */
 data class ClickBaitVoteKey(
     val userId: String,
     val url: String
 ) : Serializable
 
+/**
+ * Transforms this [ClickBaitVoteEntity] to an equivalent [ClickBaitVote] instance.
+ * The `lastUpdate` attribute is converted into a valid [ZonedDateTime] using the
+ * defined [SERVICE_ZONE_ID].
+ *
+ * @receiver a valid [ClickBaitVoteEntity] instance
+ * @return a valid [ClickBaitVote] instance with an empty `postText` attribute
+ */
 fun ClickBaitVoteEntity.toModel(): ClickBaitVote {
-    return ClickBaitVote(this.id.userId, this.id.url, this.vote, lastUpdate = this.lastUpdate.atZone(ZoneId.of(
-        SERVICE_ZONE_ID)))
+    return ClickBaitVote(
+        this.id.userId, this.id.url, this.vote, lastUpdate = this.lastUpdate.atZone(
+            ZoneId.of(
+                SERVICE_ZONE_ID
+            )
+        )
+    )
 }

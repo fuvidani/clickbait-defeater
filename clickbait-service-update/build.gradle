@@ -28,7 +28,7 @@ test {
 
 asciidoctor {
     inputs.dir snippetsDir
-    dependsOn test
+    dependsOn tasks.withType(Test)
 }
 
 task integrationTest(type: Test) {

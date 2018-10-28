@@ -6,6 +6,6 @@ spring:
 score.service:
   protocol: http
   host: clickbait-gateway
-  port: 4000
+  port: 8080
 
 security.authorized.hosts.pattern: ^(clickbait-gateway)|(37.221.195.13)$

@@ -1,0 +1,44 @@
+= ClickBait Content-Extraction-Service Documentation
+Daniel Füvesi - Version 1.0.0.RELEASE;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+This documentation describes the the available endpoints of the ClickBait Content-Extraction-Service API and how to interact
+with them.
+
+== Extract content of a web page
+
+[NOTE]
+Endpoint: `GET /content?url={url}&title={title}`
+
+This endpoint requires a `url` query parameter which specifies the target
+web page either implicitly (redirect) or explicitly. The `title` is an optional parameter:
+
+include::{snippets}/extract-wrapper/request-parameters.adoc[]
+
+The endpoint supports streaming, therefore it may be called with the following
+accept headers:
+
+* application/json
+* application/stream+json
+* text/event-stream
+
+In the first case, i.e. if the call is executed synchronously, the endpoint returns a so-called
+`ContentWrapper` object. The result may look like as follows:
+include::{snippets}/extract-wrapper/http-response.adoc[]
+
+include::{snippets}/extract-wrapper/response-fields.adoc[]
+
+[NOTE]
+In any of the other two, asynchronous cases the result is essentially a flow/stream of
+content objects, i.e. there is no `redirectUrl` or `sourceUrl` available in the response.
+
+
+
+
+
+
+
+
+

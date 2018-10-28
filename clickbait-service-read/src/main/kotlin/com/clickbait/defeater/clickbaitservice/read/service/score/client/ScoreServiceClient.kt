@@ -1,3 +1,21 @@
+/*
+ * Clickbait-Defeater
+ * Copyright (c) 2018. Daniel Füvesi
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.clickbait.defeater.clickbaitservice.read.service.score.client
 
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
@@ -9,9 +27,8 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * A declarative HTTP Score service client responsible for invoking a remote API.
+ * The actual implementation is deferred.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -19,6 +36,13 @@ import retrofit2.http.POST
  */
 interface ScoreServiceClient {
 
+    /**
+     * Makes a remote API call with the provided [PostInstance] and retrieves
+     * its [ClickBaitScore] result in a non-blocking way via a [Mono] publisher.
+     *
+     * @param instance a valid social media post instance
+     * @return a Mono containing the serialized [ClickBaitScore] object
+     */
     @Headers(
         "Accept: ${MediaType.APPLICATION_JSON_UTF8_VALUE}",
         "Content-Type: ${MediaType.APPLICATION_JSON_UTF8_VALUE}"

@@ -18,65 +18,88 @@ services:
     - 6379
 
   mongo_db:
-    build:
-      context: ./database
-    image: clickbait-mongo
+    image: danielfuvesi/clickbait-defeater:mongo
     container_name: mongo
     ports:
     - 27017:27017
 
   gateway:
-    build:
-      context: ./gateway
-      args:
-        VERSION: 0.0.1-SNAPSHOT
-    image: clickbait-gateway
+    image: danielfuvesi/clickbait-defeater:gateway-0.0.3
     container_name: clickbait-gateway
     ports:
     - 4000:8080
     environment:
     - SPRING_PROFILES_ACTIVE=docker
+    - SECURITY_AUTH_ENCODED
+    - SECURITY_AUTHORIZED_HOSTS_PATTERN=.*
     - JAVA_OPTS=-Xmx300m
     mem_limit: 367001600
 
   clickbait_read_service:
-    build:
-      context: ./clickbait-service-read
-      args:
-        VERSION: 0.0.1-SNAPSHOT
-    image: clickbait-read-service
+    image: danielfuvesi/clickbait-defeater:read-service-0.0.2
     container_name: clickbait-read-service
     ports:
     - 8080:8080
+    depends_on:
+      - clickbait_redis
     environment:
     - SPRING_PROFILES_ACTIVE=docker
+    - SPRING_REDIS_HOST
+    - SPRING_REDIS_PORT
+    - SPRING_REDIS_PASSWORD
+    - SECURITY_AUTHORIZED_HOSTS_PATTERN=.*
+    - SCORE_SERVICE_PROTOCOL
+    - SCORE_SERVICE_HOST
+    - SCORE_SERVICE_PORT
     - JAVA_OPTS=-Xmx300m
     mem_limit: 367001600
 
   clickbait_update_service:
-    build:
-      context: ./clickbait-service-update
-      args:
-        VERSION: 0.0.1-SNAPSHOT
-    image: clickbait-update-service
+    image: danielfuvesi/clickbait-defeater:update-service-0.0.2
     container_name: clickbait-update-service
     ports:
     - 8081:8080
+    depends_on:
+      - mongo_db
     environment:
     - SPRING_PROFILES_ACTIVE=docker
+    - SPRING_DATA_MONGODB_HOST
+    - SPRING_DATA_MONGODB_PORT
+    - SPRING_DATA_MONGODB_PASSWORD
+    - SPRING_DATA_MONGODB_DATABASE
+    - SPRING_DATA_MONGODB_USERNAME
+    - SERVICE_RELAY_VOTES_CRON
+    - SERVICE_RELAY_VOTES_MINIMUM_VOTES
+    - SERVICE_RELAY_VOTES_HOURS_UNTIL_NOW
+    - SECURITY_AUTHORIZED_HOSTS_PATTERN=.*
+    - CONTENT_SERVICE_PROTOCOL
+    - CONTENT_SERVICE_HOST
+    - CONTENT_SERVICE_PORT
+    - ML_SERVICE_PROTOCOL
+    - ML_SERVICE_HOST
+    - ML_SERVICE_PORT
     - JAVA_OPTS=-Xmx300m
     mem_limit: 367001600
 
   content_extraction_service:
-    build:
-      context: ./content-extraction-service
-      args:
-        VERSION: 0.0.1-SNAPSHOT
-    image: content-extraction-service
+    image: danielfuvesi/clickbait-defeater:content-extraction-service-0.0.2
     container_name: content-extraction-service
     ports:
     - 8082:8080
+    depends_on:
+      - content_redis
+      - mongo_db
     environment:
     - SPRING_PROFILES_ACTIVE=docker
+    - SPRING_REDIS_HOST
+    - SPRING_REDIS_PORT
+    - SPRING_REDIS_PASSWORD
+    - SPRING_DATA_MONGODB_HOST
+    - SPRING_DATA_MONGODB_PORT
+    - SPRING_DATA_MONGODB_PASSWORD
+    - SPRING_DATA_MONGODB_DATABASE
+    - SPRING_DATA_MONGODB_USERNAME
+    - SECURITY_AUTHORIZED_HOSTS_PATTERN=.*
+    - MERCURY_WEB_PARSER_API_KEY
     - JAVA_OPTS=-Xmx300m
     mem_limit: 367001600

@@ -1,3 +1,21 @@
+/*
+ * Clickbait-Defeater
+ * Copyright (c) 2018. Daniel Füvesi
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.clickbait.defeater.contentextraction.service.html.extractor.extractors.media.video
 
 /* ktlint-disable no-wildcard-imports */
@@ -10,9 +28,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Video media extractor specific to the [BrightCove](https://www.brightcove.com/en/) platform.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -23,6 +39,13 @@ class JsoupBrightCoveVideoExtractor {
 
     private val brightCoveVideoUrlTemplate = "https://players.brightcove.net/%s/%s_default/index.html?videoId=%s"
 
+    /**
+     * Extracts multiple potential video content from
+     * the given `document`.
+     *
+     * @param document a valid HTML document of [org.jsoup.Jsoup]
+     * @return a Flux emitting the found video [Content]s
+     */
     internal fun extract(document: Document): Flux<Content> {
         return Flux.concat(
             extractBrightCoveIFrameVideoUrl(document),

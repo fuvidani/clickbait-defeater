@@ -1,3 +1,21 @@
+/*
+ * Clickbait-Defeater
+ * Copyright (c) 2018. Daniel Füvesi
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.clickbait.defeater.clickbaitservice.read
 
 import com.clickbait.defeater.clickbaitservice.read.model.ClickBaitScore
@@ -27,19 +45,23 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
+import org.springframework.http.CacheControl
+import org.springframework.web.reactive.config.EnableWebFlux
+import org.springframework.web.reactive.config.ResourceHandlerRegistry
+import org.springframework.web.reactive.config.WebFluxConfigurer
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Entry-point of the ClickBait Read-Service application.
+ * Several beans are configured here that are used for dependency injection.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
  * @since 1.0.0
  */
 @SpringBootApplication
+@EnableWebFlux
 @Configuration
-class ClickBaitServiceReadApplication {
+class ClickBaitServiceReadApplication : WebFluxConfigurer {
 
     companion object {
         @JvmStatic
@@ -48,6 +70,14 @@ class ClickBaitServiceReadApplication {
         }
     }
 
+    /**
+     * Specifies the [ReactiveRedisConnectionFactory] this applications uses.
+     *
+     * @param host host of the Redis cache
+     * @param port port of the Redis cache
+     * @param password password for accessing the Redis cache
+     * @return a [ReactiveRedisConnectionFactory] bean
+     */
     @Bean
     @Primary
     fun redisConnectionFactory(
@@ -79,6 +109,14 @@ class ClickBaitServiceReadApplication {
         return redisTemplate.opsForValue()
     }
 
+    /**
+     * Retrofit HTTP client implementation of the [ScoreServiceClient] interface as
+     * a bean.
+     *
+     * @param protocol protocol to use, either `http` or `https`
+     * @param host host of the remote API where the score requests can be invoked
+     * @param port port of the remote API where the score requests can be invoked
+     */
     @Bean
     fun scoreServiceClient(
         @Value("\${score.service.protocol}") protocol: String,
@@ -93,6 +131,11 @@ class ClickBaitServiceReadApplication {
         return retrofit.create(ScoreServiceClient::class.java)
     }
 
+    /**
+     * Bean implementation for [com.optimaize.langdetect.LanguageDetector] library interface.
+     *
+     * @param languages list of ISO-639-1 language codes the language detector should search for
+     */
     @Bean
     fun languageDetector(@Value("\${languages}") languages: Array<String>): LanguageDetector {
         val languageProfiles = if (languages[0] == "all") {
@@ -105,8 +148,21 @@ class ClickBaitServiceReadApplication {
             .build()
     }
 
+    /**
+     * @param supportedLanguages list of ISO-639-1 language codes this application supports
+     */
     @Bean
     fun supportedLanguages(@Value("\${supported.languages}") supportedLanguages: Array<String>): List<String> {
         return supportedLanguages.asList()
+    }
+
+    /**
+     * Add resource handlers for serving static resources.
+     * @see ResourceHandlerRegistry
+     */
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        registry.addResourceHandler("clickbait/read/documentation/**")
+            .addResourceLocations("classpath:/static/docs/")
+            .setCacheControl(CacheControl.noStore())
     }
 }

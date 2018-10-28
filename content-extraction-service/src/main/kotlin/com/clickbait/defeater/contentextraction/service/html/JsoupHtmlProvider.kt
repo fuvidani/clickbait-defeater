@@ -1,3 +1,21 @@
+/*
+ * Clickbait-Defeater
+ * Copyright (c) 2018. Daniel Füvesi
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.clickbait.defeater.contentextraction.service.html
 
 import com.clickbait.defeater.contentextraction.model.WebPage
@@ -10,9 +28,8 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Implementation of the [HtmlProvider] interface with the help of a powerful
+ * HTML parser library called [Jsoup](https://jsoup.org/).
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -21,6 +38,17 @@ import java.nio.charset.StandardCharsets
 @Component
 class JsoupHtmlProvider : HtmlProvider {
 
+    /**
+     * Tries to get the HTML source code of the given
+     * `webPage`. The result is returned in a [Mono]
+     * inside a [WebPageSource] object.
+     *
+     * @param webPage a valid [WebPage] object describing
+     * the web page for which the HTML source code should
+     * be retrieved
+     * @return the source of the requested web page emitted
+     * by a [Mono]
+     */
     override fun get(webPage: WebPage): Mono<WebPageSource> {
         val url = tryAndGetRealUrl(webPage.url)
         @Suppress("DEPRECATION") // not validating TLS certificates may be problematic on Android, ignoring here

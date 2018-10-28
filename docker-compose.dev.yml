@@ -1,0 +1,82 @@
+version: '2.4'
+
+services:
+  clickbait_redis:
+    image: redis:4.0.10-alpine
+    container_name: clickbait-redis
+    command: redis-server --requirepass a2vjPx2CJ4HcE3f323oxmG4anv
+    ports:
+    - 6379:6379
+
+  content_redis:
+    image: redis:4.0.10-alpine
+    container_name: content-redis
+    command: redis-server --requirepass a2vjPx2CJ4HcE3f323oxmG4anv
+    ports:
+    - 6380:6379
+    expose:
+    - 6379
+
+  mongo_db:
+    build:
+      context: ./database
+    image: clickbait-mongo
+    container_name: mongo
+    ports:
+    - 27017:27017
+
+  gateway:
+    build:
+      context: ./gateway
+      args:
+        VERSION: 0.0.1-SNAPSHOT
+    image: clickbait-gateway
+    container_name: clickbait-gateway
+    ports:
+    - 4000:8080
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    - JAVA_OPTS=-Xmx300m
+    mem_limit: 367001600
+
+  clickbait_read_service:
+    build:
+      context: ./clickbait-service-read
+      args:
+        VERSION: 0.0.1-SNAPSHOT
+    image: clickbait-read-service
+    container_name: clickbait-read-service
+    ports:
+    - 8080:8080
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    - JAVA_OPTS=-Xmx300m
+    mem_limit: 367001600
+
+  clickbait_update_service:
+    build:
+      context: ./clickbait-service-update
+      args:
+        VERSION: 0.0.1-SNAPSHOT
+    image: clickbait-update-service
+    container_name: clickbait-update-service
+    ports:
+    - 8081:8080
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    - JAVA_OPTS=-Xmx300m
+    mem_limit: 367001600
+
+  content_extraction_service:
+    build:
+      context: ./content-extraction-service
+      args:
+        VERSION: 0.0.1-SNAPSHOT
+    image: content-extraction-service
+    container_name: content-extraction-service
+    ports:
+    - 8082:8080
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    - JAVA_OPTS=-Xmx300m
+    mem_limit: 367001600

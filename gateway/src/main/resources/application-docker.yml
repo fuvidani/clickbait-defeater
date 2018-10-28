@@ -65,3 +65,21 @@ spring:
           args:
             name: fallback
             fallbackUri: forward:/mlServiceFallback
+      - id: clickbait_read_docu
+        uri: http://clickbait-read-service:8080
+        predicates:
+        - Path=/clickbait/read/documentation/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/clickBaitReadFallback
+      - id: clickbait_update_docu
+        uri: http://clickbait-update-service:8080
+        predicates:
+        - Path=/clickbait/update/documentation/**
+        filters:
+        - name: Hystrix
+          args:
+            name: fallback
+            fallbackUri: forward:/clickBaitUpdateFallback

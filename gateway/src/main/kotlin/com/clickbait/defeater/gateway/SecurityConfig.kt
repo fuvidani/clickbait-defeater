@@ -1,3 +1,21 @@
+/*
+ * Clickbait-Defeater
+ * Copyright (c) 2018. Daniel Füvesi
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.clickbait.defeater.gateway
 
 import mu.KLogging
@@ -18,9 +36,8 @@ import java.security.SecureRandom
 import java.util.Base64
 
 /**
- * <h4>About this class</h4>
- *
- * <p>Description</p>
+ * Centralized security configuration for the gateway.
+ * Only enabled if the current profile is not `test`.
  *
  * @author Daniel Fuevesi
  * @version 1.0.0
@@ -31,6 +48,17 @@ import java.util.Base64
 @Profile("!test")
 class SecurityConfig {
 
+    /**
+     * Custom [SecurityWebFilterChain]. Denies all requests on the `/actuator/` paths,
+     * disables form login and accepts requests only if
+     * (i) the requesting host is from an injected list of authorized hosts (i.e. it's
+     * a case of intra-service communication) OR
+     * (ii) there is a Basic authentication header with the correct password of the gateway.
+     *
+     * @param authorizedHostsPattern a regex pattern describing from which hosts (IP-address patterns)
+     * requests should be accepted
+     * @param http [ServerHttpSecurity] bean from the Spring Framework
+     */
     @Bean
     fun securityFilterChain(
         @Value("\${security.auth.encoded}") gatewayAuth: String,
@@ -59,7 +87,7 @@ class SecurityConfig {
                             gatewayAuth
                         )
                     ) {
-                        logger.warn("No authorization header or invalid credentials provided (Host: ${address?.hostString})")
+                        logger.warn("No authorization header or invalid credentials provided (Address: $address, Host: ${address?.hostString})")
                         deny()
                     } else {
                         accept()

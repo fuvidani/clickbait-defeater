@@ -1,0 +1,75 @@
+= ClickBait Update-Service Documentation
+Daniel Füvesi - Version 1.0.0.RELEASE;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+This documentation describes the the available endpoints of the ClickBait Update-Service API and how to interact
+with them.
+
+== Submit a clickbait vote
+
+[NOTE]
+Endpoint: `POST /clickbait/vote`
+
+This endpoint requires a clickbait vote JSON object
+with the structure shown below in the examples. Assuming that the provided object is valid, the endpoint simply returns 200 OK.
+
+Example request with a minimal json input:
+include::{snippets}/submit-vote/http-request.adoc[]
+include::{snippets}/submit-vote/request-fields.adoc[]
+
+== Retrieve a particular vote
+
+[NOTE]
+Endpoint: `GET /clickbait/vote?userId=...&url=...`
+
+For a particular `userId` + `url` combination an already submitted vote
+can be retrieved via this endpoint.
+
+Request parameters:
+include::{snippets}/get-existing-vote/request-parameters.adoc[]
+
+An example request might look like the following:
+include::{snippets}/get-existing-vote/http-request.adoc[]
+
+If there is already a corresponding vote, the endpoint returns it, otherwise
+the client receives 204 NO_CONTENT. Example response:
+include::{snippets}/get-existing-vote/http-response.adoc[]
+
+Response fields description:
+include::{snippets}/get-existing-vote/response-fields.adoc[]
+
+== Get all votes of a user
+
+[NOTE]
+Endpoint: `GET /clickbait/votes?userId=...&page=...&size=...`
+
+This endpoint merely returns submitted votes for a particular `userId`. The
+`page` and `size` query parameters are optional and can be used to execute
+paginated queries. If either one of these (or both) is not provided, the endpoint automatically
+returns all votes of the user:
+include::{snippets}/get-paged-votes/request-parameters.adoc[]
+
+For the sake of an example, let's assume that user `1234` already submitted 4 votes in the past.
+Then a paginated request for page `0` with size `2` will return the first two votes this user
+has ever submitted. The request
+include::{snippets}/get-paged-votes/http-request.adoc[]
+
+results in
+include::{snippets}/get-paged-votes/http-response.adoc[]
+
+If the query parameters are omitted, all 4 votes are returned.
+Request:
+include::{snippets}/get-unpaged-votes/http-request.adoc[]
+
+Response:
+include::{snippets}/get-unpaged-votes/http-response.adoc[]
+
+
+
+
+
+
+
+
