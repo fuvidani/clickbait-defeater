@@ -167,7 +167,7 @@ class ContentExtractionServiceApplication : WebFluxConfigurer {
      * @see ResourceHandlerRegistry
      */
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry.addResourceHandler("/documentation/**")
+        registry.addResourceHandler("content/documentation/**")
             .addResourceLocations("classpath:/static/docs/")
             .setCacheControl(CacheControl.noStore())
     }

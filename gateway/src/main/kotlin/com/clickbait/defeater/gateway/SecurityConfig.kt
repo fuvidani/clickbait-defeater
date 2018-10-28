@@ -87,7 +87,7 @@ class SecurityConfig {
                             gatewayAuth
                         )
                     ) {
-                        logger.warn("No authorization header or invalid credentials provided (Host: ${address?.hostString})")
+                        logger.warn("No authorization header or invalid credentials provided (Address: $address, Host: ${address?.hostString})")
                         deny()
                     } else {
                         accept()

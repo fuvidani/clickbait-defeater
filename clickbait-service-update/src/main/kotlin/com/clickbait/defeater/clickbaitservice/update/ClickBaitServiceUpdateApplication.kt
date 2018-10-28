@@ -129,7 +129,7 @@ class ClickBaitServiceUpdateApplication : WebFluxConfigurer {
      * @see ResourceHandlerRegistry
      */
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry.addResourceHandler("/documentation/**")
+        registry.addResourceHandler("clickbait/update/documentation/**")
             .addResourceLocations("classpath:/static/docs/")
             .setCacheControl(CacheControl.noStore())
     }

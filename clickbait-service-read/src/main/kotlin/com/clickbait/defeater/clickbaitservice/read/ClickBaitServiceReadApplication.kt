@@ -161,7 +161,7 @@ class ClickBaitServiceReadApplication : WebFluxConfigurer {
      * @see ResourceHandlerRegistry
      */
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry.addResourceHandler("/documentation/**")
+        registry.addResourceHandler("clickbait/read/documentation/**")
             .addResourceLocations("classpath:/static/docs/")
             .setCacheControl(CacheControl.noStore())
     }

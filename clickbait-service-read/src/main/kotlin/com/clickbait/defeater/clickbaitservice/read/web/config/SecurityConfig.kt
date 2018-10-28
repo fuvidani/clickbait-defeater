@@ -71,7 +71,7 @@ class SecurityConfig {
                 if (address != null && address.hostString.matches(authorizedHostsPattern)) {
                     Mono.just(AuthorizationDecision(true))
                 } else {
-                    logger.warn("Request from unauthorized host (${address?.hostString})")
+                    logger.warn("Request from unauthorized host. Address: $address (Host string: ${address?.hostString})")
                     Mono.just(AuthorizationDecision(false))
                 }
             }
