@@ -10,6 +10,7 @@ from freeze import freeze_graph
 from utils import *
 import shutil
 import warnings
+import re
 
 # Ignore numpy.dtype warning (known issue).
 warnings.filterwarnings("ignore", message="numpy.dtype size changed")
@@ -23,7 +24,10 @@ def limit_remote_addr():
     """
     IP filter to restrict IPs that can access this API.
     """
-    if request.remote_addr != '37.221.195.13':
+    regex = os.environ.get('AUTHORIZED_HOSTS_PATTERN', ".*")
+    pattern = re.compile(regex)
+
+    if not pattern.match(request.remote_addr):
         abort(403)
 
 
